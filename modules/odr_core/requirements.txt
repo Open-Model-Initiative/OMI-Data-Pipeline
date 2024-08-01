@@ -1,0 +1,6 @@
+alembic
+sqlalchemy
+pydantic
+pydantic-settings
+pytest
+loguru

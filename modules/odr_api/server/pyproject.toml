@@ -1,0 +1,28 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools>=69.0",
+  "wheel",
+]
+
+[project]
+description = "This module contains logic for open data repository server."
+name = "server"
+version = "0.1.0"
+dynamic = ["dependencies"]
+
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "server",
+]
+
+[tool.setuptools.packages.find]
+include = ["server", "server.*"]  # include the .xslt files
+exclude = []  # exclude packages matching these glob patterns (empty by default)
+
+[tool.setuptools.package-data]
+"server" = ["py.typed"]

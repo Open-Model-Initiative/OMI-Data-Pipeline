@@ -1,0 +1,19 @@
+# aidriver_stores Taskfile
+version: '3'
+tasks:
+
+  test:
+    cmds:
+      - python ${ROOT_DIR}/modules/odr_core/tests/test_database.py
+      - python ${ROOT_DIR}/modules/odr_core/tests/test_config.py
+      - python ${ROOT_DIR}/modules/odr_core/tests/test_user.py
+      - python ${ROOT_DIR}/modules/odr_core/tests/test_user_crud.py
+      - python ${ROOT_DIR}/modules/odr_core/tests/test_content_model.py
+
+  test-db:
+    cmds:
+      - python ${ROOT_DIR}/modules/odr_core/tests/test_db_manager.py
+
+  migrate:
+    cmds:
+      - alembic -c ./modules/odr_core/alembic.ini upgrade head
