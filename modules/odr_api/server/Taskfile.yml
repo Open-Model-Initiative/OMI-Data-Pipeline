@@ -1,0 +1,9 @@
+version: 3
+
+tasks:
+  test:
+    cmds:
+      - python -m pytest -v ${ROOT_DIR}/server/tests/test_user_api.py
+  start: 
+    cmds:
+      - powershell.exe -ExecutionPolicy ByPass -File ${ROOT_DIR}/server/run_server.ps1
