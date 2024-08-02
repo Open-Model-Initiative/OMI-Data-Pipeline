@@ -62,3 +62,5 @@ dist/
 sandbox.ipynb
 notebooks/*
 local/
+
+server.pid
