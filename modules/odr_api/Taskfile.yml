@@ -8,5 +8,8 @@ tasks:
   start: 
     desc: Start the api server
     cmds:
-     - cmd: powershell.exe -ExecutionPolicy ByPass ${ROOT_DIR}/modules/odr_api/scripts/run_server.ps1
-     - echo 'Start server stub'
+      - cmd: powershell.exe -ExecutionPolicy ByPass ${ROOT_DIR}/modules/odr_api/scripts/run_server.ps1
+        platforms: [windows]
+      - cmd: ./modules/odr_api/scripts/start_server.sh
+        platforms: [linux, darwin]
+      - echo 'Start server stub'
