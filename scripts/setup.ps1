@@ -1,10 +1,23 @@
-# Create virtual environment
-python -m venv venv
+# Check if .env file exists
+if (Test-Path -Path ".env") {
+    $choice = Read-Host "The .env file already exists. Do you want to replace it? (Y/N)"
+    if ($choice -eq "Y" -or $choice -eq "y") {
+        Remove-Item -Path ".env"
+    } else {
+        Write-Host "Keeping existing .env file. Exiting."
+        exit
+    }
+}
 
-# Activate virtual environment
-. .\venv\Scripts\Activate.ps1
+# Copy .env.template to .env
+Copy-Item -Path ".env.template" -Destination ".env"
 
-# Upgrade pip and install requirements
-python -m pip install --upgrade pip 
-pip install -e ./modules/odr_core
-pip install -e ./modules/odr_api
+# Ask user for root directory
+$rootDir = Read-Host "Please enter the root directory path"
+
+# Update .env file with root directory
+$envContent = Get-Content -Path ".env"
+$envContent = $envContent -replace "ROOT_DIR=.*", "ROOT_DIR=$rootDir"
+Set-Content -Path ".env" -Value $envContent
+
+Write-Host ".env file has been created/updated with the provided root directory."

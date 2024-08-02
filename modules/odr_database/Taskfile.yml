@@ -1,0 +1,50 @@
+# ODR Database Taskfile
+version: '3'
+tasks:
+
+## PostgreSQL
+  setup-postgres:
+    desc: Setup the postgres database
+    cmds:
+      - cmd: ./scripts/setup.ps1
+        platforms: [windows]
+      - cmd: ./scripts/setup.sh
+        platforms: [linux, darwin]
+
+  start-postgres:
+    desc: Start the postgres database
+    cmds:
+      - >
+        docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml up
+  stop-postgres:
+    desc: Stop the postgres database
+    cmds:
+      - docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml down
+  rebuild-postgres:
+    desc: Rebuild the postgres database
+    cmds:
+      - >
+        docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml up --build
+  restart-postgres:
+    desc: Restart the postgres database
+    deps:
+      - stop-postgres
+    cmds:
+      - task: start-postgres
+  watch-postgres-logs:
+    desc: Watch the postgres logs
+    cmds:
+      - docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml logs -f
+
+  reset-postgres:
+    desc: Reset the postgres database
+    cmds:
+      - docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml down
+      - docker volume rm odr_database_postgres_data
+      - task: start-postgres
+      - task: watch-postgres-logs
+
+  test-postgres:
+    desc: Test the postgres database
+    cmds:
+      - python ${ROOT_DIR}/modules/odr_database/tests/test_postgres_simple.py

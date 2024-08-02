@@ -1,0 +1,77 @@
+version: '3'
+
+
+includes:
+  api: ./modules/odr_api/Taskfile.yml
+  db: ./modules/odr_database/Taskfile.yml
+  core: ./modules/odr_core/Taskfile.yml
+
+dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
+vars:
+  ROOT_DIR:
+    sh: echo ${ROOT_DIR}
+  ENV_FILE: 
+    sh: echo ${ROOT_DIR}/.env
+
+tasks:
+  echo-project-root:
+    desc: Echo the project root directory. Helps ensure environment is set up and tasks will run. 
+    cmds:
+      - echo USER WD {{.USER_WORKING_DIR}}
+      - echo USER_WORKING_DIRECTORY ${ROOT_DIR}
+      - echo ROOT ${ROOT_DIR}
+
+  setup: 
+    desc: Setup the project
+    cmds:
+      - cmd: powershell -ExecutionPolicy ByPass -File ./scripts/setup.ps1
+        platforms: [windows]
+      - cmd: ./scripts/setup.sh
+        platforms: [linux, darwin]
+      - cmd: docker network inspect omi-network >/dev/null 2>&1 || docker network create omi-network
+      - cmd: task setup-venv
+      
+  setup-venv:
+    desc: Setup the virtual environment
+    cmds:
+      - cmd: ./scripts/setup_virt_env.sh
+        platforms: [linux, darwin]
+      - cmd: powershell -ExecutionPolicy ByPass -File ./scripts/setup_virt_env.ps1
+        platforms: [windows]
+  activate-venv:
+    desc: Activate the virtual environment
+    cmds:
+      - cmd: source ${ROOT_DIR}/venv/bin/activate
+        platforms: [linux, darwin]
+      - cmd: "${ROOT_DIR}/venv/Scripts/activate"
+        platforms: [windows]
+  ## Macro
+  start-all:
+    desc: Start all services
+    cmds:
+      - echo "Starting all services..."
+      - |
+        task db:start-postgres &
+        task api:start &
+        wait
+      - echo "All services started"
+  stop-all:
+    desc: Stop all services
+    cmds:
+      - echo "Stopping all services..."
+      - |
+        task db:stop-postgres &
+        task api:stop &
+        wait
+      - echo "All services stopped"
+
+  watch-all-logs:
+    desc: Watch all service logs
+    cmds:
+      - echo "Watching all logs..."
+      - |
+        task db:watch-postgres-logs &
+        task api:watch-api-logs &
+        wait
+      - echo "All logs watched"
+

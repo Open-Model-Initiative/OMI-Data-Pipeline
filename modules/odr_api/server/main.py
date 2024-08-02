@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server.api.endpoints import user, team, content, annotation
+from server.api.endpoints import user_router, team_router, content_router, annotation_router
 from odr_core.config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME)
@@ -21,10 +21,10 @@ def read_root():
 def test_communication():
     return {"message": "Communication successful!"}
 
-app.include_router(team.router, prefix=settings.API_V1_STR)
-app.include_router(user.router, prefix=settings.API_V1_STR)
-app.include_router(content.router, prefix=settings.API_V1_STR)
-app.include_router(annotation.router, prefix=settings.API_V1_STR)
+app.include_router(team_router, prefix=settings.API_V1_STR)
+app.include_router(user_router, prefix=settings.API_V1_STR)
+app.include_router(content_router, prefix=settings.API_V1_STR)
+app.include_router(annotation_router, prefix=settings.API_V1_STR)
 
 import uvicorn
 
