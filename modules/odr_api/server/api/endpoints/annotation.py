@@ -6,10 +6,12 @@ from odr_core.crud.annotation import create_annotation, get_annotation, get_anno
 from odr_core.schemas.annotation import AnnotationCreate, AnnotationUpdate, Annotation
 from odr_core.database import get_db
 
+from ..auth.auth_provider import authorized_user, authorized_superuser
+
 router = APIRouter(tags=["annotation"])
 
 @router.post("/annotations/", response_model=Annotation)
-def create_annotation_endpoint(annotation: AnnotationCreate, db: Session = Depends(get_db)):
+def create_annotation_endpoint(annotation: AnnotationCreate, db: Session = Depends(get_db), current_user = Depends(authorized_user)):
     return create_annotation(db=db, annotation=annotation)
 
 @router.get("/annotations/{annotation_id}", response_model=Annotation)
@@ -25,14 +27,14 @@ def read_annotations_endpoint(skip: int = 0, limit: int = 100, db: Session = Dep
     return annotations
 
 @router.put("/annotations/{annotation_id}", response_model=Annotation)
-def update_annotation_endpoint(annotation_id: int, annotation: AnnotationUpdate, db: Session = Depends(get_db)):
+def update_annotation_endpoint(annotation_id: int, annotation: AnnotationUpdate, db: Session = Depends(get_db), current_user = Depends(authorized_user)):
     db_annotation = update_annotation(db, annotation_id=annotation_id, annotation_update=annotation)
     if db_annotation is None:
         raise HTTPException(status_code=404, detail="Annotation not found")
     return db_annotation
 
 @router.delete("/annotations/{annotation_id}", response_model=bool)
-def delete_annotation_endpoint(annotation_id: int, db: Session = Depends(get_db)):
+def delete_annotation_endpoint(annotation_id: int, db: Session = Depends(get_db), current_user = Depends(authorized_user)):
     success = delete_annotation(db, annotation_id=annotation_id)
     if not success:
         raise HTTPException(status_code=404, detail="Annotation not found")

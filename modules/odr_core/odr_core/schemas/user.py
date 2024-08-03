@@ -35,7 +35,9 @@ class UserTeam(BaseModel):
     team_id: int
     role: str
 
-
-
 class UserInDB(UserInDBBase):
     hashed_password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

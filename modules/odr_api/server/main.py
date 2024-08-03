@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server.api.endpoints import user_router, team_router, content_router, annotation_router
+from server.api.endpoints import user_router, team_router, content_router, annotation_router, auth_router
 from odr_core.config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME)
@@ -25,6 +25,7 @@ app.include_router(team_router, prefix=settings.API_V1_STR)
 app.include_router(user_router, prefix=settings.API_V1_STR)
 app.include_router(content_router, prefix=settings.API_V1_STR)
 app.include_router(annotation_router, prefix=settings.API_V1_STR)
+app.include_router(auth_router, prefix=settings.API_V1_STR)
 
 import uvicorn
 

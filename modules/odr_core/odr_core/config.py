@@ -10,17 +10,23 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_PORT: str
+
+    # JWT
+    JWT_SECRET: str = "supersecret"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRATION_SECONDS: int = 3600
     
     # Test Database
     TEST_POSTGRES_DB: str
+    TEST: bool = False
 
     ROOT_DIR: str
 
     class Config:
         env_file = ".env"
 
-    def get_db_url(self, test: bool = False):
-        db_name = self.TEST_POSTGRES_DB if test else self.POSTGRES_DB
+    def get_db_url(self):
+        db_name = self.TEST_POSTGRES_DB if self.TEST else self.POSTGRES_DB
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{db_name}"
 
 settings = Settings()
