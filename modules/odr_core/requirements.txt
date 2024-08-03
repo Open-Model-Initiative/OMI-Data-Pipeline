@@ -4,3 +4,7 @@ pydantic
 pydantic-settings
 pytest
 loguru
+
+# auth
+argon2-cffi
+pyjwt

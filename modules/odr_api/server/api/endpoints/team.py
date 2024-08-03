@@ -6,10 +6,12 @@ from odr_core.schemas.team import Team, TeamCreate, TeamUpdate, TeamWithMembers
 from odr_core.schemas.user import User
 from odr_core.database import get_db
 
+from ..auth.auth_provider import authorized_user, authorized_superuser
+
 router = APIRouter(tags=["teams"])
 
 @router.post("/teams/", response_model=Team)
-def create_team(team: TeamCreate, db: Session = Depends(get_db)):
+def create_team(team: TeamCreate, db: Session = Depends(get_db), current_user = Depends(authorized_user)):
     return team_crud.create_team(db=db, team=team)
 
 @router.get("/teams/{team_id}", response_model=TeamWithMembers)
@@ -25,23 +27,23 @@ def read_teams(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return teams
 
 @router.put("/teams/{team_id}", response_model=Team)
-def update_team(team_id: int, team: TeamUpdate, db: Session = Depends(get_db)):
+def update_team(team_id: int, team: TeamUpdate, db: Session = Depends(get_db), current_user = Depends(authorized_user)):
     db_team = team_crud.update_team(db, team_id=team_id, team=team)
     if db_team is None:
         raise HTTPException(status_code=404, detail="Team not found")
     return db_team
 
 @router.delete("/teams/{team_id}")
-def delete_team(team_id: int, db: Session = Depends(get_db)):
+def delete_team(team_id: int, db: Session = Depends(get_db), current_user = Depends(authorized_user)):
     team_crud.delete_team(db, team_id=team_id)
     return {"message": "Team deleted successfully"}
 
 @router.post("/teams/{team_id}/users/{user_id}")
-def add_user_to_team(team_id: int, user_id: int, role: str = "member", db: Session = Depends(get_db)):
+def add_user_to_team(team_id: int, user_id: int, role: str = "member", db: Session = Depends(get_db), current_user = Depends(authorized_user)):
     return team_crud.add_user_to_team(db, team_id=team_id, user_id=user_id, role=role)
 
 @router.delete("/teams/{team_id}/users/{user_id}")
-def remove_user_from_team(team_id: int, user_id: int, db: Session = Depends(get_db)):
+def remove_user_from_team(team_id: int, user_id: int, db: Session = Depends(get_db), current_user = Depends(authorized_user)):
     team_crud.remove_user_from_team(db, team_id=team_id, user_id=user_id)
     return {"message": "User removed from team successfully"}
 

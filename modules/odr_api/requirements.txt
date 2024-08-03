@@ -5,3 +5,4 @@ sqlalchemy
 pytest
 starlette
 psycopg2-binary
+python-multipart
