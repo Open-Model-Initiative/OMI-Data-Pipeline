@@ -7,32 +7,56 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials
 
 from odr_core.config import settings
-from odr_core.schemas.user import User
-from odr_core.crud.user import get_user_by_username
-from odr_core.database import get_db
+from odr_core.schemas.user import User, UserType
 
 from fastapi.security import OAuth2PasswordBearer
 
-security = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/token")
+security = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/token", auto_error=False)
 
-def create_access_token(user: User, expires_delta: Optional[timedelta] = None):
+def create_access_token(user: User, scope = [], expires_delta: Optional[timedelta] = None):
+
+    if scope is None:
+        scope = []
+
+    if user.user_type != UserType.bot:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Only bots can authenticate with JWT",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(seconds=settings.JWT_EXPIRATION_SECONDS)
     to_encode = {
-        "sub": user.email,
-        "username": user.username,
-        "is_superuser": user.is_superuser,
+        "sub": {
+            "id": user.id,
+            "email": user.email,
+            "user_type": user.user_type,
+            "is_active": user.is_active,
+            "created_at": user.created_at,
+            "updated_at": user.updated_at,
+            "is_superuser": user.is_superuser,
+        },
         "exp": expire,
+        "scope": scope,
+        "iss": "odr",
+        "aud": "odr",
+        "created_at": datetime.now(timezone.utc),
     }
     encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
     return encoded_jwt
 
 def decode_access_token(token: str):
     try:
-        payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+        payload = jwt.decode(
+            jwt=token, 
+            key=settings.JWT_SECRET,
+            algorithms=[settings.JWT_ALGORITHM],
+            audience="odr",
+            leeway=timedelta(seconds=settings.JWT_LEEWAY_SECONDS)
+            )
         return payload
     except jwt.ExpiredSignatureError:
         return None
@@ -41,31 +65,22 @@ def decode_access_token(token: str):
     except Exception:
         return None
 
-def get_jwt_user(
+def get_jwt_user_with_scopes(
     bearer: Annotated[Optional[HTTPAuthorizationCredentials], Depends(security)] = None,
-    db=Depends(get_db)
 ) -> Optional[User]:
+    
     if bearer is None:
         return None
     
     token = bearer.credentials
     payload = decode_access_token(token)
 
-    user = None
-
-    if payload:
-        username = payload.get("username")
-        user = get_user_by_username(db, username)
-
-        # jwt tokens are stateless, so we need to check if the user is still active
-        if user is not None and not user.is_active:
-            user = None
-
-    if user is None:
+    if payload is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credentials",
+            detail="Invalid token",
             headers={"WWW-Authenticate": "Bearer"},
         )
-        
-    return user
+    user = User(**payload["sub"])
+    scope: list[str] = payload["scope"]
+    return user, scope

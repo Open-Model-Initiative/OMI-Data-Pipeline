@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
 from enum import Enum
+import uuid
 
 class UserType(str, Enum):
     user = "user"
@@ -38,6 +39,18 @@ class UserTeam(BaseModel):
 class UserInDB(UserInDBBase):
     hashed_password: str
 
-class Token(BaseModel):
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+class UserLoginSession(BaseModel):
+    id: uuid.UUID
+    created_at: datetime
+    expires_at: Optional[datetime]
+
+class UserLogout(BaseModel):
+    pass    
+
+class UserToken(BaseModel):
     access_token: str
     token_type: str

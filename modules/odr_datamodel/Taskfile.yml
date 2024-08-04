@@ -6,3 +6,13 @@ tasks:
     desc: Migrate the database  
     cmds:
       - alembic -c ./modules/odr_datamodel/alembic.ini upgrade head
+
+  revision:
+    desc: Create a new revision, e.g. task data:revision -- "Add new column"
+    cmds:
+      - alembic -c ./modules/odr_datamodel/alembic.ini revision --autogenerate -m "{{.CLI_ARGS}}"
+
+  downgrade:
+    desc: Downgrade the database
+    cmds:
+      - alembic -c ./modules/odr_datamodel/alembic.ini downgrade -1
