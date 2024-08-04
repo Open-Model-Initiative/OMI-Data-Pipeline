@@ -27,7 +27,7 @@ def read_annotations_endpoint(skip: int = 0, limit: int = 100, db: Session = Dep
     return annotations
 
 @router.put("/annotations/{annotation_id}", response_model=Annotation)
-def update_annotation_endpoint(annotation_id: int, annotation: AnnotationUpdate, db: Session = Depends(get_db), curre_nt_user = Depends(AuthProvider())):
+def update_annotation_endpoint(annotation_id: int, annotation: AnnotationUpdate, db: Session = Depends(get_db), _ = Depends(AuthProvider())):
     db_annotation = update_annotation(db, annotation_id=annotation_id, annotation_update=annotation)
     if db_annotation is None:
         raise HTTPException(status_code=404, detail="Annotation not found")
