@@ -49,13 +49,13 @@ API Development
 - Implement CRUD operations for core entities
 - Develop API endpoints for:
 
-User and team management
+  - User and team management
 
-Content upload and retrieval
+  - Content upload and retrieval
 
-Annotation creation and retrieval
+  - Annotation creation and retrieval
 
-- Implement request validation and error handling
+    - Implement request validation and error handling
 
 
 ### Content Management System
