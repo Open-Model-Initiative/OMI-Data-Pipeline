@@ -35,12 +35,16 @@ On windows run `.venv\Scripts\activate`
 To run the database run `task db:start-postgres`  
 [Tested - Windows [x] | MacOS [x] | Linux [x]]
 
+## Connect to postgres and migrate 
+
+To run the initial db migration run `task data:migrate`  
+[Tested - Windows [x] | MacOS [x] | Linux [x]]
+
 ## Run api server
 
 To run the api server run `task api:start`  
-[Tested - Windows [x] | MacOS [x] | Linux [ ]]
+[Tested - Windows [x] | MacOS [x] | Linux [x]]
 
-## Connect to postgres and migrate 
 
-To run the initial db migration run `task core:migrate`  
-[Tested - Windows [] | MacOS [X] | Linux [ ]]
+
+
