@@ -23,19 +23,24 @@ Please ensure you are running with Python 3.11 or higher with virtual environmen
 ## Dev Environment setup
 
 To setup your environment run `task setup`
-[Tested - Windows [x] | MacOS [ ] | Linux [ ]]
+[Tested - Windows [x] | MacOS [x] | Linux [x]]
+
+## Activate your virtual environment
+
+To activate your virtual environment run `source .venv/bin/activate`
+On windows run `.venv\Scripts\activate`
 
 ## Run database 
 
 To run the database run `task db:start-postgres`  
-[Tested - Windows [x] | MacOS [ ] | Linux [ ]]
+[Tested - Windows [x] | MacOS [x] | Linux [x]]
 
 ## Run api server
 
 To run the api server run `task api:start`  
-[Tested - Windows [x] | MacOS [ ] | Linux [ ]]
+[Tested - Windows [x] | MacOS [x] | Linux [ ]]
 
 ## Connect to postgres and migrate 
 
 To run the initial db migration run `task core:migrate`  
-[Tested - Windows [] | MacOS [ ] | Linux [ ]]
+[Tested - Windows [] | MacOS [X] | Linux [ ]]
