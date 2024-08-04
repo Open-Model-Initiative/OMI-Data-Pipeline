@@ -5,7 +5,7 @@ from typing import List, Optional
 from sqlalchemy import Enum as SQLAlchemyEnum
 from odr_core.models.content import ContentType, ContentStatus
 from loguru import logger
-from datetime import datetime
+from datetime import datetime, timezone
 
 def create_content(db: Session, content: ContentCreate):
     logger.info(f"Creating content: {content}")
@@ -28,7 +28,7 @@ def create_content(db: Session, content: ContentCreate):
         meta=content.meta,
         from_user_id=content.from_user_id,
         from_team_id=content.from_team_id,
-        updated_at=datetime.now()
+        updated_at=datetime.now(timezone.utc)
     )
     db.add(db_content)
     db.commit()
@@ -46,7 +46,7 @@ def update_content(db: Session, content_id: int, content: ContentUpdate) -> Opti
     if db_content:
         for key, value in content.model_dump(exclude_unset=True).items():
             setattr(db_content, key, value) 
-        db_content.updated_at = datetime.now()
+        db_content.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(db_content)
     return db_content

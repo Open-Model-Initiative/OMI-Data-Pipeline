@@ -1,17 +1,20 @@
 # odr_core/crud/user.py
 from sqlalchemy.orm import Session
-from odr_core.models.user import User
+from odr_core.models.user import User, UserSession
 from odr_core.models.team import Team
 from odr_core.schemas.user import UserCreate, UserUpdate
+from odr_core.config import settings
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from argon2 import PasswordHasher
 
-__password_hasher = PasswordHasher()
+import uuid
+
+password_hasher = PasswordHasher()
 
 def create_user(db: Session, user: UserCreate) -> User:
 
-    hashed_password = __password_hasher.hash(user.password)
+    hashed_password = password_hasher.hash(user.password)
 
     db_user = User(
         username=user.username,
@@ -19,8 +22,8 @@ def create_user(db: Session, user: UserCreate) -> User:
         hashed_password=hashed_password,
         is_active=user.is_active,
         is_superuser=user.is_superuser,
-        created_at=datetime.now(),
-        updated_at=datetime.now()
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
     )
     db.add(db_user)
     db.commit()
@@ -35,10 +38,16 @@ def update_user(db: Session, user: UserUpdate, user_id: int) -> User:
         db_user.email = user.email
         db_user.is_active = user.is_active
         db_user.is_superuser = user.is_superuser
-        db_user.updated_at = datetime.now()
-        db_user.hashed_password = __password_hasher.hash(user.password)
+        db_user.updated_at = datetime.now(timezone.utc)
+
+        if user.password:
+            db_user.hashed_password = password_hasher.hash(user.password)
         db.commit()
         db.refresh(db_user)
+
+        if not user.is_active or user.password:
+            delete_user_sessions(db, user_id)
+
         return db_user
     
     return None
@@ -58,6 +67,8 @@ def get_users(db: Session, skip: int = 0, limit: int = 100) -> List[User]:
 def delete_user(db: Session, user_id: int) -> None:
     db.query(User).filter(User.id == user_id).delete()
     db.commit()
+
+    delete_user_sessions(db, user_id)
     
 def get_user_teams(db: Session, user_id: int) -> List[Team]:
     user = db.query(User).filter(User.id == user_id).first()
@@ -65,8 +76,40 @@ def get_user_teams(db: Session, user_id: int) -> List[Team]:
         return user.teams
     return []
 
+def delete_user_sessions(db: Session, user_id: int) -> None:
+    db.query(UserSession).filter(UserSession.user_id == user_id).delete()
+    db.commit()
 
-def authenticate_user(db: Session, username: str, password: str) -> Optional[User]:
+def get_user_session(db: Session, session_id: str) -> Optional[UserSession]:
+    return db.query(UserSession).filter(UserSession.id == session_id).first()
+
+def login_user(db: Session, username: str, password: str) -> Optional[UserSession]:
+    user = verify_user(db, username, password)
+    if not user:
+        return None
+
+    session = UserSession(
+        id=str(uuid.uuid4()),
+        user_id=user.id,
+        created_at=datetime.now(timezone.utc),
+        expires_at=(datetime.now(timezone.utc), + timedelta(seconds=settings.SESSION_MAX_AGE_SECONDS)).utcnow()
+    )
+
+    db.add(session)
+    db.commit()
+    db.refresh(session)
+
+    return session
+
+def logout_user(db: Session, session_id: str) -> bool:
+    count = db.query(UserSession).filter(UserSession.id == session_id).delete()
+    db.commit()
+    if count == 0:
+        return False
+    else:
+        return True   
+
+def verify_user(db: Session, username: str, password: str) -> Optional[User]:
     user = get_user_by_username(db, username)
     if not user:
         return None
@@ -75,7 +118,7 @@ def authenticate_user(db: Session, username: str, password: str) -> Optional[Use
         return None
 
     try:
-        if __password_hasher.verify(user.hashed_password, password):
+        if password_hasher.verify(user.hashed_password, password):
             return user
     except:
         # Password verification failed

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
@@ -22,6 +22,21 @@ class User(Base):
     annotation_ratings = relationship("AnnotationRating", back_populates="rated_by")
     annotation_reports = relationship("AnnotationReport", back_populates="reported_by")
     added_annotation_sources = relationship("AnnotationSource", back_populates="added_by")
+    sessions = relationship("UserSession", back_populates="user")
 
     def __repr__(self):
         return f"<User(id={self.id}, username={self.username}, email={self.email})>"
+
+class UserSession(Base):
+    __tablename__ = "sessions"
+
+    id = Column(UUID, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    expires_at = Column(DateTime(timezone=True), nullable=True)
+
+    user = relationship("User", back_populates="sessions")
+
+
+    def __repr__(self):
+        return f"<UserSession(id={self.id}, user_id={self.user_id}, created_at={self.created_at}, expires_at={self.expires_at})>"
