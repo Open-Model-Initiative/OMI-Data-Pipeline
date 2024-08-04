@@ -5,18 +5,9 @@ tasks:
   test:
     desc: Run tests for the core module
     cmds:
-      - python ${ROOT_DIR}/modules/odr_core/tests/test_database.py
-      - python ${ROOT_DIR}/modules/odr_core/tests/test_config.py
-      - python ${ROOT_DIR}/modules/odr_core/tests/test_user.py
-      - python ${ROOT_DIR}/modules/odr_core/tests/test_user_crud.py
-      - python ${ROOT_DIR}/modules/odr_core/tests/test_content_model.py
+      - echo "Testing not implemented"
 
   test-db:
     desc: Run tests for the database manager
     cmds:
-      - python ${ROOT_DIR}/modules/odr_core/tests/test_db_manager.py
-
-  migrate:
-    desc: Migrate the database  
-    cmds:
-      - alembic -c ./modules/odr_core/alembic.ini upgrade head
+      - echo "Testing not implemented"

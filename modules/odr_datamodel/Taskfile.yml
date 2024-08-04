@@ -1,0 +1,8 @@
+# aidriver_stores Taskfile
+version: '3'
+tasks:
+
+  migrate:
+    desc: Migrate the database  
+    cmds:
+      - alembic -c ./modules/odr_datamodel/alembic.ini upgrade head
