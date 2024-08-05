@@ -3,11 +3,13 @@ from odr_core.models.content import Content, ContentType, ContentStatus, Content
 from odr_core.schemas.content import ContentCreate, Content as ContentSchema
 from .test_db_manager import TestDBManager
 
+
 @pytest.fixture(scope="module", autouse=True)
 def setup_test_db():
     TestDBManager.setup_test_db()
     yield
     TestDBManager.drop_test_db()
+
 
 @pytest.fixture(scope="function")
 def db():
@@ -17,6 +19,7 @@ def db():
     finally:
         TestDBManager.teardown_test_db(session)
         session.close()
+
 
 def test_create_content(db):
     content_data = ContentCreate(
@@ -54,6 +57,7 @@ def test_create_content(db):
     assert len(db_content.url) == 2
     assert "http://example.com/image1.jpg" in db_content.url
 
+
 def test_content_author_relationship(db):
     content = Content(
         name="Test Image",
@@ -68,13 +72,14 @@ def test_content_author_relationship(db):
     )
     author = ContentAuthor(name="John Doe", url="http://example.com")
     content.content_authors.append(author)
-    
+
     db.add(content)
     db.commit()
     db.refresh(content)
 
     assert len(content.content_authors) == 1
     assert content.content_authors[0].name == "John Doe"
+
 
 def test_content_schema():
     content_data = {
@@ -100,6 +105,7 @@ def test_content_schema():
     assert content.status == ContentStatus.PENDING
     assert len(content.url) == 1
     assert content.url[0] == "http://example.com/image3.jpg"
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

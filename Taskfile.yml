@@ -11,18 +11,18 @@ dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
 vars:
   ROOT_DIR:
     sh: echo ${ROOT_DIR}
-  ENV_FILE: 
+  ENV_FILE:
     sh: echo ${ROOT_DIR}/.env
 
 tasks:
   echo-project-root:
-    desc: Echo the project root directory. Helps ensure environment is set up and tasks will run. 
+    desc: Echo the project root directory. Helps ensure environment is set up and tasks will run.
     cmds:
       - echo USER WD {{.USER_WORKING_DIR}}
       - echo USER_WORKING_DIRECTORY ${ROOT_DIR}
       - echo ROOT ${ROOT_DIR}
 
-  setup: 
+  setup:
     desc: Setup the project
     cmds:
       - cmd: powershell -ExecutionPolicy ByPass -File ./scripts/setup.ps1
@@ -31,7 +31,7 @@ tasks:
         platforms: [linux, darwin]
       - cmd: docker network inspect omi-network >/dev/null 2>&1 || docker network create omi-network
       - cmd: task setup-venv
-      
+
   setup-venv:
     desc: Setup the virtual environment
     cmds:
@@ -75,4 +75,3 @@ tasks:
         task api:watch-api-logs &
         wait
       - echo "All logs watched"
-

@@ -1,5 +1,5 @@
 # Open Model Initiative - Data Pipeline
-Welcome to the Open Model Initiative Data Pipeline repository! 
+Welcome to the Open Model Initiative Data Pipeline repository!
 
 This project aims to provide open-source, community-driven training pipelines and code for developing baseline AI models for image generation. Other modalities may be released in future updates, whether in this repo or others.
 

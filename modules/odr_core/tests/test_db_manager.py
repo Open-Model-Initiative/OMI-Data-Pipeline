@@ -7,10 +7,11 @@ from alembic.config import Config
 from alembic import command
 import os
 import time
-from loguru import logger 
+from loguru import logger
 from odr_core.config import settings
 from odr_core.models.base import Base
 from sqlalchemy import inspect
+
 
 class TestDBManager:
     @staticmethod
@@ -34,7 +35,7 @@ class TestDBManager:
         db_url = settings.get_db_url(test=True)
         alembic_cfg.set_main_option("sqlalchemy.url", db_url)
         logger.info(f"Using database URL: {db_url}")
-        
+
         try:
             command.upgrade(alembic_cfg, "head")
             logger.info("Alembic upgrade command completed.")
@@ -47,26 +48,26 @@ class TestDBManager:
         inspector = inspect(engine)
         tables = inspector.get_table_names()
         logger.info(f"Found {len(tables)} tables after migrations: {', '.join(tables)}")
-        
+
         if not tables:
             logger.error("No tables found after migrations. Migrations may have failed.")
-            
+
             # Check if the database exists
             try:
-                with engine.connect() as connection:
+                with engine.connect() as connection:  # noqa: F841
                     logger.info("Database connection successful.")
             except Exception as e:
                 logger.error(f"Failed to connect to the database: {str(e)}")
-            
+
             # Check Alembic version table
             try:
                 alembic_version = inspector.get_table_names(schema='alembic')
                 logger.info(f"Alembic version table: {alembic_version}")
             except Exception as e:
                 logger.error(f"Failed to check Alembic version table: {str(e)}")
-            
+
             raise Exception("No tables found after migrations. Migrations may have failed.")
-        
+
         logger.info("Database migrations applied successfully.")
 
         @staticmethod
@@ -115,21 +116,22 @@ class TestDBManager:
     def run_setup_and_teardown():
         print("Setting up test database...")
         TestDBManager.setup_test_db()
-        
+
         session = TestDBManager.get_test_db_session()
-        
+
         print("Test database setup complete.")
         print("Waiting for 5 seconds...")
         time.sleep(5)
-        
+
         print("Tearing down test database...")
         TestDBManager.teardown_test_db(session)
         session.close()
-        
+
         print("Dropping test database...")
         TestDBManager.drop_test_db()
-        
+
         print("Test database teardown complete.")
+
 
 if __name__ == "__main__":
     TestDBManager.run_setup_and_teardown()

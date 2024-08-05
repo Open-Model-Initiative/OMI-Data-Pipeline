@@ -10,9 +10,11 @@ from ..auth import AuthProvider
 
 router = APIRouter(tags=["annotation"])
 
+
 @router.post("/annotations/", response_model=Annotation)
 def create_annotation_endpoint(annotation: AnnotationCreate, db: Session = Depends(get_db), _ = Depends(AuthProvider())):
     return create_annotation(db=db, annotation=annotation)
+
 
 @router.get("/annotations/{annotation_id}", response_model=Annotation)
 def read_annotation_endpoint(annotation_id: int, db: Session = Depends(get_db)):
@@ -21,10 +23,12 @@ def read_annotation_endpoint(annotation_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Annotation not found")
     return db_annotation
 
+
 @router.get("/annotations/", response_model=List[Annotation])
 def read_annotations_endpoint(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     annotations = get_annotations(db, skip=skip, limit=limit)
     return annotations
+
 
 @router.put("/annotations/{annotation_id}", response_model=Annotation)
 def update_annotation_endpoint(annotation_id: int, annotation: AnnotationUpdate, db: Session = Depends(get_db), _ = Depends(AuthProvider())):
@@ -33,12 +37,14 @@ def update_annotation_endpoint(annotation_id: int, annotation: AnnotationUpdate,
         raise HTTPException(status_code=404, detail="Annotation not found")
     return db_annotation
 
+
 @router.delete("/annotations/{annotation_id}", response_model=bool)
 def delete_annotation_endpoint(annotation_id: int, db: Session = Depends(get_db), _ = Depends(AuthProvider())):
     success = delete_annotation(db, annotation_id=annotation_id)
     if not success:
         raise HTTPException(status_code=404, detail="Annotation not found")
     return success
+
 
 @router.get("/contents/{content_id}/annotations/", response_model=List[Annotation])
 def read_annotations_by_content_endpoint(content_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):

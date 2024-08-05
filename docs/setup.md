@@ -30,21 +30,17 @@ To setup your environment run `task setup`
 To activate your virtual environment run `source .venv/bin/activate`
 On windows run `.venv\Scripts\activate`
 
-## Run database 
+## Run database
 
-To run the database run `task db:start-postgres`  
+To run the database run `task db:start-postgres`
 [Tested - Windows [x] | MacOS [x] | Linux [x]]
 
-## Connect to postgres and migrate 
+## Connect to postgres and migrate
 
-To run the initial db migration run `task data:migrate`  
+To run the initial db migration run `task data:migrate`
 [Tested - Windows [x] | MacOS [x] | Linux [x]]
 
 ## Run api server
 
-To run the api server run `task api:start`  
+To run the api server run `task api:start`
 [Tested - Windows [x] | MacOS [x] | Linux [x]]
-
-
-
-
