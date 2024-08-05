@@ -9,19 +9,21 @@ from odr_core.database import get_db
 
 security = APIKeyCookie(name="session", auto_error=False)
 
+
 def get_session_cookie(
     session: Annotated[Optional[str], Depends(security)]
 ) -> Optional[str]:
     return session
 
+
 def get_session_user(
     session: Annotated[Optional[str], Depends(get_session_cookie)],
     db=Depends(get_db)
 ) -> Optional[User]:
-    
+
     if session is None:
         return None
-    
+
     session = get_user_session(db, session)
     if session is None:
         raise HTTPException(
@@ -37,5 +39,5 @@ def get_session_user(
             detail="Session expired",
             headers={"WWW-Authenticate": "Cookie"},
         )
-    
+
     return session.user

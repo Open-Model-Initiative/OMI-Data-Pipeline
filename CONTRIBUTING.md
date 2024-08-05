@@ -1,6 +1,6 @@
 ## Thanks for contributing to this project!
 
-Welcome to the Open Model Initiative (OMI) repository. The following links are a set of guidelines for contributing to this repo and its packages. While some of these are guidelines, many are requirements that will be enforced by reviewers and automated tests/checks. Use your best judgement to navigate them, and feel free to propose changes to this document in a pull request. 
+Welcome to the Open Model Initiative (OMI) repository. The following links are a set of guidelines for contributing to this repo and its packages. While some of these are guidelines, many are requirements that will be enforced by reviewers and automated tests/checks. Use your best judgement to navigate them, and feel free to propose changes to this document in a pull request.
 
 Contributions come in the form of code submissions, writing documentation, curating data, providing testing/feedback of released code/weights, raising issues, helping others in chat, and any other actions that help develop the broader OMI community.
 
@@ -40,7 +40,7 @@ Having the following accounts is necessary for contributing code/issues to the O
 **Useful contributing links**
 
 - How to contribute (WIP - Coming Soon)
-- [Issues](https://github.com/Open-Model-Initiative/OMI-Training-Pipeline/issues) 
+- [Issues](https://github.com/Open-Model-Initiative/OMI-Training-Pipeline/issues)
 - DCO
 - Suggesting enhancements (WIP - Coming Soon)
 - Pull requests (WIP - Coming Soon)

@@ -4,6 +4,7 @@ from sqlalchemy.sql import func
 from odr_core.models.base import Base
 import enum
 
+
 class ContentType(enum.Enum):
     IMAGE = "image"
     VIDEO = "video"
@@ -11,11 +12,13 @@ class ContentType(enum.Enum):
     MUSIC = "music"
     TEXT = "text"
 
+
 class ContentStatus(enum.Enum):
     PENDING = "pending"
     AVAILABLE = "available"
     UNAVAILABLE = "unavailable"
     DELISTED = "delisted"
+
 
 class Content(Base):
     __tablename__ = "contents"
@@ -45,6 +48,7 @@ class Content(Base):
     content_authors = relationship("ContentAuthor", back_populates="content")
     annotations = relationship("Annotation", back_populates="content")
     embeddings = relationship("ContentEmbedding", back_populates="content")
+
 
 class ContentAuthor(Base):
     __tablename__ = "content_authors"

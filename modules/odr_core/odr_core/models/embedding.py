@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
 
+
 class EmbeddingEngine(Base):
     __tablename__ = "embedding_engines"
 
@@ -21,7 +22,8 @@ class EmbeddingEngine(Base):
 
     def __repr__(self):
         return f"<EmbeddingEngine(id={self.id}, name='{self.name}', version='{self.version}')>"
-    
+
+
 class ContentEmbedding(Base):
     __tablename__ = "content_embeddings"
 
@@ -37,7 +39,8 @@ class ContentEmbedding(Base):
     embedding_engine = relationship("EmbeddingEngine", back_populates="content_embeddings")
     from_user = relationship("User", back_populates="content_embeddings")
     from_team = relationship("Team", back_populates="content_embeddings")
-    
+
+
 class AnnotationEmbedding(Base):
     __tablename__ = "annotation_embeddings"
 

@@ -1,0 +1,26 @@
+[flake8]
+max-line-length = 120
+exclude =
+    .git,
+    __pycache__,
+    .env,
+    .venv,
+    venv,
+    env
+ignore =
+    # E501 (Line too long (82 > 79 characters))
+    E501,
+    # C901 (Function is too complex)
+    C901,
+    # E251 (Unexpected spaces around keyword / parameter equals )
+    E251,
+    # F401 (Module imported but unused) is temporary to reduce scope of changes at the moment.
+    F401
+select =
+    B,
+    C,
+    E,
+    F,
+    W,
+    T4,
+    B9

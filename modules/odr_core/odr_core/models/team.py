@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
 
+
 class Team(Base):
     __tablename__ = "teams"
 
@@ -17,6 +18,7 @@ class Team(Base):
     annotations = relationship("Annotation", back_populates="from_team")
     annotation_embeddings = relationship("AnnotationEmbedding", back_populates="from_team")
     content_embeddings = relationship("ContentEmbedding", back_populates="from_team")
+
 
 class UserTeam(Base):
     __tablename__ = "user_teams"

@@ -12,6 +12,7 @@ import uuid
 
 password_hasher = PasswordHasher()
 
+
 def create_user(db: Session, user: UserCreate) -> User:
 
     hashed_password = password_hasher.hash(user.password)
@@ -29,6 +30,7 @@ def create_user(db: Session, user: UserCreate) -> User:
     db.commit()
     db.refresh(db_user)
     return db_user
+
 
 def update_user(db: Session, user: UserUpdate, user_id: int) -> User:
     db_user = db.query(User).filter(User.id == user_id).first()
@@ -49,39 +51,48 @@ def update_user(db: Session, user: UserUpdate, user_id: int) -> User:
             delete_user_sessions(db, user_id)
 
         return db_user
-    
+
     return None
+
 
 def get_user(db: Session, user_id: int) -> Optional[User]:
     return db.query(User).filter(User.id == user_id).first()
 
+
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
     return db.query(User).filter(User.email == email).first()
+
 
 def get_user_by_username(db: Session, username: str) -> Optional[User]:
     return db.query(User).filter(User.username == username).first()
 
+
 def get_users(db: Session, skip: int = 0, limit: int = 100) -> List[User]:
     return db.query(User).offset(skip).limit(limit).all()
+
 
 def delete_user(db: Session, user_id: int) -> None:
     db.query(User).filter(User.id == user_id).delete()
     db.commit()
 
     delete_user_sessions(db, user_id)
-    
+
+
 def get_user_teams(db: Session, user_id: int) -> List[Team]:
     user = db.query(User).filter(User.id == user_id).first()
     if user:
         return user.teams
     return []
 
+
 def delete_user_sessions(db: Session, user_id: int) -> None:
     db.query(UserSession).filter(UserSession.user_id == user_id).delete()
     db.commit()
 
+
 def get_user_session(db: Session, session_id: str) -> Optional[UserSession]:
     return db.query(UserSession).filter(UserSession.id == session_id).first()
+
 
 def login_user(db: Session, username: str, password: str) -> Optional[UserSession]:
     user = verify_user(db, username, password)
@@ -101,27 +112,33 @@ def login_user(db: Session, username: str, password: str) -> Optional[UserSessio
 
     return session
 
+
 def logout_user(db: Session, session_id: str) -> bool:
     count = db.query(UserSession).filter(UserSession.id == session_id).delete()
     db.commit()
     if count == 0:
         return False
     else:
-        return True   
+        return True
+
 
 def verify_user(db: Session, username: str, password: str) -> Optional[User]:
     user = get_user_by_username(db, username)
     if not user:
         return None
-    
+
     if not user.is_active:
         return None
 
     try:
         if password_hasher.verify(user.hashed_password, password):
             return user
-    except:
+    except ValueError as e:
         # Password verification failed
         # TODO: Implement maximum number of failed login attempts
-        pass
+        print(f"Password verification failed: {e}")
+    except Exception as e:
+        # Unexpected error occurred
+        print(f"An unexpected error occurred during password verification: {e}")
+
     return None

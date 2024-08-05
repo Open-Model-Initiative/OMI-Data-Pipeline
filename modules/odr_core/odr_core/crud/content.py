@@ -7,6 +7,7 @@ from odr_core.models.content import ContentType, ContentStatus
 from loguru import logger
 from datetime import datetime, timezone
 
+
 def create_content(db: Session, content: ContentCreate):
     logger.info(f"Creating content: {content}")
     logger.info(f"Content type: {content.type.value}")
@@ -35,21 +36,25 @@ def create_content(db: Session, content: ContentCreate):
     db.refresh(db_content)
     return db_content
 
+
 def get_content(db: Session, content_id: int) -> Optional[Content]:
     return db.query(Content).filter(Content.id == content_id).first()
 
+
 def get_contents(db: Session, skip: int = 0, limit: int = 100) -> List[Content]:
     return db.query(Content).offset(skip).limit(limit).all()
+
 
 def update_content(db: Session, content_id: int, content: ContentUpdate) -> Optional[Content]:
     db_content = db.query(Content).filter(Content.id == content_id).first()
     if db_content:
         for key, value in content.model_dump(exclude_unset=True).items():
-            setattr(db_content, key, value) 
+            setattr(db_content, key, value)
         db_content.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(db_content)
     return db_content
+
 
 def delete_content(db: Session, content_id: int) -> bool:
     db_content = db.query(Content).filter(Content.id == content_id).first()
@@ -61,11 +66,14 @@ def delete_content(db: Session, content_id: int) -> bool:
 
 # Additional helper functions
 
+
 def get_content_by_hash(db: Session, hash: str) -> Optional[Content]:
     return db.query(Content).filter(Content.hash == hash).first()
 
+
 def get_contents_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100) -> List[Content]:
     return db.query(Content).filter(Content.from_user_id == user_id).offset(skip).limit(limit).all()
+
 
 def get_contents_by_team(db: Session, team_id: int, skip: int = 0, limit: int = 100) -> List[Content]:
     return db.query(Content).filter(Content.from_team_id == team_id).offset(skip).limit(limit).all()

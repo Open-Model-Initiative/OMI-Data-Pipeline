@@ -5,7 +5,7 @@ tasks:
     desc: Run tests for the api server
     cmds:
       - python -m pytest -v ${ROOT_DIR}/modules/odr_api/tests/test_user_api.py
-  start: 
+  start:
     desc: Start the api server
     cmds:
       - cmd: powershell.exe -ExecutionPolicy ByPass ${ROOT_DIR}/modules/odr_api/scripts/run_server.ps1

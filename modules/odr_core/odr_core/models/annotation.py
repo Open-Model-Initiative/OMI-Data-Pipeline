@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
 
+
 class Annotation(Base):
     __tablename__ = "annotations"
 
@@ -23,9 +24,8 @@ class Annotation(Base):
     embeddings = relationship("AnnotationEmbedding", back_populates="annotation")
     ratings = relationship("AnnotationRating", back_populates="annotation")
     reports = relationship("AnnotationReport", back_populates="annotation")
-    
 
-    
+
 class AnnotationRating(Base):
     __tablename__ = "annotation_ratings"
 
@@ -38,7 +38,8 @@ class AnnotationRating(Base):
 
     annotation = relationship("Annotation", back_populates="ratings")
     rated_by = relationship("User", back_populates="annotation_ratings")
-    
+
+
 class AnnotationReport(Base):
     __tablename__ = "annotation_reports"
 
@@ -50,7 +51,8 @@ class AnnotationReport(Base):
 
     annotation = relationship("Annotation", back_populates="reports")
     reported_by = relationship("User", back_populates="annotation_reports")
-    
+
+
 class AnnotationSource(Base):
     __tablename__ = "annotation_sources"
 
@@ -67,6 +69,7 @@ class AnnotationSource(Base):
 
     annotations = relationship("Annotation", secondary="annotation_sources_link", back_populates="annotation_sources")
     added_by = relationship("User", back_populates="added_annotation_sources")
+
 
 class AnnotationSourceLink(Base):
     __tablename__ = "annotation_sources_link"

@@ -7,12 +7,12 @@ from sqlalchemy import pool
 
 from alembic import context
 
-# Add the project root to the Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
 # Import your models
 from odr_core.models import Base
 from odr_core.config import settings
+
+# Add the project root to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # This is the Alembic Config object, which provides access to the values within the .ini file
 config = context.config
@@ -71,6 +71,7 @@ def run_migrations_online() -> None:
 
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()
