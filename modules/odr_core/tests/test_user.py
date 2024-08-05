@@ -11,6 +11,7 @@ SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 @pytest.fixture(scope="function")
 def db():
     Base.metadata.create_all(bind=engine)
@@ -20,6 +21,7 @@ def db():
     finally:
         db.close()
     Base.metadata.drop_all(bind=engine)
+
 
 def test_create_user(db):
     user_data = UserCreate(
@@ -40,8 +42,9 @@ def test_create_user(db):
     assert db_user.username == "testuser"
     assert db_user.email == "test@example.com"
     assert db_user.hashed_password == "hashed_testpassword"
-    assert db_user.is_active == True
-    assert db_user.is_superuser == False
+    assert db_user.is_active is True
+    assert db_user.is_superuser is False
+
 
 def test_user_schema():
     user_data = {
@@ -57,8 +60,9 @@ def test_user_schema():
     assert user.id == 1
     assert user.username == "testuser"
     assert user.email == "test@example.com"
-    assert user.is_active == True
-    assert user.is_superuser == False
+    assert user.is_active is True
+    assert user.is_superuser is False
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

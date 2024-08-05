@@ -1,8 +1,8 @@
 # Open Data Repository
 
-This schema is the potential data model for a utility tool to support the training of vision and image models. It is focused on gathering annotations on images sourced from the community, and different caption sets of those images. It has a significant focus on moderation of the dataset to ensure that illegal content is not allowed, and certain subject can be filtered out easily from training of a model. 
+This schema is the potential data model for a utility tool to support the training of vision and image models. It is focused on gathering annotations on images sourced from the community, and different caption sets of those images. It has a significant focus on moderation of the dataset to ensure that illegal content is not allowed, and certain subject can be filtered out easily from training of a model.
 
-It will be implemented with fastapi, postgres, and nextjs. We will likely want an orm like sqlalchemy with alembic to support data migrations. 
+It will be implemented with fastapi, postgres, and nextjs. We will likely want an orm like sqlalchemy with alembic to support data migrations.
 
 ## Schema
 ```
@@ -51,7 +51,7 @@ content
   embeddings*
   createdAt
   updatedAt
-  
+
 contentAuthor
   id
   name
@@ -103,14 +103,14 @@ annotation
   content*
   annotation (json)
   annotationSource[]*
-  manuallyAdjusted 
+  manuallyAdjusted
   embedding?
   fromUser*
   fromTeam?*
   createdAt
   updateAt
   overallRating
-  
+
 annotationEmbedding
   annotation*
   embedding

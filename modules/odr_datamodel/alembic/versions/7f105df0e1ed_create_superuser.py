@@ -22,7 +22,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    
+
     username = settings.DEFAULT_SUPERUSER_USERNAME
     email = settings.DEFAULT_SUPERUSER_EMAIL
     password = password_hasher.hash(settings.DEFAULT_SUPERUSER_PASSWORD)

@@ -12,7 +12,7 @@ services:
       - "${POSTGRES_PORT:-35432}:5432"
     networks:
       - omi-network
-      
+
   pgadmin:
     image: dpage/pgadmin4
     environment:

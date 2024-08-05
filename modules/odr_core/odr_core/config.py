@@ -1,9 +1,10 @@
 from pydantic_settings import BaseSettings
 
+
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "OMI-DataModel"
-    
+
     # Postgres
     POSTGRES_HOST: str = "localhost"
     POSTGRES_DB: str
@@ -27,7 +28,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_SECONDS: int = 3600
     JWT_LEEWAY_SECONDS: int = 60
-    
+
     # Test Database
     TEST_POSTGRES_DB: str
     TEST: bool = False
@@ -40,5 +41,6 @@ class Settings(BaseSettings):
     def get_db_url(self):
         db_name = self.TEST_POSTGRES_DB if self.TEST else self.POSTGRES_DB
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{db_name}"
+
 
 settings = Settings()

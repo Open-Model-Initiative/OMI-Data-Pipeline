@@ -12,6 +12,7 @@ from ..auth.auth_provider import AuthProvider
 
 router = APIRouter(tags=["users"])
 
+
 @router.post("/users/", response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = user_crud.get_user_by_email(db, email=user.email)
@@ -19,9 +20,11 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
     return user_crud.create_user(db=db, user=user)
 
+
 @router.get("/users/me", response_model=User)
 def read_users_me(current_user: User = Depends(AuthProvider())):
     return current_user
+
 
 @router.get("/users/{user_id}", response_model=User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
@@ -30,6 +33,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
+
 @router.get("/users", response_model=List[User])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = user_crud.get_users(db, skip=skip, limit=limit)
@@ -37,15 +41,18 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     logger.info(f"Users: {users}")
     return users
 
+
 @router.delete("/users/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db), _: User = Depends(AuthProvider(superuser=True))):
     user_crud.delete_user(db, user_id=user_id)
     return {"message": "User deleted successfully"}
 
+
 # update user
 @router.put("/users/{user_id}", response_model=User)
 def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db), _: User = Depends(AuthProvider(superuser=True))):
     return user_crud.update_user(db, user=user, user_id=user_id)
+
 
 @router.get("/users/{user_id}/teams", response_model=List[Team])
 def read_user_teams(user_id: int, db: Session = Depends(get_db)):

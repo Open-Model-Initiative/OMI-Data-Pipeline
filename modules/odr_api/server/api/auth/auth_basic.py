@@ -13,10 +13,10 @@ def get_basic_auth_user(
     credentials: Annotated[Optional[HTTPBasicCredentials], Depends(security)],
     db=Depends(get_db)
 ) -> Optional[User]:
-    
+
     if credentials is None:
         return None
-    
+
     user = verify_user(db, credentials.username, credentials.password)
     if user is None:
         raise HTTPException(

@@ -23,7 +23,7 @@ class AuthProvider:
         basic_user: Annotated[Optional[User], Depends(get_basic_auth_user)] = None,
         session_user: Annotated[Optional[User], Depends(get_session_user)] = None
     ) -> Optional[User]:
-        
+
         if settings.SKIP_AUTH:
             if jwt_user_with_scope:
                 return jwt_user_with_scope[0]
@@ -32,7 +32,7 @@ class AuthProvider:
             if session_user:
                 return session_user
             return None
-    
+
         user = None
         if jwt_user_with_scope:
             user, scopes = jwt_user_with_scope
@@ -53,11 +53,11 @@ class AuthProvider:
                 status_code=401,
                 detail="Unauthorized"
             )
-        
+
         if self.superuser and not user.is_superuser:
             raise HTTPException(
                 status_code=403,
                 detail="Forbidden"
             )
-        
+
         return user

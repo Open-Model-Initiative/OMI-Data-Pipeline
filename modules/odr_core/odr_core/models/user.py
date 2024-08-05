@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -27,6 +28,7 @@ class User(Base):
     def __repr__(self):
         return f"<User(id={self.id}, username={self.username}, email={self.email})>"
 
+
 class UserSession(Base):
     __tablename__ = "sessions"
 
@@ -36,7 +38,6 @@ class UserSession(Base):
     expires_at = Column(DateTime(timezone=True), nullable=True)
 
     user = relationship("User", back_populates="sessions")
-
 
     def __repr__(self):
         return f"<UserSession(id={self.id}, user_id={self.user_id}, created_at={self.created_at}, expires_at={self.expires_at})>"
