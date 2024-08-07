@@ -8,3 +8,6 @@ loguru==0.7.2
 # auth
 argon2-cffi==23.1.0
 pyjwt==2.9.0
+
+pgvector==0.1.6
+fastembed==0.3.4

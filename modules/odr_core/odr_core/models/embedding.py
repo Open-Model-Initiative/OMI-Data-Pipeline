@@ -1,20 +1,30 @@
 # odr_core/models/embedding.py
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
+import enum
+from pgvector.sqlalchemy import Vector
 
+
+class EmbeddingEngineType(enum.Enum):
+    TEXT = "text"
+    IMAGE = "image"
+    AUDIO = "audio"
+    VIDEO = "video"
 
 class EmbeddingEngine(Base):
     __tablename__ = "embedding_engines"
 
     id = Column(Integer, primary_key=True, index=True)
+    type = Column(Enum(EmbeddingEngineType))
     name = Column(String, index=True)
     description = Column(String, nullable=True)
     version = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    supported = Column(bool, default=False)
 
     # Relationships
     content_embeddings = relationship("ContentEmbedding", back_populates="embedding_engine")
@@ -23,13 +33,12 @@ class EmbeddingEngine(Base):
     def __repr__(self):
         return f"<EmbeddingEngine(id={self.id}, name='{self.name}', version='{self.version}')>"
 
-
 class ContentEmbedding(Base):
     __tablename__ = "content_embeddings"
 
     id = Column(Integer, primary_key=True, index=True)
     content_id = Column(Integer, ForeignKey('contents.id'))
-    embedding = Column(JSON)  # Assuming the embedding is stored as a JSON array
+    embedding = Column(Vector(384))
     embedding_engine_id = Column(Integer, ForeignKey('embedding_engines.id'))
     from_user_id = Column(Integer, ForeignKey('users.id'))
     from_team_id = Column(Integer, ForeignKey('teams.id'), nullable=True)
@@ -46,7 +55,7 @@ class AnnotationEmbedding(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     annotation_id = Column(Integer, ForeignKey('annotations.id'))
-    embedding = Column(JSON)  # Assuming the embedding is stored as a JSON array
+    embedding = Column(Vector(384)) 
     embedding_engine_id = Column(Integer, ForeignKey('embedding_engines.id'))
     from_user_id = Column(Integer, ForeignKey('users.id'))
     from_team_id = Column(Integer, ForeignKey('teams.id'), nullable=True)

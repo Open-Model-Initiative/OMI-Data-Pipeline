@@ -35,6 +35,9 @@ class Settings(BaseSettings):
 
     ROOT_DIR: str
 
+    # Models
+    MODEL_CACHE_DIR: str = f"{ROOT_DIR}/model_cache"
+
     class Config:
         env_file = ".env"
 
