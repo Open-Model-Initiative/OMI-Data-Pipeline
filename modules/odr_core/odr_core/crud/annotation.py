@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 from odr_core.models.annotation import Annotation, AnnotationSource
 from odr_core.schemas.annotation import AnnotationCreate, AnnotationUpdate
@@ -15,7 +14,7 @@ def create_annotation(db: Session, annotation: AnnotationCreate) -> Annotation:
         overall_rating=annotation.overall_rating,
         from_user_id=annotation.from_user_id,
         from_team_id=annotation.from_team_id,
-        updated_at=datetime.now()
+        updated_at=datetime.now(timezone.utc)
     )
 
     if annotation.annotation_source_ids:

@@ -16,6 +16,7 @@ class EmbeddingEngineBase(BaseModel):
     name: str
     type: EmbeddingEngineType
     version: str
+    supported: bool = False
     description: Optional[str] = None
 
 
@@ -42,7 +43,7 @@ class TextEmbeddingGenerate(BaseModel):
 
 
 class ImageEmbeddingGenerate(BaseModel):
-    image: Any
+    base64_image: str
     embedding_engine_id: int
 
 
@@ -95,6 +96,14 @@ class AnnotationEmbedding(AnnotationEmbeddingBase):
         from_attribute = True
 
 
-class EmbeddingQuery(BaseModel):
+class EmbeddingVectorQuery(BaseModel):
     embedding: List[float]
+    embedding_engine_id: int
+
+class EmbeddingTextQuery(BaseModel):
+    text: str
+    embedding_engine_id: int
+
+class EmbeddingImageQuery(BaseModel):
+    base64_image: str
     embedding_engine_id: int
