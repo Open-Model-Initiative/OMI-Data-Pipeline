@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     TEST_POSTGRES_DB: str
     TEST: bool = False
 
-    ROOT_DIR: str
+    ROOT_DIR: str = ""
 
     # Models
     MODEL_CACHE_DIR: str = f"{ROOT_DIR}/model_cache"

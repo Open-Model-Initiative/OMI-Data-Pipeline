@@ -2,8 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
+from odr_core.utils import pil_image_from_base64, download_image_from_url
+
 from odr_core.schemas.embedding import (
-    EmbeddingEngine, 
+    EmbeddingEngine,
+    EmbeddingEngineType,
     EmbeddingEngineCreate, 
     EmbeddingEngineUpdate, 
     AnnotationEmbedding, 
@@ -11,8 +14,13 @@ from odr_core.schemas.embedding import (
     AnnotationEmbeddingUpdate, 
     ContentEmbedding, 
     ContentEmbeddingCreate, 
-    ContentEmbeddingUpdate
+    ContentEmbeddingUpdate,
+    TextEmbeddingGenerate,
+    ImageEmbeddingGenerate,
+    EmbeddingTextQuery,
+    EmbeddingVectorQuery
     )
+from odr_core.schemas.content import ContentType
 
 from odr_core.crud.embedding import (
     create_embedding_engine, 
@@ -26,6 +34,7 @@ from odr_core.crud.embedding import (
 
     create_annotation_embedding,
     get_annotation_embedding,
+    get_annotation_embeddings,
     update_annotation_embedding,
     delete_annotation_embedding,
 
@@ -33,11 +42,17 @@ from odr_core.crud.embedding import (
     get_content_embedding,
     update_content_embedding,
     delete_content_embedding,
+
+    query_annotation_embedding,
+    query_content_embedding
     )
+from odr_core.crud.content import get_content
+from odr_core.crud.annotation import get_annotation
 
 from odr_core.database import get_db
 
 from ..auth.auth_provider import AuthProvider
+
 
 router = APIRouter(tags=["embedding"])
 
@@ -77,24 +92,28 @@ def delete_embedding_engine_endpoint(embedding_engine_id: int, db: Session = Dep
     return success
 
 
-@router.post("/embedding/generate/image", response_model=ContentEmbedding)
-def generate_image_embedding_endpoint(content_embedding: ContentEmbeddingCreate, db: Session = Depends(get_db), _ = Depends(AuthProvider())):
-    return generate_image_embedding(db=db, content_embedding=content_embedding)
+@router.post("/embedding/generate/image", response_model=List[float])
+def generate_image_embedding_endpoint(embedding: ImageEmbeddingGenerate, db: Session = Depends(get_db), _ = Depends(AuthProvider())):
+    try:
+        image = pil_image_from_base64(embedding.base64_image)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid image data")
+    return generate_image_embedding(db=db, image=image, embedding_engine_id=embedding.embedding_engine_id)
 
 
-@router.post("/embedding/generate/text", response_model=ContentEmbedding)
-def generate_text_embedding_endpoint(content_embedding: ContentEmbeddingCreate, db: Session = Depends(get_db), _ = Depends(AuthProvider())):
-    return generate_text_embedding(db=db, content_embedding=content_embedding)
+@router.post("/embedding/generate/text", response_model=List[float])
+def generate_text_embedding_endpoint(embedding: TextEmbeddingGenerate, db: Session = Depends(get_db), _ = Depends(AuthProvider())):
+    return generate_text_embedding(db=db, embedding_engine_id=embedding.embedding_engine_id, text=embedding.text)
 
 
 @router.post("/embedding/generate/annotation/{annotation_id}", response_model=AnnotationEmbedding)
 def generate_embedding_for_annotation_endpoint(annotation_id: int, engine_id: int,  db: Session = Depends(get_db), current_user = Depends(AuthProvider())):
-    annotation = get_annotation_embedding(db, annotation_embedding_id=annotation_id)
+    annotation = get_annotation(db, annotation_id=annotation_id)
     if annotation is None:
         raise HTTPException(status_code=404, detail="Annotation not found")
     
     try:
-        annotation_embedding = generate_text_embedding(annotation.annotation, engine_id)
+        annotation_embedding = generate_text_embedding(db, annotation.annotation, engine_id)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     
@@ -107,6 +126,43 @@ def generate_embedding_for_annotation_endpoint(annotation_id: int, engine_id: in
 
     return create_annotation_embedding(db=db, annotation_embedding=annotation)
 
+@router.post("/embedding/generate/content/{content_id}", response_model=ContentEmbedding)
+def generate_embedding_for_content_endpoint(content_id: int, engine_id: int,  db: Session = Depends(get_db), current_user = Depends(AuthProvider())):
+    print(f"Generating embedding for content {content_id} using engine {engine_id}")
+    
+    content = get_content(db, content_id=content_id)
+    if content is None:
+        raise HTTPException(status_code=404, detail="Content not found")
+    
+    engine = get_embedding_engine(db, embedding_engine_id=engine_id)
+    if engine is None:
+        raise HTTPException(status_code=404, detail="Embedding Engine not found")
+    
+    if content.type.value != engine.type.value:
+        raise HTTPException(status_code=400, detail=f"Invalid content type for embedding engine. Expected {engine.type.value}, got {content.type.value}")
+    
+    if content.type == ContentType.IMAGE:
+        try:
+            image = download_image_from_url(content.url[0])
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        
+        embedding = generate_image_embedding(db=db, image=image, embedding_engine_id=engine_id)
+    # elif content.type == ContentType.TEXT:
+    #     embedding = generate_text_embedding(db=db, text=content.meta["text"], embedding_engine_id=engine_id)
+    else:
+        raise HTTPException(status_code=400, detail="Unsupported content type")
+    
+    content_embedding = ContentEmbeddingCreate(
+        content_id=content_id,
+        embedding=embedding,
+        embedding_engine_id=engine_id,
+        from_user_id=current_user.id
+    )
+
+    return create_content_embedding(db=db, content_embedding=content_embedding)
+
+
 @router.post("/embedding/annotation/", response_model=AnnotationEmbedding)
 def create_annotation_embedding_endpoint(annotation_embedding: AnnotationEmbeddingCreate, db: Session = Depends(get_db), _ = Depends(AuthProvider())):
     return create_annotation_embedding(db=db, annotation_embedding=annotation_embedding)
@@ -118,6 +174,44 @@ def read_annotation_embedding_endpoint(annotation_embedding_id: int, db: Session
     if db_annotation_embedding is None:
         raise HTTPException(status_code=404, detail="Annotation Embedding not found")
     return db_annotation_embedding
+
+@router.get("/embedding/annotation/", response_model=List[AnnotationEmbedding])
+def read_annotation_embeddings_endpoint(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return get_annotation_embeddings(db, skip=skip, limit=limit)
+
+# query for annotations embeddings by vector
+@router.get("/embedding/annotation/query/vector", response_model=List[AnnotationEmbedding])
+def query_annotation_embedding_endpoint(query: EmbeddingVectorQuery, db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
+    return query_annotation_embedding(db, query, skip, limit)
+
+# query for annotations embeddings by text
+@router.get("/embedding/annotation/query/text", response_model=List[AnnotationEmbedding])
+def query_annotation_embedding_text_endpoint(engine_id: int, text: str, db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
+    engine = get_embedding_engine(db, embedding_engine_id=engine_id)
+    if engine is None:
+        raise HTTPException(status_code=404, detail="Embedding Engine not found")
+    
+    if engine.supported == False:
+        raise HTTPException(status_code=400, detail="Embedding Engine not supported")
+
+    if engine.type.value != EmbeddingEngineType.TEXT.value:
+        raise HTTPException(status_code=400, detail=f"Invalid engine type. Expected {EmbeddingEngineType.TEXT.value}, got {engine.type.value}")
+    
+    
+    try:
+        embedding = generate_text_embedding(db, text, engine_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    query = EmbeddingVectorQuery(
+        embedding=embedding,
+        embedding_engine_id=engine_id
+        )
+    
+    try:
+        return query_annotation_embedding(db, query, skip, limit)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.put("/embedding/annotation/{annotation_embedding_id}", response_model=AnnotationEmbedding)
@@ -147,6 +241,17 @@ def read_content_embedding_endpoint(content_embedding_id: int, db: Session = Dep
     if db_content_embedding is None:
         raise HTTPException(status_code=404, detail="Content Embedding not found")
     return db_content_embedding
+
+
+@router.get("/embedding/content/", response_model=List[ContentEmbedding])
+def read_content_embeddings_endpoint(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return get_content_embeddings(db, skip=skip, limit=limit)
+
+
+# query for content embeddings by vector
+@router.post("/embedding/content/query/embedding", response_model=List[ContentEmbedding])
+def query_content_embedding_endpoint(query: EmbeddingVectorQuery, db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
+    return query_content_embedding(db, query, skip, limit)
 
 
 @router.put("/embedding/content/{content_embedding_id}", response_model=ContentEmbedding)

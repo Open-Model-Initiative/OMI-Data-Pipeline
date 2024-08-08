@@ -1,6 +1,6 @@
 # odr_core/models/embedding.py
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON, Enum
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON, Enum, Boolean, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
@@ -9,10 +9,11 @@ from pgvector.sqlalchemy import Vector
 
 
 class EmbeddingEngineType(enum.Enum):
-    TEXT = "text"
     IMAGE = "image"
-    AUDIO = "audio"
     VIDEO = "video"
+    VOICE = "voice"
+    MUSIC = "music"
+    TEXT = "text"
 
 class EmbeddingEngine(Base):
     __tablename__ = "embedding_engines"
@@ -24,7 +25,7 @@ class EmbeddingEngine(Base):
     version = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    supported = Column(bool, default=False)
+    supported = Column(Boolean, default=False)
 
     # Relationships
     content_embeddings = relationship("ContentEmbedding", back_populates="embedding_engine")
@@ -35,10 +36,13 @@ class EmbeddingEngine(Base):
 
 class ContentEmbedding(Base):
     __tablename__ = "content_embeddings"
+    __table_args__ = (
+        UniqueConstraint('content_id', 'embedding_engine_id', name='ic_content_embedding_engine'),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     content_id = Column(Integer, ForeignKey('contents.id'))
-    embedding = Column(Vector(384))
+    embedding = Column(Vector(512))
     embedding_engine_id = Column(Integer, ForeignKey('embedding_engines.id'))
     from_user_id = Column(Integer, ForeignKey('users.id'))
     from_team_id = Column(Integer, ForeignKey('teams.id'), nullable=True)
@@ -52,6 +56,9 @@ class ContentEmbedding(Base):
 
 class AnnotationEmbedding(Base):
     __tablename__ = "annotation_embeddings"
+    __table_args__ = (
+        UniqueConstraint('annotation_id', 'embedding_engine_id', name='ic_annotation_embedding_engine'),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     annotation_id = Column(Integer, ForeignKey('annotations.id'))

@@ -1,10 +1,8 @@
 
-from typing import List, Optional, Any
-from sqlalchemy import select, text
+from typing import Iterable, List, Optional
+from numpy import ndarray
 from sqlalchemy.orm import Session
-from odr_core.models.embedding import EmbeddingEngine, AnnotationEmbedding, ContentEmbedding
-from odr_core.models.annotation import Annotation
-from odr_core.models.content import Content, ContentType
+from odr_core.models.embedding import EmbeddingEngine, AnnotationEmbedding, ContentEmbedding, EmbeddingEngineType
 from odr_core.schemas.embedding import (
     EmbeddingEngineCreate, 
     EmbeddingEngineUpdate, 
@@ -12,11 +10,13 @@ from odr_core.schemas.embedding import (
     AnnotationEmbeddingCreate, 
     AnnotationEmbeddingUpdate, 
     ContentEmbeddingUpdate,
-    EmbeddingQuery,
+    EmbeddingVectorQuery,
 )
 from datetime import datetime, timezone, timedelta
 from fastembed import TextEmbedding, ImageEmbedding
 from odr_core.config import settings
+
+from PIL import Image
 
 
 class ModelCache:
@@ -52,12 +52,16 @@ embedding_model_cache = ModelCache(60*30)
 
 
 # list of available embedding engines - https://huggingface.co/onnx-models
-def create_embedding_engine(db: Session, embedding: EmbeddingEngineCreate) -> EmbeddingEngine:
+# if model is not on the list, mark it as unsupported with supported=False
+def create_embedding_engine(db: Session, embedding_engine: EmbeddingEngineCreate) -> EmbeddingEngine:
     db_embedding = EmbeddingEngine(
-        name=embedding.name,
-        description=embedding.description,
-        version=embedding.version,
-        created_at=datetime.now(timezone.utc)
+        name=embedding_engine.name,
+        description=embedding_engine.description,
+        version=embedding_engine.version,
+        type=EmbeddingEngineType(embedding_engine.type),
+        supported=embedding_engine.supported,
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
     )
     db.add(db_embedding)
     db.commit()
@@ -65,10 +69,10 @@ def create_embedding_engine(db: Session, embedding: EmbeddingEngineCreate) -> Em
     return db_embedding
 
 
-def update_embedding_engine(db: Session, embedding_id: int, embedding: EmbeddingEngineUpdate) -> Optional[EmbeddingEngine]:
+def update_embedding_engine(db: Session, embedding_id: int, embedding_engine: EmbeddingEngineUpdate) -> Optional[EmbeddingEngine]:
     db_embedding = db.query(EmbeddingEngine).filter(EmbeddingEngine.id == embedding_id).first()
     if db_embedding:
-        for key, value in embedding.model_dump(exclude_unset=True).items():
+        for key, value in embedding_engine.model_dump(exclude_unset=True).items():
             setattr(db_embedding, key, value)
         db_embedding.updated_at = datetime.now(timezone.utc)
         db.commit()
@@ -76,8 +80,8 @@ def update_embedding_engine(db: Session, embedding_id: int, embedding: Embedding
     return db_embedding
 
 
-def delete_embedding_engine(db: Session, embedding_id: int) -> bool:
-    db_embedding = db.query(EmbeddingEngine).filter(EmbeddingEngine.id == embedding_id).first()
+def delete_embedding_engine(db: Session, embedding_engine_id: int) -> bool:
+    db_embedding = db.query(EmbeddingEngine).filter(EmbeddingEngine.id == embedding_engine_id).first()
     if db_embedding:
         db.delete(db_embedding)
         db.commit()
@@ -85,22 +89,22 @@ def delete_embedding_engine(db: Session, embedding_id: int) -> bool:
     return False
 
 
-def get_embedding_engine(db: Session, embedding_id: int) -> Optional[EmbeddingEngine]:
-    return db.query(EmbeddingEngine).filter(EmbeddingEngine.id == embedding_id).first()
+def get_embedding_engine(db: Session, embedding_engine_id: int) -> Optional[EmbeddingEngine]:
+    return db.query(EmbeddingEngine).filter(EmbeddingEngine.id == embedding_engine_id).first()
 
 
 def get_embedding_engines(db: Session, skip: int = 0, limit: int = 100) -> List[EmbeddingEngine]:
     return db.query(EmbeddingEngine).offset(skip).limit(limit).all()
 
 
-def generate_text_embedding(text: str, embedding_engine_id: int) -> List[float]:
-    embedding_engine: Optional[EmbeddingEngine] = get_embedding_engine(embedding_engine_id)
+def generate_text_embedding(db: Session, text: str, embedding_engine_id: int) -> Optional[List[float]]:
+    embedding_engine: Optional[EmbeddingEngine] = get_embedding_engine(db, embedding_engine_id)
 
     if embedding_engine is None:
         raise ValueError("Invalid embedding engine id")
 
-    if embedding_engine.type != "text":
-        raise ValueError("Invalid embedding engine type")
+    if embedding_engine.type != EmbeddingEngineType.TEXT:
+        raise ValueError(f"Invalid embedding engine, expected {EmbeddingEngineType.TEXT} got {embedding_engine.type}")
     
     if not embedding_engine.supported:
         raise ValueError("Unsupported embedding engine")
@@ -110,17 +114,18 @@ def generate_text_embedding(text: str, embedding_engine_id: int) -> List[float]:
         model = TextEmbedding(embedding_engine.name, cache_dir=settings.MODEL_CACHE_DIR)
         embedding_model_cache[embedding_engine.name] = model
 
-    return model.query_embed(text)
+    embedding: Iterable[ndarray] = list(model.query_embed(text))
+    return embedding[0].tolist()
 
 
-def generate_image_embedding(image: Any, embedding_engine_id: int) -> List[float]:
-    embedding_engine: Optional[EmbeddingEngine] = get_embedding_engine(embedding_engine_id)
+def generate_image_embedding(db: Session, image: Image.Image, embedding_engine_id: int) -> List[float]:
+    embedding_engine: Optional[EmbeddingEngine] = get_embedding_engine(db, embedding_engine_id)
 
     if embedding_engine is None:
         raise ValueError("Invalid embedding engine id")
 
-    if embedding_engine.type != "image":
-        raise ValueError("Invalid embedding engine type")
+    if embedding_engine.type != EmbeddingEngineType.IMAGE:
+        raise ValueError(f"Invalid embedding engine type, expected {EmbeddingEngineType.IMAGE} got {embedding_engine.type}")
     
     if not embedding_engine.supported:
         raise ValueError("Unsupported embedding engine")
@@ -132,7 +137,9 @@ def generate_image_embedding(image: Any, embedding_engine_id: int) -> List[float
 
     raise NotImplementedError("Image embedding not implemented")
     # waiting for release containig this commit - https://github.com/qdrant/fastembed/commit/9c72d2f59f91f87753da07c12a6f1082e233ecb3
-    # return model.embed(image)
+
+    # embedding: Iterable[ndarray] = list(model.embed(image))
+    # return embedding[0].tolist()
 
 
 def create_content_embedding(db: Session, content_embedding: ContentEmbeddingCreate) -> ContentEmbedding:
@@ -169,9 +176,9 @@ def delete_content_embedding(db: Session, content_embedding_id: int) -> bool:
     return False
 
 
-def query_content_embedding(db: Session, query: EmbeddingQuery, skip: int = 0, limit: int = 100) -> List[ContentEmbedding]:
-    if len(query.embedding) == 384:
-        raise ValueError("Invalid embedding length")
+def query_content_embedding(db: Session, query: EmbeddingVectorQuery, skip: int = 0, limit: int = 100) -> List[ContentEmbedding]:
+    if len(query.embedding) != 512:
+        raise ValueError(f"Invalid embedding length, expected 512 got {len(query.embedding)}")
 
     return db.query(ContentEmbedding) \
             .filter(ContentEmbedding.embedding_engine_id == query.embedding_engine_id) \
@@ -213,9 +220,9 @@ def delete_annotation_embedding(db: Session, annotation_embedding_id: int) -> bo
     return False
 
 
-def query_annotation_embedding(db: Session, query: EmbeddingQuery, skip: int = 0, limit: int = 100) -> List[AnnotationEmbedding]:
-    if len(query.embedding) == 384:
-        raise ValueError("Invalid embedding length")
+def query_annotation_embedding(db: Session, query: EmbeddingVectorQuery, skip: int = 0, limit: int = 100) -> List[AnnotationEmbedding]:
+    if len(query.embedding) != 384:
+        raise ValueError(f"Invalid embedding length, expected 384 got {len(query.embedding)}")
 
     return db.query(AnnotationEmbedding) \
             .filter(AnnotationEmbedding.embedding_engine_id == query.embedding_engine_id) \
@@ -227,5 +234,13 @@ def get_content_embedding(db: Session, content_embedding_id: int) -> Optional[Co
     return db.query(ContentEmbedding).filter(ContentEmbedding.id == content_embedding_id).first()
 
 
+def get_content_embeddings(db: Session, skip: int = 0, limit: int = 100) -> List[ContentEmbedding]:
+    return db.query(ContentEmbedding).offset(skip).limit(limit).all()
+
+
 def get_annotation_embedding(db: Session, annotation_embedding_id: int) -> Optional[AnnotationEmbedding]:
     return db.query(AnnotationEmbedding).filter(AnnotationEmbedding.id == annotation_embedding_id).first()
+
+
+def get_annotation_embeddings(db: Session, skip: int = 0, limit: int = 100) -> List[AnnotationEmbedding]:
+    return db.query(AnnotationEmbedding).offset(skip).limit(limit).all()
