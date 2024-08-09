@@ -100,9 +100,11 @@ class EmbeddingVectorQuery(BaseModel):
     embedding: List[float]
     embedding_engine_id: int
 
+
 class EmbeddingTextQuery(BaseModel):
     text: str
     embedding_engine_id: int
+
 
 class EmbeddingImageQuery(BaseModel):
     base64_image: str
