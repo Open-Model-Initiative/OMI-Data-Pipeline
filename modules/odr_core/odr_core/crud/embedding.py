@@ -56,7 +56,7 @@ class ModelCache:
 embedding_model_cache = ModelCache(60 * 30)
 
 
-# list of available embedding engines - https://huggingface.co/onnx-models
+# list of available embedding engines - https://qdrant.github.io/fastembed/examples/Supported_Models/
 # if model is not on the list, mark it as unsupported with supported=False
 def create_embedding_engine(
     db: Session, embedding_engine: EmbeddingEngineCreate
