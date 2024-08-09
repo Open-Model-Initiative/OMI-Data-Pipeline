@@ -72,8 +72,9 @@ class Content(ContentBase):
     created_at: datetime
     updated_at: datetime
     content_authors: List[ContentAuthor] = []
-    annotations: List[int] = []  # List of annotation IDs
-    embeddings: List[int] = []  # List of embedding IDs
+    # TODO: It is raising errors, fix it
+    # annotations_id: List[int] = []  # List of annotation IDs
+    # embeddings: List[int] = []  # List of embedding IDs
 
     class Config:
         from_attribute = True

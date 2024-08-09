@@ -177,8 +177,6 @@ def generate_embedding_for_content_endpoint(
     db: Session = Depends(get_db),
     current_user=Depends(AuthProvider()),
 ):
-    print(f"Generating embedding for content {content_id} using engine {engine_id}")
-
     content = get_content(db, content_id=content_id)
     if content is None:
         raise HTTPException(status_code=404, detail="Content not found")
@@ -193,7 +191,7 @@ def generate_embedding_for_content_endpoint(
             detail=f"Invalid content type for embedding engine. Expected {engine.type.value}, got {content.type.value}",
         )
 
-    if content.type == ContentType.IMAGE:
+    if content.type.value == ContentType.IMAGE.value:
         try:
             image = download_image_from_url(content.url[0])
         except ValueError as e:

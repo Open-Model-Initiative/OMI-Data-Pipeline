@@ -64,3 +64,6 @@ notebooks/*
 local/
 
 server.pid
+
+# Huggingface
+models_cache/
