@@ -10,4 +10,5 @@ argon2-cffi==23.1.0
 pyjwt==2.9.0
 
 pgvector==0.1.6
-fastembed==0.3.4
+# fastembed==0.3.4 replace with version when this commit is released - https://github.com/qdrant/fastembed/commit/9c72d2f59f91f87753da07c12a6f1082e233ecb3
+git+https://github.com/qdrant/fastembed@9c72d2f59f91f87753da07c12a6f1082e233ecb3

@@ -14,13 +14,15 @@ def create_annotation(db: Session, annotation: AnnotationCreate) -> Annotation:
         overall_rating=annotation.overall_rating,
         from_user_id=annotation.from_user_id,
         from_team_id=annotation.from_team_id,
-        updated_at=datetime.now(timezone.utc)
+        updated_at=datetime.now(timezone.utc),
     )
 
     if annotation.annotation_source_ids:
-        db_annotation.annotation_sources = db.query(AnnotationSource).filter(
-            AnnotationSource.id.in_(annotation.annotation_source_ids)
-        ).all()
+        db_annotation.annotation_sources = (
+            db.query(AnnotationSource)
+            .filter(AnnotationSource.id.in_(annotation.annotation_source_ids))
+            .all()
+        )
 
     db.add(db_annotation)
     db.commit()
@@ -36,7 +38,9 @@ def get_annotations(db: Session, skip: int = 0, limit: int = 100) -> List[Annota
     return db.query(Annotation).offset(skip).limit(limit).all()
 
 
-def update_annotation(db: Session, annotation_id: int, annotation_update: AnnotationUpdate) -> Optional[Annotation]:
+def update_annotation(
+    db: Session, annotation_id: int, annotation_update: AnnotationUpdate
+) -> Optional[Annotation]:
     db_annotation = db.query(Annotation).filter(Annotation.id == annotation_id).first()
     if db_annotation is None:
         return None
@@ -45,10 +49,12 @@ def update_annotation(db: Session, annotation_id: int, annotation_update: Annota
     for key, value in update_data.items():
         setattr(db_annotation, key, value)
 
-    if 'annotation_source_ids' in update_data:
-        db_annotation.annotation_sources = db.query(AnnotationSource).filter(
-            AnnotationSource.id.in_(update_data['annotation_source_ids'])
-        ).all()
+    if "annotation_source_ids" in update_data:
+        db_annotation.annotation_sources = (
+            db.query(AnnotationSource)
+            .filter(AnnotationSource.id.in_(update_data["annotation_source_ids"]))
+            .all()
+        )
 
     db.commit()
     db.refresh(db_annotation)
@@ -65,13 +71,37 @@ def delete_annotation(db: Session, annotation_id: int) -> bool:
     return True
 
 
-def get_annotations_by_content(db: Session, content_id: int, skip: int = 0, limit: int = 100) -> List[Annotation]:
-    return db.query(Annotation).filter(Annotation.content_id == content_id).offset(skip).limit(limit).all()
+def get_annotations_by_content(
+    db: Session, content_id: int, skip: int = 0, limit: int = 100
+) -> List[Annotation]:
+    return (
+        db.query(Annotation)
+        .filter(Annotation.content_id == content_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
-def get_annotations_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100) -> List[Annotation]:
-    return db.query(Annotation).filter(Annotation.from_user_id == user_id).offset(skip).limit(limit).all()
+def get_annotations_by_user(
+    db: Session, user_id: int, skip: int = 0, limit: int = 100
+) -> List[Annotation]:
+    return (
+        db.query(Annotation)
+        .filter(Annotation.from_user_id == user_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
-def get_annotations_by_team(db: Session, team_id: int, skip: int = 0, limit: int = 100) -> List[Annotation]:
-    return db.query(Annotation).filter(Annotation.from_team_id == team_id).offset(skip).limit(limit).all()
+def get_annotations_by_team(
+    db: Session, team_id: int, skip: int = 0, limit: int = 100
+) -> List[Annotation]:
+    return (
+        db.query(Annotation)
+        .filter(Annotation.from_team_id == team_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
