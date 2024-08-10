@@ -48,7 +48,7 @@ from odr_core.crud.annotation import get_annotation
 
 from odr_core.database import get_db
 
-from ..auth.auth_provider import AuthProvider
+from odr_api.api.auth.auth_provider import AuthProvider
 
 
 router = APIRouter(tags=["embedding"])

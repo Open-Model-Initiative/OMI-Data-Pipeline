@@ -8,7 +8,7 @@ from odr_core.schemas.team import Team
 from odr_core.database import get_db
 from loguru import logger
 
-from ..auth.auth_provider import AuthProvider
+from odr_api.api.auth.auth_provider import AuthProvider
 
 router = APIRouter(tags=["users"])
 

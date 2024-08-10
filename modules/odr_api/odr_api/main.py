@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server.api.endpoints import user_router, team_router, content_router, annotation_router, auth_router, embedding_router
+from odr_api.api.endpoints import user_router, team_router, content_router, annotation_router, auth_router, embedding_router
 from odr_core.config import settings
 import uvicorn
 
