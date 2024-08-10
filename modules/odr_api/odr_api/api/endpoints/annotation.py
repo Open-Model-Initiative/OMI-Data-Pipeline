@@ -6,7 +6,7 @@ from odr_core.crud.annotation import create_annotation, get_annotation, get_anno
 from odr_core.schemas.annotation import AnnotationCreate, AnnotationUpdate, Annotation
 from odr_core.database import get_db
 
-from ..auth import AuthProvider
+from odr_api.api.auth import AuthProvider
 
 router = APIRouter(tags=["annotation"])
 

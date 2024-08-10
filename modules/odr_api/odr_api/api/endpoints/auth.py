@@ -5,9 +5,9 @@ from odr_core.crud import user as user_crud
 from odr_core.database import get_db
 from odr_core.schemas.user import UserToken, UserLoginSession, UserLogin, UserLogout, User
 
-from ..auth.auth_jwt import create_access_token
-from ..auth.auth_cookie_session import get_session_cookie
-from ..auth import AuthProvider
+from odr_api.api.auth.auth_jwt import create_access_token
+from odr_api.api.auth.auth_cookie_session import get_session_cookie
+from odr_api.api.auth import AuthProvider
 
 router = APIRouter(tags=["auth"])
 

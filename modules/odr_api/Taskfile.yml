@@ -1,10 +1,6 @@
 version: 3
 
 tasks:
-  test:
-    desc: Run tests for the api server
-    cmds:
-      - python -m pytest -v ${ROOT_DIR}/modules/odr_api/tests/test_user_api.py
   start:
     desc: Start the api server
     cmds:

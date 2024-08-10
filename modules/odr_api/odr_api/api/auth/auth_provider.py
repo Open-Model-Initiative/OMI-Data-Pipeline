@@ -3,9 +3,9 @@ from typing import Annotated, Any, Optional
 
 from odr_core.schemas.user import User
 
-from .auth_jwt import get_jwt_user_with_scopes
-from .auth_basic import get_basic_auth_user
-from .auth_cookie_session import get_session_user
+from odr_api.api.auth.auth_jwt import get_jwt_user_with_scopes
+from odr_api.api.auth.auth_basic import get_basic_auth_user
+from odr_api.api.auth.auth_cookie_session import get_session_user
 
 # import settings
 from odr_core.config import settings

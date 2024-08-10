@@ -6,7 +6,7 @@ from odr_core.schemas.team import Team, TeamCreate, TeamUpdate, TeamWithMembers
 from odr_core.schemas.user import User
 from odr_core.database import get_db
 
-from ..auth.auth_provider import AuthProvider
+from odr_api.api.auth.auth_provider import AuthProvider
 
 router = APIRouter(tags=["teams"])
 

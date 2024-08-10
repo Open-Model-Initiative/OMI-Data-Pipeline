@@ -7,7 +7,7 @@ requires = [
 
 [project]
 description = "This module contains logic for open data repository server."
-name = "server"
+name = "odr_api"
 version = "0.1.0"
 dynamic = ["dependencies"]
 
@@ -17,12 +17,12 @@ dependencies = { file = ["requirements.txt"] }
 
 [tool.pytest.ini_options]
 pythonpath = [
-  "server",
+  "odr_api",
 ]
 
 [tool.setuptools.packages.find]
-include = ["server", "server.*"]  # include the .xslt files
+include = ["odr_api", "odr_api.*"]  # include the .xslt files
 exclude = []  # exclude packages matching these glob patterns (empty by default)
 
 [tool.setuptools.package-data]
-"server" = ["py.typed"]
+"odr_api" = ["py.typed"]

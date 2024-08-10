@@ -5,7 +5,7 @@ from odr_core.crud import content as content_crud
 from odr_core.schemas.content import Content, ContentCreate, ContentUpdate
 from odr_core.database import get_db
 
-from ..auth.auth_provider import AuthProvider
+from odr_api.api.auth.auth_provider import AuthProvider
 
 router = APIRouter(tags=["content"])
 
