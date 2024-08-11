@@ -103,7 +103,7 @@ def login_user(db: Session, username: str, password: str) -> Optional[UserSessio
         id=str(uuid.uuid4()),
         user_id=user.id,
         created_at=datetime.now(timezone.utc),
-        expires_at=(datetime.now(timezone.utc), + timedelta(seconds=settings.SESSION_MAX_AGE_SECONDS)).utcnow()
+        expires_at=datetime.now(timezone.utc) + timedelta(seconds=settings.SESSION_MAX_AGE_SECONDS)
     )
 
     db.add(session)
