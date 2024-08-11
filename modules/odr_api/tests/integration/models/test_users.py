@@ -127,10 +127,8 @@ class TestUserLifecycle(BaseIntegrationTest):
         created_user = self.test_create_user()
         user_id = created_user["id"]
 
-        # Delete user (using superuser token)
-        headers = (
-            self.get_jwt_auth_headers()
-        )  # Assuming the bot user has superuser privileges
+        # Delete user (using superuser authentication)
+        headers = self.get_superuser_auth_headers()
         response = self.client.delete(f"/users/{user_id}", headers=headers)
         log_api_request(
             self.logger,
@@ -161,6 +159,24 @@ class TestUserLifecycle(BaseIntegrationTest):
         ), f"Failed to verify deletion of user: {response.status_code}"
         self.logger.info(f"Verified deletion of user: {user_id}")
 
+    def test_superuser_auth(self):
+        headers = self.get_superuser_auth_headers()
+        response = self.client.get("/users/me", headers=headers)
+        log_api_request(
+            self.logger,
+            "GET",
+            "/users/me",
+            response.status_code,
+            None,
+            response.json(),
+        )
+        assert (
+            response.status_code == 200
+        ), f"Failed to access authenticated endpoint as superuser: {response.status_code}"
+        user_data = response.json()
+        assert user_data["is_superuser"], "User is not a superuser"
+        self.logger.info("Superuser authentication successful")
+
 
 @pytest.fixture(scope="module")
 def user_lifecycle_test(request):
@@ -184,4 +200,5 @@ def test_user_lifecycle(user_lifecycle_test):
     test.test_bot_jwt_auth()
     test.test_update_user()
     test.test_user_logout()
+    test.test_superuser_auth()
     test.test_delete_user()
