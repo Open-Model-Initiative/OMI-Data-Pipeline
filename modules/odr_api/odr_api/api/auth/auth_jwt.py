@@ -35,6 +35,7 @@ def create_access_token(user: User, scope = [], expires_delta: Optional[timedelt
 
     to_encode = {
         "sub": {
+            "username": user.username,
             "id": user.id,
             "email": user.email,
             "user_type": user.user_type.value,  # Convert enum to string
@@ -82,8 +83,10 @@ def get_jwt_user_with_scopes(
 
     if bearer is None:
         return None
-
-    token = bearer.credentials
+    if type(bearer) is str:
+        token = bearer
+    else:
+        token = bearer.credentials
     payload = decode_access_token(token)
 
     if payload is None:
