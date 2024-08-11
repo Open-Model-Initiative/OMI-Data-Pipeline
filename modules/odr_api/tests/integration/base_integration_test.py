@@ -6,6 +6,9 @@ from odr_api.logger import log_api_request, log_api_error
 from fastapi.security import HTTPAuthorizationCredentials, OAuth2PasswordBearer
 import random
 import string
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def random_string(length: int = 10) -> str:
@@ -61,13 +64,13 @@ class BaseIntegrationTest:
     def get_session_auth_headers(self):
         try:
             response = self.client.post(
-                "/users/login",
+                "/auth/login",
                 json={"username": self.test_user.username, "password": "test_password"},
             )
             log_api_request(
                 self.logger,
                 "POST",
-                "/users/login",
+                "/auth/login",
                 response.status_code,
                 None,
                 response.text,
@@ -77,7 +80,12 @@ class BaseIntegrationTest:
                     f"Login failed. Status: {response.status_code}, Response: {response.text}"
                 )
                 raise Exception(f"Failed to login: {response.status_code}")
-            return {"Cookie": f"session={response.cookies['session']}"}
+
+            session_cookie = response.cookies.get('session')
+            if session_cookie:
+                return {"Cookie": f"session={session_cookie}"}
+            else:
+                return {"Authorization": response.text}
         except httpx.RequestError as e:
             self.logger.error(f"Request error during login: {str(e)}")
             raise
@@ -87,6 +95,40 @@ class BaseIntegrationTest:
 
     def get_jwt_auth_headers(self):
         return HTTPAuthorizationCredentials(scheme="Bearer", credentials=self.jwt_token)
+
+    def get_superuser_auth_headers(self):
+        load_dotenv()
+        username = os.getenv('DEFAULT_SUPERUSER_USERNAME')
+        password = os.getenv('DEFAULT_SUPERUSER_PASSWORD')
+
+        try:
+            response = self.client.post(
+                "/auth/login",
+                json={"username": username, "password": password},
+            )
+            log_api_request(
+                self.logger,
+                "POST",
+                "/auth/login",
+                response.status_code,
+                None,
+                response.text,
+            )
+            if response.status_code != 200:
+                self.logger.error(
+                    f"Superuser login failed. Status: {response.status_code}, Response: {response.text}"
+                )
+                raise Exception(f"Failed to login as superuser: {response.status_code}")
+
+            session_cookie = response.cookies.get('session')
+            if session_cookie:
+                return {"Cookie": f"session={session_cookie}"}
+            else:
+                # If no session cookie, return the entire response content as Authorization header
+                return {"Authorization": response.text}
+        except httpx.RequestError as e:
+            self.logger.error(f"Request error during superuser login: {str(e)}")
+            raise
 
     @classmethod
     def teardown_class(cls):

@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 security = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/token", auto_error=False)
 
 
-def create_access_token(user: User, scope = [], expires_delta: Optional[timedelta] = None):
+def create_access_token(user: User, scope=[], expires_delta: Optional[timedelta] = None):
     logger.info(f"Getting token for {user}")
     if scope is None:
         scope = []
@@ -78,7 +78,7 @@ def decode_access_token(token: str):
 
 
 def get_jwt_user_with_scopes(
-    bearer: Annotated[Optional[HTTPAuthorizationCredentials], Depends(security)] = None,
+    bearer: Annotated[Optional[str], Depends(security)] = None,
 ) -> Optional[User]:
 
     if bearer is None:
