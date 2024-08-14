@@ -2,6 +2,8 @@ from base_integration_test import BaseIntegrationTest, random_string
 import json
 from odr_api.logger import log_api_request, get_logger
 import pytest
+from odr_core.crud.user import create_user, get_user, update_user
+from odr_core.schemas.user import UserCreate, UserUpdate, User
 
 logger = get_logger(__name__)
 
@@ -80,31 +82,72 @@ class TestUserLifecycle(BaseIntegrationTest):
         self.logger.info("JWT authentication successful")
 
     def test_update_user(self):
-        headers = self.get_session_auth_headers()
-        update_data = {
-            "username": f"updated_user_{random_string()}",
-            "email": f"updated_user_{random_string()}@example.com",
-            "is_active": True,
-            "is_superuser": False,
-        }
-        response = self.client.put(
-            f"/users/{self.test_user.id}", json=update_data, headers=headers
+        # Create a new user for this test
+        new_user = create_user(
+            self.db,
+            UserCreate(
+                username=f"test_user_{random_string()}",
+                email=f"test_user_{random_string()}@example.com",
+                password="test_password",
+                is_active=True,
+                is_superuser=False
+            )
         )
+
+        superuser_auth = self.get_superuser_auth_headers()
+
+        update_data = UserUpdate(
+            username=f"updated_user_{random_string()}",
+            email=f"updated_user_{random_string()}@example.com",
+            is_active=True,
+            is_superuser=False
+        )
+
+        response = self.client.put(f"/users/{new_user.id}", json=update_data.dict(), headers=superuser_auth)
+
         log_api_request(
             self.logger,
             "PUT",
-            f"/users/{self.test_user.id}",
+            f"/users/{new_user.id}",
             response.status_code,
-            update_data,
-            response.json(),
+            update_data.dict(),
+            response.json()
         )
-        assert (
-            response.status_code == 200
-        ), f"Failed to update user: {response.status_code}"
-        updated_user = response.json()
-        for key, value in update_data.items():
-            assert updated_user[key] == value
-        self.logger.info(f"Updated user: {self.test_user.id}")
+
+        assert response.status_code == 200, f"Failed to update user: {response.status_code}"
+        updated_user = User(**response.json())
+
+        # Verify the update
+        assert updated_user.username == update_data.username
+        assert updated_user.email == update_data.email
+        assert updated_user.is_active == update_data.is_active
+        assert updated_user.is_superuser == update_data.is_superuser
+
+        # Verify in database using API
+        get_response = self.client.get(f"/users/{new_user.id}", headers=superuser_auth)
+
+        log_api_request(
+            self.logger,
+            "GET",
+            f"/users/{new_user.id}",
+            get_response.status_code,
+            None,
+            get_response.json()
+        )
+
+        assert get_response.status_code == 200, f"Failed to get updated user: {get_response.status_code}"
+        fetched_user = User(**get_response.json())
+
+        assert fetched_user.username == update_data.username
+        assert fetched_user.email == update_data.email
+        assert fetched_user.is_active == update_data.is_active
+        assert fetched_user.is_superuser == update_data.is_superuser
+
+        # Clean up
+        self.db.delete(new_user)
+        self.db.commit()
+
+        self.logger.info(f"Updated user: {new_user.id}")
 
     def test_user_logout(self):
         headers = self.get_session_auth_headers()
