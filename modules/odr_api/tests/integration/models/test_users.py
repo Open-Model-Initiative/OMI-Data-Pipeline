@@ -108,11 +108,11 @@ class TestUserLifecycle(BaseIntegrationTest):
 
     def test_user_logout(self):
         headers = self.get_session_auth_headers()
-        response = self.client.post("/users/logout", headers=headers)
+        response = self.client.post("/auth/logout", headers=headers)
         log_api_request(
             self.logger,
             "POST",
-            "/users/logout",
+            "/auth/logout",
             response.status_code,
             None,
             response.json(),
