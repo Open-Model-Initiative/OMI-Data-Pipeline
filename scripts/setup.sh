@@ -26,7 +26,7 @@ fi
 
 
 # Update .env file with root directory
-sed -i "s|ROOT_DIR=.*|ROOT_DIR=$rootDir|" .env
-sed -i "s|MODEL_CACHE_DIR=.*|MODEL_CACHE_DIR=$modelDir|" .env
+sed -i "" "s|ROOT_DIR=.*|ROOT_DIR=$rootDir|" .env
+sed -i "" "s|MODEL_CACHE_DIR=.*|MODEL_CACHE_DIR=$modelDir|" .env
 
 echo ".env file has been created/updated with the provided root directory."
