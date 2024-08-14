@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
 
 from odr_core.crud import user as user_crud
@@ -25,11 +25,14 @@ def login_for_access_token(db=Depends(get_db), form_data: OAuth2PasswordRequestF
 
 
 @router.post("/auth/login", response_model=UserLoginSession)
-def login(user: UserLogin, db=Depends(get_db)):
+def login(response: Response, user: UserLogin, db=Depends(get_db)):
     session = user_crud.login_user(db, user.username, user.password)
 
     if not session:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
+
+    response.set_cookie(key="session", value=session.id, httponly=True)
+
     return session
 
 
