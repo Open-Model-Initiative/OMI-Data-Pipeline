@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from typing import List
 from odr_core.crud import content as content_crud
 from odr_core.schemas.content import (
@@ -24,10 +25,17 @@ def create_content(
     db: Session = Depends(get_db),
     current_user: User = Depends(AuthProvider()),
 ):
-    # Use the authenticated user's ID
-    return content_crud.create_content(
-        db=db, content=content, from_user_id=current_user.id
-    )
+    try:
+        return content_crud.create_content(
+            db=db, content=content, from_user_id=current_user.id
+        )
+    except IntegrityError as e:
+        if "content_sources_value_key" in str(e):
+            raise HTTPException(
+                status_code=400,
+                detail="A content source with this value already exists."
+            )
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 
 @router.get("/content/{content_id}", response_model=Content)

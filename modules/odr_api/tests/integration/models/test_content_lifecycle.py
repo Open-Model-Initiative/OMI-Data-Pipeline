@@ -3,6 +3,7 @@ import json
 from odr_api.logger import log_api_request, get_logger
 import pytest
 from odr_core.crud.content import create_content, get_content, update_content
+from odr_core.models import ContentSource
 from odr_core.schemas.content import (
     ContentCreate,
     ContentUpdate,
@@ -27,7 +28,7 @@ class TestContentLifecycle(BaseIntegrationTest):
             "sources": [
                 {
                     "type": "path",
-                    "value": "./test_assets/omi_logo.png",
+                    "value": f"./test_assets/omi_logo_{random_string()}.png",
                     "source_metadata": {"source": "test"},
                 }
             ],
@@ -78,6 +79,13 @@ class TestContentLifecycle(BaseIntegrationTest):
         update_data = {
             "name": f"updated_content_{random_string()}",
             "meta": {"description": "Updated test content"},
+            "sources": [
+                {
+                    "type": "path",
+                    "value": f"./test_assets/updated_omi_logo_{random_string()}.png",
+                    "source_metadata": {"source": "updated_test"},
+                }
+            ],
         }
         response = self.client.put(
             f"/content/{content_id}",
@@ -137,6 +145,43 @@ class TestContentLifecycle(BaseIntegrationTest):
             response.status_code == 404
         ), f"Failed to verify deletion of content: {response.status_code}\nResponse body: {response.text}"
         self.logger.info(f"Verified deletion of content: {content_id}")
+
+    def test_unique_content_source(self):
+        # Create first content with a specific source
+        # Ensure that the test database is empty before running this test
+        content_value = "./test_assets/unique_test_image.png"
+        self.db.query(ContentSource).filter(ContentSource.value == content_value).delete()
+        self.db.commit()
+
+        content_data_1 = {
+            "name": f"test_content_{random_string()}",
+            "type": "image",
+            "hash": f"hash_{random_string()}",
+            "phash": f"phash_{random_string()}",
+            "format": "png",
+            "size": 1024,
+            "license": "CC0",
+            "sources": [
+                {
+                    "type": "path",
+                    "value": content_value,
+                    "source_metadata": {"source": "test"},
+                }
+            ],
+        }
+        response_1 = self.client.post(
+            "/content/", json=content_data_1, headers=self.get_session_auth_headers()
+        )
+        assert response_1.status_code == 200, f"Failed to create first content: {response_1.status_code}"
+
+        # Try to create second content with the same source
+        content_data_2 = content_data_1.copy()
+        content_data_2["name"] = f"test_content_{random_string()}"
+        response_2 = self.client.post(
+            "/content/", json=content_data_2, headers=self.get_session_auth_headers()
+        )
+        assert response_2.status_code == 400, f"Expected 400 status code, got: {response_2.status_code}"
+        assert "already exists" in response_2.json()["detail"].lower(), f"Expected 'already exists' in error message, got: {response_2.json()}"
 
 
 @pytest.fixture(scope="module")

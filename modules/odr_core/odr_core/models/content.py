@@ -67,7 +67,7 @@ class Content(Base):
     content_authors = relationship("ContentAuthor", back_populates="content")
     annotations = relationship("Annotation", back_populates="content")
     embeddings = relationship("ContentEmbedding", back_populates="content")
-    sources = relationship("ContentSource", back_populates="content")
+    sources = relationship("ContentSource", back_populates="content", cascade="all,delete-orphan")
 
 
 class ContentAuthor(Base):
@@ -89,7 +89,7 @@ class ContentSource(Base):
     id = Column(Integer, primary_key=True, index=True)
     content_id = Column(Integer, ForeignKey("contents.id"))
     type = Column(Enum(ContentSourceType))
-    value = Column(String)
+    value = Column(String, unique=True)
     source_metadata = Column(JSONB, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

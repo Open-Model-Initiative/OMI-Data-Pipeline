@@ -14,8 +14,11 @@ from odr_core.schemas.content import (
     httpurl_to_str,
 )
 from typing import List, Optional
+from sqlalchemy import Enum as SQLAlchemyEnum
 from loguru import logger
 from datetime import datetime, timezone
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
 
 
 def create_content_source(
@@ -112,40 +115,49 @@ def update_content(
     db: Session, content_id: int, content: ContentUpdate
 ) -> Optional[Content]:
     db_content = db.query(Content).filter(Content.id == content_id).first()
-    if db_content:
-        update_data = content.model_dump(exclude_unset=True)
+    if not db_content:
+        return None
 
-        # Handle sources separately
-        sources = update_data.pop("sources", None)
-
+    try:
+        # Update main content fields
+        update_data = content.model_dump(exclude={"sources"}, exclude_unset=True)
         for key, value in update_data.items():
             setattr(db_content, key, value)
 
-        if sources is not None:
-            existing_sources = {
-                source.id: source for source in get_content_sources(db, content_id)
-            }
-
-            for source in sources:
-                if source.id and source.id in existing_sources:
-                    # Update existing source
-                    update_content_source(db, source.id, source)
-                else:
-                    # Add new source
-                    create_content_source(db, content_id, source)
-
-            # Remove sources not in the update
-            source_ids_to_keep = {
-                source.id for source in sources if source.id is not None
-            }
-            for existing_id in existing_sources:
-                if existing_id not in source_ids_to_keep:
-                    delete_content_source(db, existing_id)
+        # Handle sources
+        if content.sources is not None:
+            update_content_sources(db, db_content, content.sources)
 
         db_content.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(db_content)
-    return db_content
+        return db_content
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Integrity error: {str(e)}")
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+def update_content_sources(
+    db: Session, db_content: Content, new_sources: List[ContentSourceUpdate]
+):
+    existing_sources = {source.id: source for source in db_content.sources}
+
+    for source in new_sources:
+        if source.id and source.id in existing_sources:
+            # Update existing source
+            update_content_source(db, source.id, source)
+        else:
+            # Add new source
+            create_content_source(db, db_content.id, source)
+
+    # Remove sources not in the update
+    source_ids_to_keep = {source.id for source in new_sources if source.id is not None}
+    for existing_id in existing_sources:
+        if existing_id not in source_ids_to_keep:
+            delete_content_source(db, existing_id)
 
 
 def delete_content(db: Session, content_id: int) -> bool:
