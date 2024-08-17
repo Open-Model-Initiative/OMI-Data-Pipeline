@@ -67,11 +67,14 @@ This will spin up the required front end, api, and database components.
 
 By default, you will have the following:
 
-- A front end accessible at: TBD
-- Interactive API documentation at: TBD
-- A PGAdmin interface at: TBD
+- A front end accessible at: http://localhost:5173/
+- An API at: http://localhost:31100/
+    Note, since we use FastAPI, you also get
+    - Interactive OpenAPI documentation at: http://localhost:31100/docs
+    - Redoc documentation at: http://localhost:31100/redoc
+- A PGAdmin interface at: http://localhost:35050
 
-(Todo: The front end is currently only available in the feature/frontend branch.)
+(Note: The front end is currently only available in the feature/frontend branch.)
 
 
 # Running Tests
