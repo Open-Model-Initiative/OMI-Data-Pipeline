@@ -39,9 +39,10 @@ Having the following accounts is necessary for contributing code/issues to the O
 
 **Useful contributing links**
 
+- [Getting Stated Guide](docs/getting_started.md)
 - How to contribute (WIP - Coming Soon)
 - [Issues](https://github.com/Open-Model-Initiative/OMI-Training-Pipeline/issues)
-- DCO
+- [DCO](DCO.md)
 - Suggesting enhancements (WIP - Coming Soon)
 - Pull requests (WIP - Coming Soon)
 - Code reviews (WIP - Coming Soon)

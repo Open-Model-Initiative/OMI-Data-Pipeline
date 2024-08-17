@@ -14,7 +14,7 @@ The Open Model Initiative Data Pipeline is a collaborative effort to create and 
 - Comprehensive documentation and examples
 
 ## Contributing
-We welcome contributions from the community! Whether you're fixing bugs, improving documentation, or proposing new features, your input is valuable. Please read our [Contribution](CONTRIBUTING.md) Guidelines for more information on how to get started.
+We welcome contributions from the community! Whether you're fixing bugs, improving documentation, or proposing new features, your input is valuable. Please read our [Contribution](CONTRIBUTING.md) Guidelines and our [Getting Stated Guide](docs/getting_started.md) for more information on how to get started.
 
 ## License
 This project and its artifacts are planned to be licensed under various permissive licenses:
