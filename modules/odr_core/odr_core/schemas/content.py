@@ -19,6 +19,12 @@ class ContentStatus(str, Enum):
     DELISTED = "delisted"
 
 
+class ContentSourceType(str, Enum):
+    URL = "url"
+    PATH = "path"
+    HUGGING_FACE = "hugging_face"
+
+
 class ContentAuthorBase(BaseModel):
     name: str
     url: Optional[HttpUrl] = None
@@ -38,12 +44,35 @@ class ContentAuthor(ContentAuthorBase):
         from_attribute = True
 
 
+class ContentSourceBase(BaseModel):
+    type: ContentSourceType
+    value: str
+    source_metadata: Optional[dict] = None
+
+
+class ContentSourceCreate(ContentSourceBase):
+    id: Optional[int] = None
+
+
+class ContentSourceUpdate(ContentSourceBase):
+    id: int
+
+
+class ContentSource(ContentSourceBase):
+    id: int
+    content_id: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attribute = True
+
+
 class ContentBase(BaseModel):
     name: Optional[str] = None
     type: ContentType
     hash: str
     phash: str
-    url: Optional[List[HttpUrl]] = None
     width: Optional[int] = None
     height: Optional[int] = None
     format: str
@@ -56,13 +85,25 @@ class ContentBase(BaseModel):
 
 
 class ContentCreate(ContentBase):
-    from_user_id: int
-    from_team_id: Optional[int] = None
     content_authors: Optional[List[ContentAuthorCreate]] = None
+    sources: List[ContentSourceCreate]
 
 
-class ContentUpdate(ContentBase):
-    pass
+class ContentUpdate(BaseModel):
+    name: Optional[str] = None
+    type: Optional[ContentType] = None
+    hash: Optional[str] = None
+    phash: Optional[str] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+    format: Optional[str] = None
+    size: Optional[int] = None
+    status: Optional[ContentStatus] = None
+    license: Optional[str] = None
+    license_url: Optional[HttpUrl] = None
+    flags: Optional[int] = None
+    meta: Optional[dict] = None
+    sources: Optional[List[ContentSourceCreate]] = None
 
 
 class Content(ContentBase):
@@ -72,9 +113,7 @@ class Content(ContentBase):
     created_at: datetime
     updated_at: datetime
     content_authors: List[ContentAuthor] = []
-    # TODO: It is raising errors, fix it
-    # annotations_id: List[int] = []  # List of annotation IDs
-    # embeddings: List[int] = []  # List of embedding IDs
+    sources: List[ContentSource] = []
 
     class Config:
         from_attribute = True
