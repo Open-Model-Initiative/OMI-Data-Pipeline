@@ -1,6 +1,6 @@
 import argparse
 import sys
-from models import TestUserLifecycle
+from models import TestUserLifecycle, TestContentLifecycle
 
 # Import other test classes here
 from test_result import log_test_results
@@ -29,7 +29,10 @@ def main():
 
     db = SessionLocal()
 
-    test_classes = [TestUserLifecycle]  # Add other test classes to this list
+    test_classes = [
+        TestUserLifecycle,
+        TestContentLifecycle,
+    ]  # Add other test classes to this list
 
     all_results = []
 

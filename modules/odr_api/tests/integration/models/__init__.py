@@ -1,1 +1,2 @@
 from models.test_users import TestUserLifecycle
+from models.test_content_lifecycle import TestContentLifecycle
