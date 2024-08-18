@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 from enum import Enum
@@ -67,11 +67,16 @@ class AnnotationRatingCreate(AnnotationRatingBase):
     rated_by_id: int
 
 
+class AnnotationRatingUpdate(AnnotationRatingBase):
+    pass
+
+
 class AnnotationRating(AnnotationRatingBase):
     id: int
     annotation_id: int
     rated_by_id: int
     created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True
