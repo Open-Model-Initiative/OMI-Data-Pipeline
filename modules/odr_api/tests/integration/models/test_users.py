@@ -9,6 +9,22 @@ logger = get_logger(__name__)
 
 
 class TestUserLifecycle(BaseIntegrationTest):
+    def __init__(self):
+        self.created_user_ids = []
+
+    def setup(self):
+        self.created_user_ids = []
+
+    def tearDown(self):
+        # Clean up created users
+        for user_id in self.created_user_ids:
+            try:
+                self.client.delete(
+                    f"/users/{user_id}", headers=self.get_superuser_auth_headers()
+                )
+            except Exception as e:
+                self.logger.warning(f"Failed to delete user {user_id}: {str(e)}")
+
     def test_create_user(self):
         user_data = {
             "username": f"testuser_{random_string()}",
@@ -30,6 +46,7 @@ class TestUserLifecycle(BaseIntegrationTest):
             response.status_code == 200
         ), f"Failed to create user: {response.status_code}"
         created_user = response.json()
+        self.created_user_ids.append(created_user["id"])
         self.logger.info(f"Created user: {created_user['id']}")
         return created_user
 
@@ -90,9 +107,10 @@ class TestUserLifecycle(BaseIntegrationTest):
                 email=f"test_user_{random_string()}@example.com",
                 password="test_password",
                 is_active=True,
-                is_superuser=False
-            )
+                is_superuser=False,
+            ),
         )
+        self.created_user_ids.append(new_user.id)
 
         superuser_auth = self.get_superuser_auth_headers()
 
@@ -100,10 +118,12 @@ class TestUserLifecycle(BaseIntegrationTest):
             username=f"updated_user_{random_string()}",
             email=f"updated_user_{random_string()}@example.com",
             is_active=True,
-            is_superuser=False
+            is_superuser=False,
         )
 
-        response = self.client.put(f"/users/{new_user.id}", json=update_data.dict(), headers=superuser_auth)
+        response = self.client.put(
+            f"/users/{new_user.id}", json=update_data.dict(), headers=superuser_auth
+        )
 
         log_api_request(
             self.logger,
@@ -111,10 +131,12 @@ class TestUserLifecycle(BaseIntegrationTest):
             f"/users/{new_user.id}",
             response.status_code,
             update_data.dict(),
-            response.json()
+            response.json(),
         )
 
-        assert response.status_code == 200, f"Failed to update user: {response.status_code}"
+        assert (
+            response.status_code == 200
+        ), f"Failed to update user: {response.status_code}"
         updated_user = User(**response.json())
 
         # Verify the update
@@ -132,20 +154,18 @@ class TestUserLifecycle(BaseIntegrationTest):
             f"/users/{new_user.id}",
             get_response.status_code,
             None,
-            get_response.json()
+            get_response.json(),
         )
 
-        assert get_response.status_code == 200, f"Failed to get updated user: {get_response.status_code}"
+        assert (
+            get_response.status_code == 200
+        ), f"Failed to get updated user: {get_response.status_code}"
         fetched_user = User(**get_response.json())
 
         assert fetched_user.username == update_data.username
         assert fetched_user.email == update_data.email
         assert fetched_user.is_active == update_data.is_active
         assert fetched_user.is_superuser == update_data.is_superuser
-
-        # Clean up
-        self.db.delete(new_user)
-        self.db.commit()
 
         self.logger.info(f"Updated user: {new_user.id}")
 
@@ -202,6 +222,8 @@ class TestUserLifecycle(BaseIntegrationTest):
         ), f"Failed to verify deletion of user: {response.status_code}"
         self.logger.info(f"Verified deletion of user: {user_id}")
 
+        self.created_user_ids.remove(user_id)
+
     def test_superuser_auth(self):
         headers = self.get_superuser_auth_headers()
         response = self.client.get("/users/me", headers=headers)
@@ -221,27 +243,18 @@ class TestUserLifecycle(BaseIntegrationTest):
         self.logger.info("Superuser authentication successful")
 
 
-@pytest.fixture(scope="module")
-def user_lifecycle_test(request):
-    base_url = request.config.getoption("--api-base-url")
-    from odr_core.database import SessionLocal
-
-    db = SessionLocal()
-    test = TestUserLifecycle()
-    TestUserLifecycle.setup_class(base_url, db, test.logger)
-    test.logger.info(f"Test user: {test.test_user}")
-    test.logger.info(f"Bot user: {test.bot_user}")
-    yield test
-    TestUserLifecycle.teardown_class()
-
-
+# Update the test function to use setUp and tearDown
 def test_user_lifecycle(user_lifecycle_test):
     test = user_lifecycle_test
-    test.test_create_user()
-    test.test_user_login_session()
-    test.test_user_basic_auth()
-    test.test_bot_jwt_auth()
-    test.test_update_user()
-    test.test_user_logout()
-    test.test_superuser_auth()
-    test.test_delete_user()
+    test.setUp()
+    try:
+        test.test_create_user()
+        test.test_user_login_session()
+        test.test_user_basic_auth()
+        test.test_bot_jwt_auth()
+        test.test_update_user()
+        test.test_user_logout()
+        test.test_superuser_auth()
+        test.test_delete_user()
+    finally:
+        test.tearDown()

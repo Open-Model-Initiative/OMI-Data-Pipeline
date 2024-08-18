@@ -123,11 +123,27 @@ def delete_content(client, content_id, auth_headers):
 
 
 class TestContentLifecycle(BaseIntegrationTest):
+    def __init__(self):
+        self.created_content_ids = []
+
+    def setup(self):
+        self.created_content_ids = []
+
+    def tearDown(self):
+        # Clean up created content
+        for content_id in self.created_content_ids:
+            try:
+                delete_content(self.client, content_id, self.get_session_auth_headers())
+            except Exception as e:
+                self.logger.warning(f"Failed to delete content {content_id}: {str(e)}")
+
     def test_create_content(self):
         content_data = create_test_content_data()
-        return create_content(
+        created_content = create_content(
             self.client, content_data, self.get_session_auth_headers()
         )
+        self.created_content_ids.append(created_content["id"])
+        return created_content
 
     def test_get_content(self):
         created_content = self.test_create_content()
@@ -159,13 +175,18 @@ class TestContentLifecycle(BaseIntegrationTest):
 
     def test_delete_content(self):
         created_content = self.test_create_content()
-        delete_content(self.client, created_content["id"], self.get_session_auth_headers())
+        delete_content(
+            self.client, created_content["id"], self.get_session_auth_headers()
+        )
+        self.created_content_ids.remove(created_content["id"])
 
     def test_unique_content_source(self):
         # Create first content with a specific source
         # Ensure that the test database is empty before running this test
         content_value = "./test_assets/unique_test_image.png"
-        self.db.query(ContentSource).filter(ContentSource.value == content_value).delete()
+        self.db.query(ContentSource).filter(
+            ContentSource.value == content_value
+        ).delete()
         self.db.commit()
 
         content_data_1 = create_test_content_data()
@@ -173,7 +194,11 @@ class TestContentLifecycle(BaseIntegrationTest):
         response_1 = self.client.post(
             "/content/", json=content_data_1, headers=self.get_session_auth_headers()
         )
-        assert response_1.status_code == 200, f"Failed to create first content: {response_1.status_code}"
+        assert (
+            response_1.status_code == 200
+        ), f"Failed to create first content: {response_1.status_code}"
+        created_content_1 = response_1.json()
+        self.created_content_ids.append(created_content_1["id"])
 
         # Try to create second content with the same source
         content_data_2 = content_data_1.copy()
@@ -181,8 +206,12 @@ class TestContentLifecycle(BaseIntegrationTest):
         response_2 = self.client.post(
             "/content/", json=content_data_2, headers=self.get_session_auth_headers()
         )
-        assert response_2.status_code == 400, f"Expected 400 status code, got: {response_2.status_code}"
-        assert "already exists" in response_2.json()["detail"].lower(), f"Expected 'already exists' in error message, got: {response_2.json()}"
+        assert (
+            response_2.status_code == 400
+        ), f"Expected 400 status code, got: {response_2.status_code}"
+        assert (
+            "already exists" in response_2.json()["detail"].lower()
+        ), f"Expected 'already exists' in error message, got: {response_2.json()}"
 
 
 @pytest.fixture(scope="module")
@@ -199,7 +228,12 @@ def content_lifecycle_test(request):
 
 def test_content_lifecycle(content_lifecycle_test):
     test = content_lifecycle_test
-    test.test_create_content()
-    test.test_get_content()
-    test.test_update_content()
-    test.test_delete_content()
+    test.setUp()
+    try:
+        test.test_create_content()
+        test.test_get_content()
+        test.test_update_content()
+        test.test_delete_content()
+        test.test_unique_content_source()
+    finally:
+        test.tearDown()

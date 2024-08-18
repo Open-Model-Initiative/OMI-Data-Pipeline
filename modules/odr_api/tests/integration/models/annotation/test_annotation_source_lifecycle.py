@@ -12,6 +12,25 @@ logger = get_logger(__name__)
 
 
 class TestAnnotationSourceLifecycle(BaseIntegrationTest):
+    def __init__(self):
+        self.created_source_ids = []
+
+    def setup(self):
+        self.created_source_ids = []
+
+    def tearDown(self):
+        # Clean up created annotation sources
+        for source_id in self.created_source_ids:
+            try:
+                self.client.delete(
+                    f"/annotation_sources/{source_id}",
+                    headers=self.get_session_auth_headers(),
+                )
+            except Exception as e:
+                self.logger.warning(
+                    f"Failed to delete annotation source {source_id}: {str(e)}"
+                )
+
     def test_create_annotation_source(self):
         annotation_source_data = {
             "name": f"test_source_{random_string()}",
@@ -39,6 +58,7 @@ class TestAnnotationSourceLifecycle(BaseIntegrationTest):
             response.status_code == 200
         ), f"Failed to create annotation source: {response.status_code}"
         created_source = response.json()
+        self.created_source_ids.append(created_source["id"])
         self.logger.info(f"Created annotation source: {created_source['id']}")
         return created_source
 
@@ -117,6 +137,7 @@ class TestAnnotationSourceLifecycle(BaseIntegrationTest):
             response.status_code == 200
         ), f"Failed to delete annotation source: {response.status_code}"
         self.logger.info(f"Deleted annotation source: {source_id}")
+        self.created_source_ids.remove(source_id)
 
         # Verify deletion
         response = self.client.get(
@@ -165,8 +186,12 @@ def annotation_source_lifecycle_test(request):
 
 def test_annotation_source_lifecycle(annotation_source_lifecycle_test):
     test = annotation_source_lifecycle_test
-    test.test_create_annotation_source()
-    test.test_get_annotation_source()
-    test.test_update_annotation_source()
-    test.test_list_annotation_sources()
-    test.test_delete_annotation_source()
+    test.setUp()
+    try:
+        test.test_create_annotation_source()
+        test.test_get_annotation_source()
+        test.test_update_annotation_source()
+        test.test_list_annotation_sources()
+        test.test_delete_annotation_source()
+    finally:
+        test.tearDown()
