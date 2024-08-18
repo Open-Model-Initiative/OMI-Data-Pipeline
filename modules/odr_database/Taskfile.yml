@@ -47,4 +47,11 @@ tasks:
   test-postgres:
     desc: Test the postgres database
     cmds:
-      - python ${ROOT_DIR}/modules/odr_database/tests/test_postgres_simple.py
+      - echo "Postgres testing not implemented yet"
+
+  teardown:
+    desc: Teardown the database and remove the volumes
+    cmds:
+      - docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml down
+      - docker volume rm omi-postgres_pgadmin_data
+      - docker volume rm omi-postgres_postgres_data

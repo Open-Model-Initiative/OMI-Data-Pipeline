@@ -68,21 +68,20 @@ This will spin up the required front end, api, and database components.
 By default, you will have the following:
 
 - A front end accessible at: http://localhost:5173/
+(Note: The front end is currently only available in the feature/frontend branch.)
 - An API at: http://localhost:31100/
     Note, since we use FastAPI, you also get
     - Interactive OpenAPI documentation at: http://localhost:31100/docs
     - Redoc documentation at: http://localhost:31100/redoc
 - A PGAdmin interface at: http://localhost:35050
 
-(Note: The front end is currently only available in the feature/frontend branch.)
-
-
 # Running Tests
 
 Before committing any changes, ensure you run all tests to be sure existing behaviour continues to work. If any tests require updates to pass with your changes, ensure you update them as well.
 
-(Todo: make a task to run all our different test types, add instructions for how to run the diffferent types as well.)
+To run all tests, run `task test-all`
 
+(Todo: Add instructions for how to run the diffferent types individual as well to check work under development.)
 
 # Committing Changes
 
@@ -95,6 +94,4 @@ To stop the environment, start by using ctrl+c (or cmd+c) to stop the current pr
 
 Then use `task stop-all` to full stop the environment.
 
-If you want to remove the docker volumes used by the database, run `docker volume rm omi-postgres_pgadmin_data` and `docker volume rm omi-postgres_postgres_data`
-
-(Todo: make a `db:teardown` task that removes the volumes)
+If you want to remove the docker volumes used by the database, run `task db:teardown`

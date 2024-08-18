@@ -5,9 +5,9 @@ tasks:
   test:
     desc: Run tests for the core module
     cmds:
-      - echo "Testing not implemented"
+      - echo "Core module testing not implemented yet"
 
   test-db:
     desc: Run tests for the database manager
     cmds:
-      - echo "Testing not implemented"
+      - echo "Database manager testing not implemented yet"
