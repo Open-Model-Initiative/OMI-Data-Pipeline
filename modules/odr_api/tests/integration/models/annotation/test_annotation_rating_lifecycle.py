@@ -130,27 +130,74 @@ def get_annotation_ratings(client, annotation_id, auth_headers):
 
 
 class TestAnnotationRatingLifecycle(BaseIntegrationTest):
+    def __init__(self):
+        self.created_content_ids = []
+        self.created_annotation_ids = []
+        self.created_rating_ids = []
+
+    def setUp(self):
+        self.created_content_ids = []
+        self.created_annotation_ids = []
+        self.created_rating_ids = []
+
+    def tearDown(self):
+        # Clean up created ratings
+        for rating_id in self.created_rating_ids:
+            try:
+                delete_annotation_rating(
+                    self.client, rating_id, self.get_session_auth_headers()
+                )
+            except Exception as e:
+                self.logger.warning(f"Failed to delete rating {rating_id}: {str(e)}")
+
+        # Clean up created annotations
+        for annotation_id in self.created_annotation_ids:
+            try:
+                self.client.delete(
+                    f"/annotations/{annotation_id}",
+                    headers=self.get_session_auth_headers(),
+                )
+            except Exception as e:
+                self.logger.warning(
+                    f"Failed to delete annotation {annotation_id}: {str(e)}"
+                )
+
+        # Clean up created content
+        for content_id in self.created_content_ids:
+            try:
+                self.client.delete(
+                    f"/contents/{content_id}", headers=self.get_session_auth_headers()
+                )
+            except Exception as e:
+                self.logger.warning(f"Failed to delete content {content_id}: {str(e)}")
+
     def create_test_content(self):
         content_data = create_test_content_data()
-        return create_content(
+        content = create_content(
             self.client, content_data, self.get_session_auth_headers()
         )
+        self.created_content_ids.append(content["id"])
+        return content
 
     def create_test_annotation(self):
         content_id = self.create_test_content()["id"]
         annotation_data = create_test_annotation_data(content_id, self.test_user.id)
-        return create_annotation(
+        annotation = create_annotation(
             self.client, annotation_data, self.get_session_auth_headers()
         )
+        self.created_annotation_ids.append(annotation["id"])
+        return annotation
 
     def test_create_annotation_rating(self):
         annotation_id = self.create_test_annotation()["id"]
         rating_data = create_test_annotation_rating_data(
             annotation_id, self.test_user.id
         )
-        return create_annotation_rating(
+        created_rating = create_annotation_rating(
             self.client, rating_data, self.get_session_auth_headers()
         )
+        self.created_rating_ids.append(created_rating["id"])
+        return created_rating
 
     def test_get_annotation_rating(self):
         created_rating = self.test_create_annotation_rating()
@@ -173,6 +220,7 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
         delete_annotation_rating(
             self.client, created_rating["id"], self.get_session_auth_headers()
         )
+        self.created_rating_ids.remove(created_rating["id"])
 
     def test_list_annotation_ratings(self):
         annotation_id = self.create_test_annotation()["id"]
@@ -181,9 +229,10 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
             rating_data = create_test_annotation_rating_data(
                 annotation_id, self.test_user.id
             )
-            create_annotation_rating(
+            created_rating = create_annotation_rating(
                 self.client, rating_data, self.get_session_auth_headers()
             )
+            self.created_rating_ids.append(created_rating["id"])
 
         ratings = get_annotation_ratings(
             self.client, annotation_id, self.get_session_auth_headers()
@@ -208,8 +257,12 @@ def annotation_rating_lifecycle_test(request):
 
 def test_annotation_rating_lifecycle(annotation_rating_lifecycle_test):
     test = annotation_rating_lifecycle_test
-    test.test_create_annotation_rating()
-    test.test_get_annotation_rating()
-    test.test_update_annotation_rating()
-    test.test_list_annotation_ratings()
-    test.test_delete_annotation_rating()
+    test.setUp()
+    try:
+        test.test_create_annotation_rating()
+        test.test_get_annotation_rating()
+        test.test_update_annotation_rating()
+        test.test_list_annotation_ratings()
+        test.test_delete_annotation_rating()
+    finally:
+        test.tearDown()

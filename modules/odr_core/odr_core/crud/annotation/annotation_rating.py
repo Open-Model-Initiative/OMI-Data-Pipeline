@@ -12,7 +12,11 @@ def create_annotation_rating(
 ) -> AnnotationRating:
     db_annotation_rating = AnnotationRating(
         annotation_id=annotation_rating.annotation_id,
-        rated_by_id=current_user.id,
+        rated_by_id=(
+            annotation_rating.rated_by_id
+            if annotation_rating.rated_by_id
+            else current_user.id
+        ),
         rating=annotation_rating.rating,
         reason=annotation_rating.reason,
         created_at=datetime.now(timezone.utc),
@@ -56,7 +60,7 @@ def update_annotation_rating(
     for key, value in update_data.items():
         setattr(db_annotation_rating, key, value)
     db_annotation_rating.updated_at = datetime.now(timezone.utc)
-    db_annotation_rating.updated_by_id = current_user.id
+
     db.commit()
     db.refresh(db_annotation_rating)
     return db_annotation_rating

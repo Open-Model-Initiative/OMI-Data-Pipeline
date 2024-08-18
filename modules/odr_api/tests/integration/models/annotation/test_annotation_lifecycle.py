@@ -121,18 +121,51 @@ def get_annotations_by_content(client, content_id, auth_headers):
 
 
 class TestAnnotationLifecycle(BaseIntegrationTest):
+    def __init__(self):
+        self.created_content_ids = []
+        self.created_annotation_ids = []
+
+    def setup(self):
+        self.created_content_ids = []
+        self.created_annotation_ids = []
+
+    def tearDown(self):
+        # Clean up created annotations
+        for annotation_id in self.created_annotation_ids:
+            try:
+                delete_annotation(
+                    self.client, annotation_id, self.get_session_auth_headers()
+                )
+            except Exception as e:
+                self.logger.warning(
+                    f"Failed to delete annotation {annotation_id}: {str(e)}"
+                )
+
+        # Clean up created content
+        for content_id in self.created_content_ids:
+            try:
+                self.client.delete(
+                    f"/contents/{content_id}", headers=self.get_session_auth_headers()
+                )
+            except Exception as e:
+                self.logger.warning(f"Failed to delete content {content_id}: {str(e)}")
+
     def create_test_content(self):
         content_data = create_test_content_data()
-        return create_content(
+        content = create_content(
             self.client, content_data, self.get_session_auth_headers()
         )
+        self.created_content_ids.append(content["id"])
+        return content
 
     def test_create_annotation(self):
         content_id = self.create_test_content()["id"]
         annotation_data = create_test_annotation_data(content_id, self.test_user.id)
-        return create_annotation(
+        created_annotation = create_annotation(
             self.client, annotation_data, self.get_session_auth_headers()
         )
+        self.created_annotation_ids.append(created_annotation["id"])
+        return created_annotation
 
     def test_get_annotation(self):
         created_annotation = self.test_create_annotation()
@@ -162,6 +195,7 @@ class TestAnnotationLifecycle(BaseIntegrationTest):
         delete_annotation(
             self.client, created_annotation["id"], self.get_session_auth_headers()
         )
+        self.created_annotation_ids.remove(created_annotation["id"])
 
     def test_get_annotations_by_content(self):
         created_annotation = self.test_create_annotation()
@@ -186,8 +220,12 @@ def annotation_lifecycle_test(request):
 
 def test_annotation_lifecycle(annotation_lifecycle_test):
     test = annotation_lifecycle_test
-    test.test_create_annotation()
-    test.test_get_annotation()
-    test.test_update_annotation()
-    test.test_get_annotations_by_content()
-    test.test_delete_annotation()
+    test.setUp()
+    try:
+        test.test_create_annotation()
+        test.test_get_annotation()
+        test.test_update_annotation()
+        test.test_get_annotations_by_content()
+        test.test_delete_annotation()
+    finally:
+        test.tearDown()

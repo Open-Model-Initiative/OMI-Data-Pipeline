@@ -6,13 +6,16 @@ from odr_core.models.annotation import AnnotationSource
 from odr_core.schemas.annotation import AnnotationSourceCreate, AnnotationSourceUpdate
 from odr_core.schemas.user import User
 import logging
+
 logger = logging.getLogger(__name__)
 
 
 def create_annotation_source(
     db: Session, annotation_source: AnnotationSourceCreate, current_user: User
 ) -> AnnotationSource:
-    logger.info(f"Creating annotation source: {annotation_source} for user: {current_user}")
+    logger.info(
+        f"Creating annotation source: {annotation_source} for user: {current_user}"
+    )
     db_annotation_source = AnnotationSource(
         name=annotation_source.name,
         ecosystem=annotation_source.ecosystem,
@@ -20,7 +23,11 @@ def create_annotation_source(
         annotation_schema=annotation_source.annotation_schema,
         license=annotation_source.license,
         license_url=annotation_source.license_url,
-        added_by_id=current_user.id,
+        added_by_id=(
+            annotation_source.added_by_id
+            if annotation_source.added_by_id
+            else current_user.id
+        ),
         updated_at=datetime.now(timezone.utc),
     )
     db.add(db_annotation_source)
@@ -64,7 +71,7 @@ def update_annotation_source(
         setattr(db_annotation_source, key, value)
 
     db_annotation_source.updated_at = datetime.now(timezone.utc)
-    db_annotation_source.updated_by_id = current_user.id
+
     db.commit()
     db.refresh(db_annotation_source)
     return db_annotation_source
