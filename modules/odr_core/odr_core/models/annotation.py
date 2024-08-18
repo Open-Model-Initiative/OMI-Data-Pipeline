@@ -8,11 +8,11 @@ class Annotation(Base):
     __tablename__ = "annotations"
 
     id = Column(Integer, primary_key=True, index=True)
-    content_id = Column(Integer, ForeignKey('contents.id'))
+    content_id = Column(Integer, ForeignKey('contents.id'), nullable=False)
     annotation = Column(JSON)
     manually_adjusted = Column(Boolean, default=False)
     overall_rating = Column(Float, nullable=True)
-    from_user_id = Column(Integer, ForeignKey('users.id'))
+    from_user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     from_team_id = Column(Integer, ForeignKey('teams.id'), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
@@ -30,12 +30,12 @@ class AnnotationRating(Base):
     __tablename__ = "annotation_ratings"
 
     id = Column(Integer, primary_key=True, index=True)
-    annotation_id = Column(Integer, ForeignKey('annotations.id'))
-    rating = Column(Integer)  # Assuming a scale of 0-10
+    annotation_id = Column(Integer, ForeignKey('annotations.id'), nullable=False)
+    rating = Column(Integer, nullable=False)  # Assuming a scale of 0-10
     reason = Column(String, nullable=True)
-    rated_by_id = Column(Integer, ForeignKey('users.id'))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    rated_by_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False)
     annotation = relationship("Annotation", back_populates="ratings")
     rated_by = relationship("User", back_populates="annotation_ratings")
 
@@ -44,11 +44,11 @@ class AnnotationReport(Base):
     __tablename__ = "annotation_reports"
 
     id = Column(Integer, primary_key=True, index=True)
-    annotation_id = Column(Integer, ForeignKey('annotations.id'))
-    type = Column(String)  # e.g., 'illegal content', 'malicious annotations'
-    reported_by_id = Column(Integer, ForeignKey('users.id'))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    annotation_id = Column(Integer, ForeignKey('annotations.id'), nullable=False)
+    type = Column(String, nullable=False)  # e.g., 'illegal content', 'malicious annotations'
+    reported_by_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False)
     annotation = relationship("Annotation", back_populates="reports")
     reported_by = relationship("User", back_populates="annotation_reports")
 
@@ -63,9 +63,9 @@ class AnnotationSource(Base):
     annotation_schema = Column(JSON)
     license = Column(String)
     license_url = Column(String, nullable=True)
-    added_by_id = Column(Integer, ForeignKey('users.id'))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    added_by_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False)
 
     annotations = relationship("Annotation", secondary="annotation_sources_link", back_populates="annotation_sources")
     added_by = relationship("User", back_populates="added_annotation_sources")
