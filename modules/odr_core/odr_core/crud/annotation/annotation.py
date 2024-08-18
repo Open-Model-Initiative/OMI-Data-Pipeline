@@ -4,15 +4,20 @@ from datetime import datetime, timezone
 
 from odr_core.models.annotation import Annotation, AnnotationSource
 from odr_core.schemas.annotation import AnnotationCreate, AnnotationUpdate
+from odr_core.schemas.user import User
 
 
-def create_annotation(db: Session, annotation: AnnotationCreate) -> Annotation:
+def create_annotation(
+    db: Session, annotation: AnnotationCreate, current_user: User
+) -> Annotation:
     db_annotation = Annotation(
         content_id=annotation.content_id,
         annotation=annotation.annotation,
         manually_adjusted=annotation.manually_adjusted,
         overall_rating=annotation.overall_rating,
-        from_user_id=annotation.from_user_id,
+        from_user_id=(
+            annotation.from_user_id if annotation.from_user_id else current_user.id
+        ),
         from_team_id=annotation.from_team_id,
         updated_at=datetime.now(timezone.utc),
     )
@@ -39,7 +44,10 @@ def get_annotations(db: Session, skip: int = 0, limit: int = 100) -> List[Annota
 
 
 def update_annotation(
-    db: Session, annotation_id: int, annotation_update: AnnotationUpdate
+    db: Session,
+    annotation_id: int,
+    annotation_update: AnnotationUpdate,
+    current_user: User,
 ) -> Optional[Annotation]:
     db_annotation = db.query(Annotation).filter(Annotation.id == annotation_id).first()
     if db_annotation is None:
@@ -61,7 +69,7 @@ def update_annotation(
     return db_annotation
 
 
-def delete_annotation(db: Session, annotation_id: int) -> bool:
+def delete_annotation(db: Session, annotation_id: int, current_user: User) -> bool:
     db_annotation = db.query(Annotation).filter(Annotation.id == annotation_id).first()
     if db_annotation is None:
         return False

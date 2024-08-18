@@ -11,10 +11,22 @@ tasks:
         --tests={{.TESTS}}
     vars:
       API_BASE_URL: 'http://localhost:31100'
-      TESTS: 'all'
+      TESTS: '{{.CLI_ARGS}}'
 
   test-all:
     desc: Run all tests in order
     cmds:
       - task: test-integration
-        vars: {TESTS: 'create read update delete'}
+        vars: {CLI_ARGS: 'all'}
+
+  model:
+    desc: Run tests for a specific model
+    dir: '{{.ROOT_DIR}}'
+    cmds:
+      - task: test-integration
+        vars:
+          TESTS: '{{.CLI_ARGS}}'
+  help:
+    desc: Display help information about using the test suite
+    cmds:
+      - python modules/odr_api/tests/integration/run_integration.py --help
