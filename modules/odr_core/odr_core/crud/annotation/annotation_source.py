@@ -5,11 +5,14 @@ from datetime import datetime, timezone
 from odr_core.models.annotation import AnnotationSource
 from odr_core.schemas.annotation import AnnotationSourceCreate, AnnotationSourceUpdate
 from odr_core.schemas.user import User
+import logging
+logger = logging.getLogger(__name__)
 
 
 def create_annotation_source(
     db: Session, annotation_source: AnnotationSourceCreate, current_user: User
 ) -> AnnotationSource:
+    logger.info(f"Creating annotation source: {annotation_source} for user: {current_user}")
     db_annotation_source = AnnotationSource(
         name=annotation_source.name,
         ecosystem=annotation_source.ecosystem,
