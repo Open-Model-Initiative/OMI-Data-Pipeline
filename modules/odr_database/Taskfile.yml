@@ -4,6 +4,7 @@ version: '3'
 vars:
   COMPOSE_FILE: ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml
   POSTGRES_VOLUME_NAME: omi-postgres_postgres_data
+  PGADMIN_VOLUME_NAME: omi-postgres_pgadmin_data
 
 tasks:
 
@@ -57,6 +58,6 @@ tasks:
   teardown:
     desc: Teardown the database and remove the volumes
     cmds:
-      - docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml down
-      - docker volume rm omi-postgres_pgadmin_data
-      - docker volume rm omi-postgres_postgres_data
+      - docker compose -f {{.COMPOSE_FILE}} down
+      - docker volume rm {{.POSTGRES_VOLUME_NAME}}
+      - docker volume rm {{.PGADMIN_VOLUME_NAME}}
