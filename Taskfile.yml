@@ -63,9 +63,20 @@ tasks:
       - echo "Stopping all services..."
       - |
         task db:stop-postgres &
-        task api:stop &
         wait
       - echo "All services stopped"
+
+  test-all:
+    desc: Run all tests
+    cmds:
+      - echo "Starting all tests ..."
+      - |
+        task core:test &
+        task core:test-db &
+        task db:test-postgres &
+        task api-test:test-all &
+        wait
+      - echo "All testing complete"
 
   watch-all-logs:
     desc: Watch all service logs
