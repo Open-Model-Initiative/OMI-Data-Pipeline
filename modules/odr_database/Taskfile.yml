@@ -1,5 +1,10 @@
 # ODR Database Taskfile
 version: '3'
+
+vars:
+  COMPOSE_FILE: ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml
+  POSTGRES_VOLUME_NAME: omi-postgres_postgres_data
+
 tasks:
 
 ## PostgreSQL
@@ -15,16 +20,16 @@ tasks:
     desc: Start the postgres database
     cmds:
       - >
-        docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml up
+        docker compose -f {{.COMPOSE_FILE}} up
   stop-postgres:
     desc: Stop the postgres database
     cmds:
-      - docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml down
+      - docker compose -f {{.COMPOSE_FILE}} down
   rebuild-postgres:
     desc: Rebuild the postgres database
     cmds:
       - >
-        docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml up --build
+        docker compose -f {{.COMPOSE_FILE}} up --build
   restart-postgres:
     desc: Restart the postgres database
     deps:
@@ -34,13 +39,13 @@ tasks:
   watch-postgres-logs:
     desc: Watch the postgres logs
     cmds:
-      - docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml logs -f
+      - docker compose -f {{.COMPOSE_FILE}} logs -f
 
   reset-postgres:
     desc: Reset the postgres database
     cmds:
-      - docker compose -f ${ROOT_DIR}/modules/odr_database/docker/postgres-compose.yml down
-      - docker volume rm odr_database_postgres_data
+      - docker compose -f {{.COMPOSE_FILE}} down
+      - docker volume rm {{.POSTGRES_VOLUME_NAME}}
       - task: start-postgres
       - task: watch-postgres-logs
 
