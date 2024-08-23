@@ -1,0 +1,60 @@
+{
+    "id": "hf-cat-image-001",
+    "name": "Hugging Face Cat Image",
+    "type": "image",
+    "hash": "tbd",
+    "phash": "tbd",
+    "urls": [],
+    "width": 512,
+    "height": 512,
+    "format": "jpg",
+    "size": 98765,
+    "status": "available",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "contentAuthor": [
+      {
+        "id": "ai-artist-123",
+        "name": "AI Artist Collective",
+        "url": "https://example.com/ai-artist-collective"
+      }
+    ],
+    "flags": 0,
+    "meta": {
+      "hf-dataset-name": "awesome-cat-images",
+      "hf-dataset-slice": "train",
+      "hf-dataset-id": 1
+    },
+    "fromUser": null,
+    "fromTeam": null,
+    "annotations": [
+      {
+        "id": "hf-cat-image-001-annotation-1",
+        "content": "hf-cat-image-001",
+        "annotation": {
+          "type": "image-description",
+          "text": "A digital illustration of a tabby cat wearing a space helmet. The cat has bright green eyes and appears to be floating in a starry background. The art style is cartoonish and whimsical, with vibrant colors and smooth lines.",
+          "tags": [
+            "cat",
+            "space",
+            "helmet",
+            "illustration",
+            "cartoon",
+            "whimsical",
+            "tabby",
+            "stars"
+          ]
+        },
+        "manuallyAdjusted": false,
+        "embedding": null,
+        "fromUser": null,
+        "fromTeam": null,
+        "createdAt": "2023-09-01T14:30:00Z",
+        "updatedAt": "2023-09-01T14:30:00Z",
+        "overallRating": 4.8
+      }
+    ],
+    "embeddings": [],
+    "createdAt": "2023-09-01T14:25:00Z",
+    "updatedAt": "2023-09-01T14:25:00Z"
+  }

@@ -1,0 +1,58 @@
+{
+  "id": "wikipedia-logo",
+  "name": "Wikipedia Logo",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [
+    "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/103px-Wikipedia-logo-v2.svg.png"
+  ],
+  "width": 103,
+  "height": 103,
+  "format": "png",
+  "size": 12345,
+  "status": "available",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "contentAuthor": [
+    {
+      "id": "wikipedia",
+      "name": "Wikimedia Foundation",
+      "url": "https://www.wikimedia.org/"
+    }
+  ],
+  "flags": 0,
+  "meta": {},
+  "fromUser": null,
+  "fromTeam": null,
+  "annotations": [
+    {
+        "id": "wikipedia-logo-annotation-1",
+        "content": "wikipedia-logo",
+        "annotation": {
+          "type": "image-description",
+          "text": "The Wikipedia logo is a stylized 'W' formed by two overlapping circles, colored in blue and white. The logo is displayed on a transparent background, allowing it to be placed on various color backgrounds. The design is simple and recognizable, serving as a visual identity for the popular online encyclopedia, Wikipedia.",
+          "tags": [
+            "wikipedia",
+            "logo",
+            "w",
+            "circles",
+            "blue",
+            "white",
+            "transparent",
+            "visual-identity"
+          ]
+        },
+        "manuallyAdjusted": false,
+        "embedding": null,
+        "fromUser": null,
+        "fromTeam": null,
+        "createdAt": "2023-08-15T12:01:00Z",
+        "updatedAt": "2023-08-15T12:01:00Z",
+        "overallRating": 5
+      }
+  ],
+  "embeddings": [],
+  "createdAt": "2023-08-15T12:00:00Z",
+  "updatedAt": "2023-08-15T12:00:00Z"
+}
