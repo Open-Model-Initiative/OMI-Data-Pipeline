@@ -1,1 +1,2 @@
 datasets==2.20.0
+pillow==10.4.0

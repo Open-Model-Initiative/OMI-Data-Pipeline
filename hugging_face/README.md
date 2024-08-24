@@ -3,6 +3,7 @@
 python -m venv env
 source env/bin/activate
 # .\env\Scripts\activate
+pip install --upgrade pip
 pip install -r hf-requirements.txt
 ```
 
@@ -25,3 +26,19 @@ https://huggingface.co/docs/huggingface_hub/v0.24.5/package_reference/environmen
 pip install huggingface_hub[hf_transfer]
 ```
 2. Set HF_HUB_ENABLE_HF_TRANSFER=1 as an environment variable.
+
+# Running
+
+```shell
+python hf_dataset_info.py <dataset_name>
+
+python hf_dataset_to_json.py <dataset_name> <mapping_file> <output_dir>
+```
+
+e.g.
+
+```shell
+python get_hf_info.py 'common-canvas/commoncatalog-cc-by-sa'
+
+python hf_dataset_to_json.py 'common-canvas/commoncatalog-cc-by-sa' './mappings/common-canvas_commoncatalog-cc-by-sa_mapping.json' './jsonFiles/common-canvas_commoncatalog-cc-by-sa_mapping.json'
+```
