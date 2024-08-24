@@ -1,0 +1,44 @@
+{
+  "id": "13071852@N00",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
+    "hf-dataset-id": 7
+  },
+  "fromUser": null,
+  "fromTeam": null,
+  "embeddings": [],
+  "createdAt": "2007-04-12T15:27:51",
+  "updatedAt": 1176418970,
+  "name": "Holly",
+  "width": 1024,
+  "height": 1024,
+  "format": "jpeg",
+  "license": "Attribution-ShareAlike License",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
+  "contentAuthor": "treehouse1977",
+  "url": "https://farm1.staticflickr.com/209/457037692_02433c3316_o.jpg",
+  "annotations": [
+    {
+      "id": "13071852@N00-annotation-1",
+      "content": "13071852@N00",
+      "annotation": {
+        "type": "image-description",
+        "text": "a close up of the bark of a tree",
+        "tags": []
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": null,
+      "fromTeam": null,
+      "createdAt": "2007-04-12T15:27:51",
+      "updatedAt": 1176418970,
+      "overallRating": null
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "id": "49503132817@N01",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
+    "hf-dataset-id": 6
+  },
+  "fromUser": null,
+  "fromTeam": null,
+  "embeddings": [],
+  "createdAt": "2005-11-17T18:36:41",
+  "updatedAt": 1143200089,
+  "name": "congratulations",
+  "width": 2035,
+  "height": 2035,
+  "format": "jpeg",
+  "license": "Attribution-ShareAlike License",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
+  "contentAuthor": "rhodes",
+  "url": "https://farm1.staticflickr.com/45/117156873_19373e33cb_o.jpg",
+  "annotations": [
+    {
+      "id": "49503132817@N01-annotation-1",
+      "content": "49503132817@N01",
+      "annotation": {
+        "type": "image-description",
+        "text": "a man is hugging another man",
+        "tags": []
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": null,
+      "fromTeam": null,
+      "createdAt": "2005-11-17T18:36:41",
+      "updatedAt": 1143200089,
+      "overallRating": null
+    }
+  ]
+}

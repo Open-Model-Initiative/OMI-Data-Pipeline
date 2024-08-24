@@ -1,0 +1,44 @@
+{
+  "id": "84301190@N00",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
+    "hf-dataset-id": 4
+  },
+  "fromUser": null,
+  "fromTeam": null,
+  "embeddings": [],
+  "createdAt": "2006-02-12T12:25:49",
+  "updatedAt": 1139856164,
+  "name": "sempre+em+frente",
+  "width": 1900,
+  "height": 1900,
+  "format": "jpeg",
+  "license": "Attribution-ShareAlike License",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
+  "contentAuthor": "Rosino",
+  "url": "https://farm1.staticflickr.com/42/99324237_d5f825d678_o.jpg",
+  "annotations": [
+    {
+      "id": "84301190@N00-annotation-1",
+      "content": "84301190@N00",
+      "annotation": {
+        "type": "image-description",
+        "text": "a red and yellow flag is painted on a rock",
+        "tags": []
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": null,
+      "fromTeam": null,
+      "createdAt": "2006-02-12T12:25:49",
+      "updatedAt": 1139856164,
+      "overallRating": null
+    }
+  ]
+}

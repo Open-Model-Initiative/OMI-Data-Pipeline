@@ -1,16 +1,24 @@
 import os
 import json
 from typing import Dict, Any
-from datasets import load_dataset, load_dataset_builder
+from datasets import load_dataset
 from PIL import Image
 import io
+from datetime import datetime
+
+
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return super().default(obj)
 
 
 def load_hugging_face_image(item, column: str) -> Image.Image:
     image = item[column]
 
     if isinstance(image, dict) and 'bytes' in image:
-        return Image.open(io.BytesIO(item['bytes']))
+        return Image.open(io.BytesIO(image['bytes']))
     elif isinstance(image, Image.Image):
         return image
     elif isinstance(image, str):
@@ -35,6 +43,8 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
         "fromUser": None,
         "fromTeam": None,
         "embeddings": [],
+        "createdAt": datetime.now().isoformat(),
+        "updatedAt": datetime.now().isoformat()
     }
 
     for target_field, source_field in mapping.items():
@@ -57,8 +67,8 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
                     "embedding": None,
                     "fromUser": None,
                     "fromTeam": None,
-                    "createdAt": entry.get('createdAt', ""),
-                    "updatedAt": entry.get('updatedAt', ""),
+                    "createdAt": entry['createdAt'],
+                    "updatedAt": entry['updatedAt'],
                     "overallRating": None
                 }]
             else:
@@ -73,24 +83,16 @@ def convert_dataset_to_json(dataset_name: str, mapping_file: str, output_dir: st
 
     dataset = load_dataset(dataset_name, split='train', streaming=True)
 
-    # TODO: Calculate or remove.
-    total_rows = 10000
-
-    data_amount = min(num_samples, total_rows)
-
-    iteration = iter(dataset)
-
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    for i in range(data_amount):
-        item = next(iteration)
+    for i, item in enumerate(dataset.take(num_samples)):
         json_entry = create_json_entry(dataset, dataset_name, item, i, mapping)
         output_file = os.path.join(output_dir, f"{json_entry['id']}.json")
         with open(output_file, 'w') as f:
-            json.dump(json_entry, f, indent=2)
+            json.dump(json_entry, f, indent=2, cls=DateTimeEncoder)
 
-    print(f"Created {data_amount} JSON files in {output_dir}")
+    print(f"Created {num_samples} JSON files in {output_dir}")
 
 
 if __name__ == "__main__":

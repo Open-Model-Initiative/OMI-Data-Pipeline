@@ -1,0 +1,44 @@
+{
+  "id": "93452909@N00",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
+    "hf-dataset-id": 3
+  },
+  "fromUser": null,
+  "fromTeam": null,
+  "embeddings": [],
+  "createdAt": "2006-02-05T15:12:49",
+  "updatedAt": 1153100311,
+  "name": "Avalon+Catalina+Island",
+  "width": 1944,
+  "height": 1948,
+  "format": "jpeg",
+  "license": "Attribution-ShareAlike License",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
+  "contentAuthor": "brewbooks",
+  "url": "https://farm1.staticflickr.com/73/191285624_daa944c19e_o.jpg",
+  "annotations": [
+    {
+      "id": "93452909@N00-annotation-1",
+      "content": "93452909@N00",
+      "annotation": {
+        "type": "image-description",
+        "text": "a large tree in the middle of a field",
+        "tags": []
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": null,
+      "fromTeam": null,
+      "createdAt": "2006-02-05T15:12:49",
+      "updatedAt": 1153100311,
+      "overallRating": null
+    }
+  ]
+}

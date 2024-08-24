@@ -1,0 +1,44 @@
+{
+  "id": "74733773@N00",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
+    "hf-dataset-id": 2
+  },
+  "fromUser": null,
+  "fromTeam": null,
+  "embeddings": [],
+  "createdAt": "2006-10-26T06:13:55",
+  "updatedAt": 1163988568,
+  "name": "Blackish+and+American+Oystercatcher+hybrid",
+  "width": 1074,
+  "height": 1074,
+  "format": "jpeg",
+  "license": "Attribution-ShareAlike License",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
+  "contentAuthor": "VSmithUK",
+  "url": "https://farm1.staticflickr.com/121/301487701_9e95ef704d_o.jpg",
+  "annotations": [
+    {
+      "id": "74733773@N00-annotation-1",
+      "content": "74733773@N00",
+      "annotation": {
+        "type": "image-description",
+        "text": "a bird with a red beak and a red beak",
+        "tags": []
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": null,
+      "fromTeam": null,
+      "createdAt": "2006-10-26T06:13:55",
+      "updatedAt": 1163988568,
+      "overallRating": null
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "id": "50457550@N00",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
+    "hf-dataset-id": 8
+  },
+  "fromUser": null,
+  "fromTeam": null,
+  "embeddings": [],
+  "createdAt": "2005-03-02T13:23:35",
+  "updatedAt": 1113364495,
+  "name": "where+they+meet",
+  "width": 1856,
+  "height": 1856,
+  "format": "jpeg",
+  "license": "Attribution-ShareAlike License",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
+  "contentAuthor": "Genista",
+  "url": "https://farm1.staticflickr.com/8/9280002_45fa65540c_o.jpg",
+  "annotations": [
+    {
+      "id": "50457550@N00-annotation-1",
+      "content": "50457550@N00",
+      "annotation": {
+        "type": "image-description",
+        "text": "a grassy area with a dirt patch and a patch of grass",
+        "tags": []
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": null,
+      "fromTeam": null,
+      "createdAt": "2005-03-02T13:23:35",
+      "updatedAt": 1113364495,
+      "overallRating": null
+    }
+  ]
+}
