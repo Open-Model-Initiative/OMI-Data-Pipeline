@@ -1,5 +1,6 @@
-import os
 import json
+import os
+import sys
 
 
 def convert_to_jsonl(input_dir, output_file):
@@ -22,7 +23,8 @@ def convert_to_jsonl(input_dir, output_file):
                 try:
                     with open(file_path, 'r') as json_file:
                         data = json.load(json_file)
-                        f.write(json.dumps(data) + '\n')
+                        json.dump(data, f)
+                        f.write('\n')
                     print(f"Successfully processed: {filename}")
                 except json.JSONDecodeError:
                     print(f"Error: {filename} is not a valid JSON file")
@@ -32,12 +34,24 @@ def convert_to_jsonl(input_dir, output_file):
     print(f"Total JSON files found: {json_files_found}")
 
 
-# Get the current directory
-current_dir = os.path.dirname(os.path.abspath(__file__))
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <relative_path>")
+        sys.exit(1)
 
-# Use the current directory as the input directory
-input_dir = current_dir
-output_file = os.path.join(current_dir, 'combined.jsonl')
+    relative_path = sys.argv[1]
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    input_dir = os.path.join(current_dir, relative_path)
 
-convert_to_jsonl(input_dir, output_file)
-print(f'JSONL file created: {output_file}')
+    if not os.path.isdir(input_dir):
+        print(f"Error: The specified path '{input_dir}' is not a valid directory.")
+        sys.exit(1)
+
+    output_file = os.path.join(input_dir, 'metadata.jsonl')
+
+    convert_to_jsonl(input_dir, output_file)
+    print(f'JSONL file created: {output_file}')
+
+
+if __name__ == "__main__":
+    main()
