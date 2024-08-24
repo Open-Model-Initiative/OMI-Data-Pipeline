@@ -4,6 +4,8 @@
 
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
+		// Python
+		"ms-python.python",
 		// Playwright
 		"ms-playwright.playwright",
 		// GPG Indicator for Git Signing
