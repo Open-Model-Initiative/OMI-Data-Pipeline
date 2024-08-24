@@ -11,9 +11,9 @@ pip install -r hf-requirements.txt
 ```shell
 huggingface-cli login
 
-huggingface-cli repo create openmodelinitiative/initial-test-dataset --type dataset
+huggingface-cli repo create openmodelinitiative/initial-test-dataset --type dataset --organization openmodelinitiative
 
-huggingface-cli upload openmodelinitiative/initial-test-dataset . . --repo-type dataset
+huggingface-cli upload openmodelinitiative/initial-test-dataset . . --repo-type dataset https://huggingface.co/datasetsopenmodelinitiative/initial-test-dataset/tree/main/
 ```
 
 # Enabling HF Transfer
@@ -21,7 +21,7 @@ huggingface-cli upload openmodelinitiative/initial-test-dataset . . --repo-type 
 For faster transfers, you can install and enable hf_transfer.
 https://huggingface.co/docs/huggingface_hub/v0.24.5/package_reference/environment_variables#hfhubenablehftransfer
 
-1. Install hf_transfer:
+1. Install hf_transfer (Windows only?):
 ```shell
 pip install huggingface_hub[hf_transfer]
 ```
