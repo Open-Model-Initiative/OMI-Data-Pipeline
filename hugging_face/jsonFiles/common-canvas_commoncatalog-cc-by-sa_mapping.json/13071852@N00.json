@@ -3,7 +3,9 @@
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
-  "urls": [],
+  "urls": [
+    "https://farm1.staticflickr.com/209/457037692_02433c3316_o.jpg"
+  ],
   "status": "available",
   "flags": 0,
   "meta": {
@@ -13,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2007-04-12T15:27:51",
-  "updatedAt": 1176418970,
+  "createdAt": "2024-08-24T12:55:40.956539",
+  "updatedAt": "2024-08-24T12:55:40.956546",
   "name": "Holly",
   "width": 1024,
   "height": 1024,
@@ -22,7 +24,6 @@
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": "treehouse1977",
-  "url": "https://farm1.staticflickr.com/209/457037692_02433c3316_o.jpg",
   "annotations": [
     {
       "id": "13071852@N00-annotation-1",
@@ -36,8 +37,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2007-04-12T15:27:51",
-      "updatedAt": 1176418970,
+      "createdAt": "2024-08-24T12:55:40.956539",
+      "updatedAt": "2024-08-24T12:55:40.956546",
       "overallRating": null
     }
   ]

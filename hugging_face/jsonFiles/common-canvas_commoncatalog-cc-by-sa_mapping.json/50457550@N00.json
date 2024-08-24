@@ -3,7 +3,9 @@
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
-  "urls": [],
+  "urls": [
+    "https://farm1.staticflickr.com/8/9280002_45fa65540c_o.jpg"
+  ],
   "status": "available",
   "flags": 0,
   "meta": {
@@ -13,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2005-03-02T13:23:35",
-  "updatedAt": 1113364495,
+  "createdAt": "2024-08-24T12:55:40.983693",
+  "updatedAt": "2024-08-24T12:55:40.983701",
   "name": "where+they+meet",
   "width": 1856,
   "height": 1856,
@@ -22,7 +24,6 @@
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": "Genista",
-  "url": "https://farm1.staticflickr.com/8/9280002_45fa65540c_o.jpg",
   "annotations": [
     {
       "id": "50457550@N00-annotation-1",
@@ -36,8 +37,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2005-03-02T13:23:35",
-      "updatedAt": 1113364495,
+      "createdAt": "2024-08-24T12:55:40.983693",
+      "updatedAt": "2024-08-24T12:55:40.983701",
       "overallRating": null
     }
   ]

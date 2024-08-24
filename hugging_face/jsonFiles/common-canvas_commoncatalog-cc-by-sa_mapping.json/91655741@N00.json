@@ -3,7 +3,9 @@
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
-  "urls": [],
+  "urls": [
+    "https://farm1.staticflickr.com/46/164611278_bd62643b1a_o.jpg"
+  ],
   "status": "available",
   "flags": 0,
   "meta": {
@@ -13,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2006-06-10T06:49:58",
-  "updatedAt": 1149998536,
+  "createdAt": "2024-08-24T12:55:41.000963",
+  "updatedAt": "2024-08-24T12:55:41.000969",
   "name": "WeedSpiral.JPG",
   "width": 1728,
   "height": 1700,
@@ -22,7 +24,6 @@
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": "darinmarshall",
-  "url": "https://farm1.staticflickr.com/46/164611278_bd62643b1a_o.jpg",
   "annotations": [
     {
       "id": "91655741@N00-annotation-1",
@@ -36,8 +37,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2006-06-10T06:49:58",
-      "updatedAt": 1149998536,
+      "createdAt": "2024-08-24T12:55:41.000963",
+      "updatedAt": "2024-08-24T12:55:41.000969",
       "overallRating": null
     }
   ]

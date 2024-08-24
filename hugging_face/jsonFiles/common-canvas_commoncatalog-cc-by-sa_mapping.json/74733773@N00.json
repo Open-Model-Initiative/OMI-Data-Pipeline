@@ -3,7 +3,9 @@
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
-  "urls": [],
+  "urls": [
+    "https://farm1.staticflickr.com/121/301487701_9e95ef704d_o.jpg"
+  ],
   "status": "available",
   "flags": 0,
   "meta": {
@@ -13,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2006-10-26T06:13:55",
-  "updatedAt": 1163988568,
+  "createdAt": "2024-08-24T12:55:40.829497",
+  "updatedAt": "2024-08-24T12:55:40.829510",
   "name": "Blackish+and+American+Oystercatcher+hybrid",
   "width": 1074,
   "height": 1074,
@@ -22,7 +24,6 @@
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": "VSmithUK",
-  "url": "https://farm1.staticflickr.com/121/301487701_9e95ef704d_o.jpg",
   "annotations": [
     {
       "id": "74733773@N00-annotation-1",
@@ -36,8 +37,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2006-10-26T06:13:55",
-      "updatedAt": 1163988568,
+      "createdAt": "2024-08-24T12:55:40.829497",
+      "updatedAt": "2024-08-24T12:55:40.829510",
       "overallRating": null
     }
   ]

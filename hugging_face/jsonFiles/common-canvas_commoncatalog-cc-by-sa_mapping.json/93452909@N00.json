@@ -3,7 +3,9 @@
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
-  "urls": [],
+  "urls": [
+    "https://farm1.staticflickr.com/73/191285624_daa944c19e_o.jpg"
+  ],
   "status": "available",
   "flags": 0,
   "meta": {
@@ -13,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2006-02-05T15:12:49",
-  "updatedAt": 1153100311,
+  "createdAt": "2024-08-24T12:55:40.856586",
+  "updatedAt": "2024-08-24T12:55:40.856599",
   "name": "Avalon+Catalina+Island",
   "width": 1944,
   "height": 1948,
@@ -22,7 +24,6 @@
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": "brewbooks",
-  "url": "https://farm1.staticflickr.com/73/191285624_daa944c19e_o.jpg",
   "annotations": [
     {
       "id": "93452909@N00-annotation-1",
@@ -36,8 +37,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2006-02-05T15:12:49",
-      "updatedAt": 1153100311,
+      "createdAt": "2024-08-24T12:55:40.856586",
+      "updatedAt": "2024-08-24T12:55:40.856599",
       "overallRating": null
     }
   ]

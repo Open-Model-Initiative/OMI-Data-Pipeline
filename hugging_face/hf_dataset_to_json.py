@@ -44,7 +44,14 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
         "fromTeam": None,
         "embeddings": [],
         "createdAt": datetime.now().isoformat(),
-        "updatedAt": datetime.now().isoformat()
+        "updatedAt": datetime.now().isoformat(),
+        "name": None,
+        "width": None,
+        "height": None,
+        "format": None,
+        "license": None,
+        "licenseUrl": None,
+        "contentAuthor": None
     }
 
     for target_field, source_field in mapping.items():
@@ -71,6 +78,8 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
                     "updatedAt": entry['updatedAt'],
                     "overallRating": None
                 }]
+            elif target_field == 'url':
+                entry['urls'] = [item[source_field]]
             else:
                 entry[target_field] = item[source_field]
 
@@ -91,6 +100,7 @@ def convert_dataset_to_json(dataset_name: str, mapping_file: str, output_dir: st
         output_file = os.path.join(output_dir, f"{json_entry['id']}.json")
         with open(output_file, 'w') as f:
             json.dump(json_entry, f, indent=2, cls=DateTimeEncoder)
+            f.write('\n')
 
     print(f"Created {num_samples} JSON files in {output_dir}")
 

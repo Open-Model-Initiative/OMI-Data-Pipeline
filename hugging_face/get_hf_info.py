@@ -1,5 +1,6 @@
-import os
+import glob
 import json
+import os
 from typing import Optional, Dict, List
 from datasets import load_dataset_builder
 
@@ -12,6 +13,10 @@ def save_dataset_info(ds_builder, dataset_name: str, base_path: str = "./dataset
         print(f"Creating directory {dataset_path}")
         os.makedirs(dataset_path)
     ds_builder.info.write_to_directory(dataset_path, True)
+
+    for filename in glob.glob(os.path.join(dataset_path, '*.json')):
+        with open(filename, 'a') as f:
+            f.write('\n')
 
     return dataset_path
 
@@ -62,8 +67,6 @@ def get_recommended_fields(ds_builder) -> Dict[str, Optional[str]]:
         'license': ['licensename', 'license'],
         'licenseUrl': ['licenseurl'],
         'contentAuthor': ['unickname', 'author'],
-        'createdAt': ['datetaken', 'created_at'],
-        'updatedAt': ['dateuploaded', 'updated_at'],
         'url': ['url', 'downloadurl', 'pageurl'],
     }
 
@@ -95,6 +98,7 @@ def create_mapping_file(dataset_name: str, recommended_fields: Dict[str, Optiona
     file_path = os.path.join(output_path, f"{safe_dataset_name}_mapping.json")
     with open(file_path, 'w') as f:
         json.dump(mapping, f, indent=2)
+        f.write('\n')
 
     print(f"Mapping file created: {file_path}")
 

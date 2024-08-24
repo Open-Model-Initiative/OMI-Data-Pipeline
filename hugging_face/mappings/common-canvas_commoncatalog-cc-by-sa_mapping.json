@@ -10,8 +10,6 @@
     "license": "licensename",
     "licenseUrl": "licenseurl",
     "contentAuthor": "unickname",
-    "createdAt": "datetaken",
-    "updatedAt": "dateuploaded",
     "url": "url",
     "image": "jpg",
     "annotation": "blip2_caption"

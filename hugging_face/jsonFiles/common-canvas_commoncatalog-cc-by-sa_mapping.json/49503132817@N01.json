@@ -3,7 +3,9 @@
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
-  "urls": [],
+  "urls": [
+    "https://farm1.staticflickr.com/45/117156873_19373e33cb_o.jpg"
+  ],
   "status": "available",
   "flags": 0,
   "meta": {
@@ -13,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2005-11-17T18:36:41",
-  "updatedAt": 1143200089,
+  "createdAt": "2024-08-24T12:55:40.946649",
+  "updatedAt": "2024-08-24T12:55:40.946659",
   "name": "congratulations",
   "width": 2035,
   "height": 2035,
@@ -22,7 +24,6 @@
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": "rhodes",
-  "url": "https://farm1.staticflickr.com/45/117156873_19373e33cb_o.jpg",
   "annotations": [
     {
       "id": "49503132817@N01-annotation-1",
@@ -36,8 +37,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2005-11-17T18:36:41",
-      "updatedAt": 1143200089,
+      "createdAt": "2024-08-24T12:55:40.946649",
+      "updatedAt": "2024-08-24T12:55:40.946659",
       "overallRating": null
     }
   ]
