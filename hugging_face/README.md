@@ -7,7 +7,7 @@ pip install --upgrade pip
 pip install -r hf-requirements.txt
 ```
 
-# Repo Creation
+# CLI Repo Creation
 ```shell
 huggingface-cli login
 
@@ -42,3 +42,24 @@ python get_hf_info.py 'common-canvas/commoncatalog-cc-by-sa'
 
 python hf_dataset_to_json.py 'common-canvas/commoncatalog-cc-by-sa' './mappings/common-canvas_commoncatalog-cc-by-sa_mapping.json' './jsonFiles/common-canvas_commoncatalog-cc-by-sa' 10
 ```
+
+# TODO
+
+- [ ] Try a smaller chunk size for process_dataset.py to make sure chunks work.
+- [ ] Try to push small set to hugging face to try it out.
+- [ ] Make script to download and show image from our private dataset (use hf_test.py reference)
+- [ ] Make download script only get data with status = available.
+- [ ] Remove hf_test.py
+- [ ] Remove test folder from jsonFiles
+- [ ] Remove rotten_tomatoes from dataset_info
+- [ ] Test pixelprose/make mapping updates if needed.
+- [ ] Copy size to original size and recalculate size after processing image.
+- [ ] Make config to set fromUser and fromTeam for content, set to OMI team/me for now?
+- [ ] Make independant script to count tokens with llama tokenizer, add token count to annotation data
+- [ ] Remove tag from annotations
+- [ ] Make annotation type short or long depending on token count
+- [ ] Make function to get suggested dimensions for specified size (e.g. calculate ratio instead of always using 256 x 256)
+- [ ] Refactor all scripts to use argparse
+- [ ] Split up scripts to be more API like (e.g. get hugging face features, get recommended mappings, etc. as separate scripts?)
+- [ ] Investigate making APIs for get dataset info/selecting mapping, adding to our data, etc.
+- [ ] Hook up UI to those APIs in order to allow users to contribute hugging face datasets.
