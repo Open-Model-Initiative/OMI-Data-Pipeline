@@ -87,3 +87,9 @@ tasks:
         task api:watch-api-logs &
         wait
       - echo "All logs watched"
+
+  smoke_tests:
+    desc: Run smoke tests for both API and PostgreSQL
+    cmds:
+      - task api-test:test_api
+      - task db:test-postgres
