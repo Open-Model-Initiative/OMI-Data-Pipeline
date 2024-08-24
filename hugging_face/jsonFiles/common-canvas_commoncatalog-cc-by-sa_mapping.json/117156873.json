@@ -1,50 +1,50 @@
 {
-  "id": "74733773@N00",
+  "id": 117156873,
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
   "urls": [
-    "https://farm1.staticflickr.com/121/301487701_9e95ef704d_o.jpg"
+    "https://farm1.staticflickr.com/45/117156873_19373e33cb_o.jpg"
   ],
   "status": "available",
   "flags": 0,
   "meta": {
     "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
-    "hf-dataset-id": 2
+    "hf-dataset-id": 6
   },
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:08:55.433867",
-  "updatedAt": "2024-08-24T13:08:55.433878",
-  "name": "Blackish+and+American+Oystercatcher+hybrid",
-  "width": 1074,
-  "height": 1074,
+  "createdAt": "2024-08-24T13:22:56.422475",
+  "updatedAt": "2024-08-24T13:22:56.422485",
+  "name": "congratulations",
+  "width": 2035,
+  "height": 2035,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": [
     {
-      "id": "VSmithUK-author",
-      "name": "VSmithUK",
+      "id": "rhodes-author",
+      "name": "rhodes",
       "url": null
     }
   ],
   "annotations": [
     {
-      "id": "74733773@N00-annotation-1",
-      "content": "74733773@N00",
+      "id": "117156873-annotation-1",
+      "content": 117156873,
       "annotation": {
         "type": "image-description",
-        "text": "a bird with a red beak and a red beak",
+        "text": "a man is hugging another man",
         "tags": []
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:08:55.433867",
-      "updatedAt": "2024-08-24T13:08:55.433878",
+      "createdAt": "2024-08-24T13:22:56.422475",
+      "updatedAt": "2024-08-24T13:22:56.422485",
       "overallRating": null
     }
   ]

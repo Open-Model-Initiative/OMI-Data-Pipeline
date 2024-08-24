@@ -1,0 +1,51 @@
+{
+  "id": 457985375,
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [
+    "https://farm1.staticflickr.com/197/457985375_d05e9b8a26_o.jpg"
+  ],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
+    "hf-dataset-id": 0
+  },
+  "fromUser": null,
+  "fromTeam": null,
+  "embeddings": [],
+  "createdAt": "2024-08-24T13:22:56.273825",
+  "updatedAt": "2024-08-24T13:22:56.273837",
+  "name": "",
+  "width": 1921,
+  "height": 1921,
+  "format": "jpeg",
+  "license": "Attribution-ShareAlike License",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
+  "contentAuthor": [
+    {
+      "id": "Rosino-author",
+      "name": "Rosino",
+      "url": null
+    }
+  ],
+  "annotations": [
+    {
+      "id": "457985375-annotation-1",
+      "content": 457985375,
+      "annotation": {
+        "type": "image-description",
+        "text": "the house of the duke of braganza",
+        "tags": []
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": null,
+      "fromTeam": null,
+      "createdAt": "2024-08-24T13:22:56.273825",
+      "updatedAt": "2024-08-24T13:22:56.273837",
+      "overallRating": null
+    }
+  ]
+}

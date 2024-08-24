@@ -1,5 +1,5 @@
 {
-  "id": "91655741@N00",
+  "id": 164611278,
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
@@ -15,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:08:55.608605",
-  "updatedAt": "2024-08-24T13:08:55.608611",
+  "createdAt": "2024-08-24T13:22:56.483998",
+  "updatedAt": "2024-08-24T13:22:56.484006",
   "name": "WeedSpiral.JPG",
   "width": 1728,
   "height": 1700,
@@ -32,8 +32,8 @@
   ],
   "annotations": [
     {
-      "id": "91655741@N00-annotation-1",
-      "content": "91655741@N00",
+      "id": "164611278-annotation-1",
+      "content": 164611278,
       "annotation": {
         "type": "image-description",
         "text": "a close up of a plant with many green leaves",
@@ -43,8 +43,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:08:55.608605",
-      "updatedAt": "2024-08-24T13:08:55.608611",
+      "createdAt": "2024-08-24T13:22:56.483998",
+      "updatedAt": "2024-08-24T13:22:56.484006",
       "overallRating": null
     }
   ]

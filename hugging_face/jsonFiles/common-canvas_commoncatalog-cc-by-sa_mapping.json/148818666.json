@@ -1,50 +1,50 @@
 {
-  "id": "13071852@N00",
+  "id": 148818666,
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
   "urls": [
-    "https://farm1.staticflickr.com/209/457037692_02433c3316_o.jpg"
+    "https://farm1.staticflickr.com/45/148818666_e7cc3616d6_o.jpg"
   ],
   "status": "available",
   "flags": 0,
   "meta": {
     "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
-    "hf-dataset-id": 7
+    "hf-dataset-id": 5
   },
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:08:55.561654",
-  "updatedAt": "2024-08-24T13:08:55.561660",
-  "name": "Holly",
-  "width": 1024,
-  "height": 1024,
+  "createdAt": "2024-08-24T13:22:56.395093",
+  "updatedAt": "2024-08-24T13:22:56.395105",
+  "name": "Fun+with+Flash",
+  "width": 1885,
+  "height": 1931,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": [
     {
-      "id": "treehouse1977-author",
-      "name": "treehouse1977",
+      "id": "quiddle.-author",
+      "name": "quiddle.",
       "url": null
     }
   ],
   "annotations": [
     {
-      "id": "13071852@N00-annotation-1",
-      "content": "13071852@N00",
+      "id": "148818666-annotation-1",
+      "content": 148818666,
       "annotation": {
         "type": "image-description",
-        "text": "a close up of the bark of a tree",
+        "text": "a tree with pink flowers in the sun",
         "tags": []
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:08:55.561654",
-      "updatedAt": "2024-08-24T13:08:55.561660",
+      "createdAt": "2024-08-24T13:22:56.395093",
+      "updatedAt": "2024-08-24T13:22:56.395105",
       "overallRating": null
     }
   ]

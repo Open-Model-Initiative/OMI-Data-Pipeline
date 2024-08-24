@@ -1,50 +1,50 @@
 {
-  "id": "84301190@N00",
+  "id": 457037692,
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
   "urls": [
-    "https://farm1.staticflickr.com/42/99324237_d5f825d678_o.jpg"
+    "https://farm1.staticflickr.com/209/457037692_02433c3316_o.jpg"
   ],
   "status": "available",
   "flags": 0,
   "meta": {
     "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
-    "hf-dataset-id": 4
+    "hf-dataset-id": 7
   },
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:08:55.499328",
-  "updatedAt": "2024-08-24T13:08:55.499340",
-  "name": "sempre+em+frente",
-  "width": 1900,
-  "height": 1900,
+  "createdAt": "2024-08-24T13:22:56.434498",
+  "updatedAt": "2024-08-24T13:22:56.434510",
+  "name": "Holly",
+  "width": 1024,
+  "height": 1024,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": [
     {
-      "id": "Rosino-author",
-      "name": "Rosino",
+      "id": "treehouse1977-author",
+      "name": "treehouse1977",
       "url": null
     }
   ],
   "annotations": [
     {
-      "id": "84301190@N00-annotation-1",
-      "content": "84301190@N00",
+      "id": "457037692-annotation-1",
+      "content": 457037692,
       "annotation": {
         "type": "image-description",
-        "text": "a red and yellow flag is painted on a rock",
+        "text": "a close up of the bark of a tree",
         "tags": []
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:08:55.499328",
-      "updatedAt": "2024-08-24T13:08:55.499340",
+      "createdAt": "2024-08-24T13:22:56.434498",
+      "updatedAt": "2024-08-24T13:22:56.434510",
       "overallRating": null
     }
   ]

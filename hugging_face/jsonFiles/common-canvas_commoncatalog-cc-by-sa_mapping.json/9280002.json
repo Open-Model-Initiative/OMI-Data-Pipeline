@@ -1,50 +1,50 @@
 {
-  "id": "93452909@N00",
+  "id": 9280002,
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
   "urls": [
-    "https://farm1.staticflickr.com/73/191285624_daa944c19e_o.jpg"
+    "https://farm1.staticflickr.com/8/9280002_45fa65540c_o.jpg"
   ],
   "status": "available",
   "flags": 0,
   "meta": {
     "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
-    "hf-dataset-id": 3
+    "hf-dataset-id": 8
   },
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:08:55.462631",
-  "updatedAt": "2024-08-24T13:08:55.462645",
-  "name": "Avalon+Catalina+Island",
-  "width": 1944,
-  "height": 1948,
+  "createdAt": "2024-08-24T13:22:56.465165",
+  "updatedAt": "2024-08-24T13:22:56.465176",
+  "name": "where+they+meet",
+  "width": 1856,
+  "height": 1856,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": [
     {
-      "id": "brewbooks-author",
-      "name": "brewbooks",
+      "id": "Genista-author",
+      "name": "Genista",
       "url": null
     }
   ],
   "annotations": [
     {
-      "id": "93452909@N00-annotation-1",
-      "content": "93452909@N00",
+      "id": "9280002-annotation-1",
+      "content": 9280002,
       "annotation": {
         "type": "image-description",
-        "text": "a large tree in the middle of a field",
+        "text": "a grassy area with a dirt patch and a patch of grass",
         "tags": []
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:08:55.462631",
-      "updatedAt": "2024-08-24T13:08:55.462645",
+      "createdAt": "2024-08-24T13:22:56.465165",
+      "updatedAt": "2024-08-24T13:22:56.465176",
       "overallRating": null
     }
   ]

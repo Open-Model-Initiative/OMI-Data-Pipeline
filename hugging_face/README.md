@@ -32,7 +32,7 @@ pip install huggingface_hub[hf_transfer]
 ```shell
 python hf_dataset_info.py <dataset_name>
 
-python hf_dataset_to_json.py <dataset_name> <mapping_file> <output_dir>
+python hf_dataset_to_json.py <dataset_name> <mapping_file> <output_dir> [num_samples]
 ```
 
 e.g.
@@ -40,5 +40,5 @@ e.g.
 ```shell
 python get_hf_info.py 'common-canvas/commoncatalog-cc-by-sa'
 
-python hf_dataset_to_json.py 'common-canvas/commoncatalog-cc-by-sa' './mappings/common-canvas_commoncatalog-cc-by-sa_mapping.json' './jsonFiles/common-canvas_commoncatalog-cc-by-sa_mapping.json'
+python hf_dataset_to_json.py 'common-canvas/commoncatalog-cc-by-sa' './mappings/common-canvas_commoncatalog-cc-by-sa_mapping.json' './jsonFiles/common-canvas_commoncatalog-cc-by-sa_mapping.json' 10
 ```

@@ -1,50 +1,50 @@
 {
-  "id": "50457550@N00",
+  "id": 301487701,
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
   "urls": [
-    "https://farm1.staticflickr.com/8/9280002_45fa65540c_o.jpg"
+    "https://farm1.staticflickr.com/121/301487701_9e95ef704d_o.jpg"
   ],
   "status": "available",
   "flags": 0,
   "meta": {
     "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
-    "hf-dataset-id": 8
+    "hf-dataset-id": 2
   },
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:08:55.590700",
-  "updatedAt": "2024-08-24T13:08:55.590710",
-  "name": "where+they+meet",
-  "width": 1856,
-  "height": 1856,
+  "createdAt": "2024-08-24T13:22:56.306160",
+  "updatedAt": "2024-08-24T13:22:56.306167",
+  "name": "Blackish+and+American+Oystercatcher+hybrid",
+  "width": 1074,
+  "height": 1074,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": [
     {
-      "id": "Genista-author",
-      "name": "Genista",
+      "id": "VSmithUK-author",
+      "name": "VSmithUK",
       "url": null
     }
   ],
   "annotations": [
     {
-      "id": "50457550@N00-annotation-1",
-      "content": "50457550@N00",
+      "id": "301487701-annotation-1",
+      "content": 301487701,
       "annotation": {
         "type": "image-description",
-        "text": "a grassy area with a dirt patch and a patch of grass",
+        "text": "a bird with a red beak and a red beak",
         "tags": []
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:08:55.590700",
-      "updatedAt": "2024-08-24T13:08:55.590710",
+      "createdAt": "2024-08-24T13:22:56.306160",
+      "updatedAt": "2024-08-24T13:22:56.306167",
       "overallRating": null
     }
   ]

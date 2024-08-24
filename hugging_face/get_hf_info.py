@@ -58,7 +58,7 @@ def get_recommended_annotation_feature(ds_builder) -> Optional[str]:
 
 def get_recommended_fields(ds_builder) -> Dict[str, Optional[str]]:
     field_mapping = {
-        'id': ['uid', 'id', 'key'],
+        'id': ['photoid', 'uid', 'id', 'key'],
         'name': ['title', 'name'],
         'width': ['width'],
         'height': ['height'],

@@ -92,7 +92,7 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
     return entry
 
 
-def convert_dataset_to_json(dataset_name: str, mapping_file: str, output_dir: str, num_samples: int = 10):
+def convert_dataset_to_json(dataset_name: str, mapping_file: str, output_dir: str, num_samples: int):
     with open(mapping_file, 'r') as f:
         mapping = json.load(f)['field_mapping']
 
@@ -113,12 +113,13 @@ def convert_dataset_to_json(dataset_name: str, mapping_file: str, output_dir: st
 
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) != 4:
-        print("Usage: python script.py <dataset_name> <mapping_file> <output_dir>")
+    if len(sys.argv) < 4 or len(sys.argv) > 5:
+        print("Usage: python script.py <dataset_name> <mapping_file> <output_dir> [num_samples]")
         sys.exit(1)
 
     dataset_name = sys.argv[1]
     mapping_file = sys.argv[2]
     output_dir = sys.argv[3]
+    num_samples = int(sys.argv[4]) if len(sys.argv) == 5 else 10
 
-    convert_dataset_to_json(dataset_name, mapping_file, output_dir)
+    convert_dataset_to_json(dataset_name, mapping_file, output_dir, num_samples)

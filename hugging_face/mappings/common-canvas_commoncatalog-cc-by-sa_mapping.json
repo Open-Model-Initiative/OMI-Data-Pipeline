@@ -1,7 +1,7 @@
 {
   "dataset_name": "common-canvas/commoncatalog-cc-by-sa",
   "field_mapping": {
-    "id": "uid",
+    "id": "photoid",
     "name": "title",
     "width": "width",
     "height": "height",

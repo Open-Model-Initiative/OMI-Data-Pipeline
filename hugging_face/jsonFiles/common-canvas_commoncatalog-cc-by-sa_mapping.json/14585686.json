@@ -1,50 +1,50 @@
 {
-  "id": "49503132817@N01",
+  "id": 14585686,
   "type": "image",
   "hash": "tbd",
   "phash": "tbd",
   "urls": [
-    "https://farm1.staticflickr.com/45/117156873_19373e33cb_o.jpg"
+    "https://farm1.staticflickr.com/10/14585686_ec318b5a24_o.jpg"
   ],
   "status": "available",
   "flags": 0,
   "meta": {
     "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
-    "hf-dataset-id": 6
+    "hf-dataset-id": 1
   },
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:08:55.551468",
-  "updatedAt": "2024-08-24T13:08:55.551480",
-  "name": "congratulations",
-  "width": 2035,
-  "height": 2035,
+  "createdAt": "2024-08-24T13:22:56.295713",
+  "updatedAt": "2024-08-24T13:22:56.295723",
+  "name": "wooden+railing",
+  "width": 1930,
+  "height": 1930,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
   "contentAuthor": [
     {
-      "id": "rhodes-author",
-      "name": "rhodes",
+      "id": "Genista-author",
+      "name": "Genista",
       "url": null
     }
   ],
   "annotations": [
     {
-      "id": "49503132817@N01-annotation-1",
-      "content": "49503132817@N01",
+      "id": "14585686-annotation-1",
+      "content": 14585686,
       "annotation": {
         "type": "image-description",
-        "text": "a man is hugging another man",
+        "text": "a bird is sitting on a wooden bench",
         "tags": []
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:08:55.551468",
-      "updatedAt": "2024-08-24T13:08:55.551480",
+      "createdAt": "2024-08-24T13:22:56.295713",
+      "updatedAt": "2024-08-24T13:22:56.295723",
       "overallRating": null
     }
   ]

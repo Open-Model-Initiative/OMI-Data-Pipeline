@@ -1,0 +1,51 @@
+{
+  "id": 99324237,
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [
+    "https://farm1.staticflickr.com/42/99324237_d5f825d678_o.jpg"
+  ],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "common-canvas/commoncatalog-cc-by-sa",
+    "hf-dataset-id": 4
+  },
+  "fromUser": null,
+  "fromTeam": null,
+  "embeddings": [],
+  "createdAt": "2024-08-24T13:22:56.369754",
+  "updatedAt": "2024-08-24T13:22:56.369767",
+  "name": "sempre+em+frente",
+  "width": 1900,
+  "height": 1900,
+  "format": "jpeg",
+  "license": "Attribution-ShareAlike License",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
+  "contentAuthor": [
+    {
+      "id": "Rosino-author",
+      "name": "Rosino",
+      "url": null
+    }
+  ],
+  "annotations": [
+    {
+      "id": "99324237-annotation-1",
+      "content": 99324237,
+      "annotation": {
+        "type": "image-description",
+        "text": "a red and yellow flag is painted on a rock",
+        "tags": []
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": null,
+      "fromTeam": null,
+      "createdAt": "2024-08-24T13:22:56.369754",
+      "updatedAt": "2024-08-24T13:22:56.369767",
+      "overallRating": null
+    }
+  ]
+}
