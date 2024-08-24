@@ -15,15 +15,21 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T12:55:41.000963",
-  "updatedAt": "2024-08-24T12:55:41.000969",
+  "createdAt": "2024-08-24T13:08:55.608605",
+  "updatedAt": "2024-08-24T13:08:55.608611",
   "name": "WeedSpiral.JPG",
   "width": 1728,
   "height": 1700,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
-  "contentAuthor": "darinmarshall",
+  "contentAuthor": [
+    {
+      "id": "darinmarshall-author",
+      "name": "darinmarshall",
+      "url": null
+    }
+  ],
   "annotations": [
     {
       "id": "91655741@N00-annotation-1",
@@ -37,8 +43,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T12:55:41.000963",
-      "updatedAt": "2024-08-24T12:55:41.000969",
+      "createdAt": "2024-08-24T13:08:55.608605",
+      "updatedAt": "2024-08-24T13:08:55.608611",
       "overallRating": null
     }
   ]

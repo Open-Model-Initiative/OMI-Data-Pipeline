@@ -15,15 +15,21 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T12:55:40.893279",
-  "updatedAt": "2024-08-24T12:55:40.893291",
+  "createdAt": "2024-08-24T13:08:55.499328",
+  "updatedAt": "2024-08-24T13:08:55.499340",
   "name": "sempre+em+frente",
   "width": 1900,
   "height": 1900,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
-  "contentAuthor": "Rosino",
+  "contentAuthor": [
+    {
+      "id": "Rosino-author",
+      "name": "Rosino",
+      "url": null
+    }
+  ],
   "annotations": [
     {
       "id": "84301190@N00-annotation-1",
@@ -37,8 +43,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T12:55:40.893279",
-      "updatedAt": "2024-08-24T12:55:40.893291",
+      "createdAt": "2024-08-24T13:08:55.499328",
+      "updatedAt": "2024-08-24T13:08:55.499340",
       "overallRating": null
     }
   ]

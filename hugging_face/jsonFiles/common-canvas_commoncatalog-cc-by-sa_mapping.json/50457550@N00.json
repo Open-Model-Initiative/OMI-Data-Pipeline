@@ -15,15 +15,21 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T12:55:40.983693",
-  "updatedAt": "2024-08-24T12:55:40.983701",
+  "createdAt": "2024-08-24T13:08:55.590700",
+  "updatedAt": "2024-08-24T13:08:55.590710",
   "name": "where+they+meet",
   "width": 1856,
   "height": 1856,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
-  "contentAuthor": "Genista",
+  "contentAuthor": [
+    {
+      "id": "Genista-author",
+      "name": "Genista",
+      "url": null
+    }
+  ],
   "annotations": [
     {
       "id": "50457550@N00-annotation-1",
@@ -37,8 +43,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T12:55:40.983693",
-      "updatedAt": "2024-08-24T12:55:40.983701",
+      "createdAt": "2024-08-24T13:08:55.590700",
+      "updatedAt": "2024-08-24T13:08:55.590710",
       "overallRating": null
     }
   ]

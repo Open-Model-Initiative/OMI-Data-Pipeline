@@ -15,15 +15,21 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T12:55:40.919419",
-  "updatedAt": "2024-08-24T12:55:40.919428",
+  "createdAt": "2024-08-24T13:08:55.525242",
+  "updatedAt": "2024-08-24T13:08:55.525254",
   "name": "Fun+with+Flash",
   "width": 1885,
   "height": 1931,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
-  "contentAuthor": "quiddle.",
+  "contentAuthor": [
+    {
+      "id": "quiddle.-author",
+      "name": "quiddle.",
+      "url": null
+    }
+  ],
   "annotations": [
     {
       "id": "60738334@N00-annotation-1",
@@ -37,8 +43,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T12:55:40.919419",
-      "updatedAt": "2024-08-24T12:55:40.919428",
+      "createdAt": "2024-08-24T13:08:55.525242",
+      "updatedAt": "2024-08-24T13:08:55.525254",
       "overallRating": null
     }
   ]

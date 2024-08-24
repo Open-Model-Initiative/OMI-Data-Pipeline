@@ -15,15 +15,21 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T12:55:40.946649",
-  "updatedAt": "2024-08-24T12:55:40.946659",
+  "createdAt": "2024-08-24T13:08:55.551468",
+  "updatedAt": "2024-08-24T13:08:55.551480",
   "name": "congratulations",
   "width": 2035,
   "height": 2035,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
-  "contentAuthor": "rhodes",
+  "contentAuthor": [
+    {
+      "id": "rhodes-author",
+      "name": "rhodes",
+      "url": null
+    }
+  ],
   "annotations": [
     {
       "id": "49503132817@N01-annotation-1",
@@ -37,8 +43,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T12:55:40.946649",
-      "updatedAt": "2024-08-24T12:55:40.946659",
+      "createdAt": "2024-08-24T13:08:55.551468",
+      "updatedAt": "2024-08-24T13:08:55.551480",
       "overallRating": null
     }
   ]

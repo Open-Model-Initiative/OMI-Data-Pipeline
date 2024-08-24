@@ -15,15 +15,21 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T12:55:40.856586",
-  "updatedAt": "2024-08-24T12:55:40.856599",
+  "createdAt": "2024-08-24T13:08:55.462631",
+  "updatedAt": "2024-08-24T13:08:55.462645",
   "name": "Avalon+Catalina+Island",
   "width": 1944,
   "height": 1948,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
-  "contentAuthor": "brewbooks",
+  "contentAuthor": [
+    {
+      "id": "brewbooks-author",
+      "name": "brewbooks",
+      "url": null
+    }
+  ],
   "annotations": [
     {
       "id": "93452909@N00-annotation-1",
@@ -37,8 +43,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T12:55:40.856586",
-      "updatedAt": "2024-08-24T12:55:40.856599",
+      "createdAt": "2024-08-24T13:08:55.462631",
+      "updatedAt": "2024-08-24T13:08:55.462645",
       "overallRating": null
     }
   ]

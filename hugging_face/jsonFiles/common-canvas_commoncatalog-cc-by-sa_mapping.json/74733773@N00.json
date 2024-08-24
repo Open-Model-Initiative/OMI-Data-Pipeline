@@ -15,15 +15,21 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T12:55:40.829497",
-  "updatedAt": "2024-08-24T12:55:40.829510",
+  "createdAt": "2024-08-24T13:08:55.433867",
+  "updatedAt": "2024-08-24T13:08:55.433878",
   "name": "Blackish+and+American+Oystercatcher+hybrid",
   "width": 1074,
   "height": 1074,
   "format": "jpeg",
   "license": "Attribution-ShareAlike License",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/2.0/",
-  "contentAuthor": "VSmithUK",
+  "contentAuthor": [
+    {
+      "id": "VSmithUK-author",
+      "name": "VSmithUK",
+      "url": null
+    }
+  ],
   "annotations": [
     {
       "id": "74733773@N00-annotation-1",
@@ -37,8 +43,8 @@
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T12:55:40.829497",
-      "updatedAt": "2024-08-24T12:55:40.829510",
+      "createdAt": "2024-08-24T13:08:55.433867",
+      "updatedAt": "2024-08-24T13:08:55.433878",
       "overallRating": null
     }
   ]

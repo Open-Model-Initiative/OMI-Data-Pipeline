@@ -78,6 +78,12 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
                     "updatedAt": entry['updatedAt'],
                     "overallRating": None
                 }]
+            elif target_field == 'contentAuthor':
+                entry['contentAuthor'] = [{
+                    "id": f"{item[source_field]}-author",
+                    "name": f"{item[source_field]}",
+                    "url": entry['urls'][0] if entry['urls'] else None
+                }]
             elif target_field == 'url':
                 entry['urls'] = [item[source_field]]
             else:
