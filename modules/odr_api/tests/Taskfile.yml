@@ -16,6 +16,7 @@ tasks:
   test-all:
     desc: Run all tests in order
     cmds:
+      - task: health-check
       - task: test-integration
         vars: {CLI_ARGS: 'all'}
 
@@ -30,3 +31,8 @@ tasks:
     desc: Display help information about using the test suite
     cmds:
       - python modules/odr_api/tests/integration/run_integration.py --help
+
+  health-check:
+    desc: Run smoke test for the API
+    cmds:
+      - pytest -s modules/odr_api/tests/integration/models/test_health.py
