@@ -91,5 +91,5 @@ tasks:
   smoke_tests:
     desc: Run smoke tests for both API and PostgreSQL
     cmds:
-      - task api-test:test_api
+      - task api-test:health-check
       - task db:test-postgres
