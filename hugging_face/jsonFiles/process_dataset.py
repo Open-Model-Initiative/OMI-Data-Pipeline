@@ -1,6 +1,7 @@
 import argparse
 import json
 import io
+import math
 import os
 
 from io import BytesIO
@@ -9,6 +10,44 @@ from pathlib import Path
 import requests
 from PIL import Image
 from datasets import load_dataset, Dataset, Image as HF_Image
+
+
+# Taken from https://github.com/huggingface/diffusers/blob/2dad462d9bf9890df09bfb088bf0a446c6074bec/src/diffusers/pipelines/pixart_alpha/pipeline_pixart_alpha.py#L135
+ASPECT_RATIO_256_BIN = {
+    "0.25": [128.0, 512.0],
+    "0.28": [128.0, 464.0],
+    "0.32": [144.0, 448.0],
+    "0.33": [144.0, 432.0],
+    "0.35": [144.0, 416.0],
+    "0.4": [160.0, 400.0],
+    "0.42": [160.0, 384.0],
+    "0.48": [176.0, 368.0],
+    "0.5": [176.0, 352.0],
+    "0.52": [176.0, 336.0],
+    "0.57": [192.0, 336.0],
+    "0.6": [192.0, 320.0],
+    "0.68": [208.0, 304.0],
+    "0.72": [208.0, 288.0],
+    "0.78": [224.0, 288.0],
+    "0.82": [224.0, 272.0],
+    "0.88": [240.0, 272.0],
+    "0.94": [240.0, 256.0],
+    "1.0": [256.0, 256.0],
+    "1.07": [256.0, 240.0],
+    "1.13": [272.0, 240.0],
+    "1.21": [272.0, 224.0],
+    "1.29": [288.0, 224.0],
+    "1.38": [288.0, 208.0],
+    "1.46": [304.0, 208.0],
+    "1.67": [320.0, 192.0],
+    "1.75": [336.0, 192.0],
+    "2.0": [352.0, 176.0],
+    "2.09": [368.0, 176.0],
+    "2.4": [384.0, 160.0],
+    "2.5": [400.0, 160.0],
+    "3.0": [432.0, 144.0],
+    "4.0": [512.0, 128.0],
+}
 
 
 def process_chunk(output_dir):
@@ -51,6 +90,16 @@ def delete_chunk(output_dir):
             file.unlink()
 
 
+def get_target_size(img):
+    width, height = img.size
+    aspect_ratio = width / height
+
+    closest_ratio = min(ASPECT_RATIO_256_BIN.keys(), key=lambda x: abs(float(x) - aspect_ratio))
+    target_width, target_height = ASPECT_RATIO_256_BIN[closest_ratio]
+
+    return int(target_width), int(target_height)
+
+
 def process_jsonl(input_file, chunk_size):
     input_path = Path(input_file).resolve()
     input_dir = input_path.parent
@@ -80,14 +129,15 @@ def process_jsonl(input_file, chunk_size):
                 image_filename = url.split('/')[-1]
                 data['image'] = image_filename
 
-                data['original_width'] = data.get('width')
-                data['original_height'] = data.get('height')
-
-                data['width'] = 256
-                data['height'] = 256
-
                 img = Image.open(BytesIO(image_content))
-                img_resized = img.resize((256, 256))
+
+                data['original_width'], data['original_height'] = img.size
+
+                target_width, target_height = get_target_size(img)
+                data['width'] = target_width
+                data['height'] = target_height
+
+                img_resized = img.resize((target_width, target_height))
 
                 img_resized.save(output_dir / image_filename)
 

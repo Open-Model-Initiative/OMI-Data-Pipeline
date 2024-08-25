@@ -68,8 +68,7 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
                     "content": entry['id'],
                     "annotation": {
                         "type": "image-description",
-                        "text": item[source_field],
-                        "tags": []
+                        "text": item[source_field]
                     },
                     "manuallyAdjusted": False,
                     "embedding": None,
