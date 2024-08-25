@@ -15,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:22:56.295713",
-  "updatedAt": "2024-08-24T13:22:56.295723",
+  "createdAt": "2024-08-25T14:28:26.607286",
+  "updatedAt": "2024-08-25T14:28:26.607313",
   "name": "wooden+railing",
   "width": 1930,
   "height": 1930,
@@ -36,15 +36,14 @@
       "content": 14585686,
       "annotation": {
         "type": "image-description",
-        "text": "a bird is sitting on a wooden bench",
-        "tags": []
+        "text": "a bird is sitting on a wooden bench"
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:22:56.295713",
-      "updatedAt": "2024-08-24T13:22:56.295723",
+      "createdAt": "2024-08-25T14:28:26.607286",
+      "updatedAt": "2024-08-25T14:28:26.607313",
       "overallRating": null
     }
   ]

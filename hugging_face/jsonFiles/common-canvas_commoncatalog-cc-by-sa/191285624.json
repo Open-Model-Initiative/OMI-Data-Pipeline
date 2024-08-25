@@ -15,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:22:56.332732",
-  "updatedAt": "2024-08-24T13:22:56.332743",
+  "createdAt": "2024-08-25T14:28:26.659075",
+  "updatedAt": "2024-08-25T14:28:26.659089",
   "name": "Avalon+Catalina+Island",
   "width": 1944,
   "height": 1948,
@@ -36,15 +36,14 @@
       "content": 191285624,
       "annotation": {
         "type": "image-description",
-        "text": "a large tree in the middle of a field",
-        "tags": []
+        "text": "a large tree in the middle of a field"
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:22:56.332732",
-      "updatedAt": "2024-08-24T13:22:56.332743",
+      "createdAt": "2024-08-25T14:28:26.659075",
+      "updatedAt": "2024-08-25T14:28:26.659089",
       "overallRating": null
     }
   ]

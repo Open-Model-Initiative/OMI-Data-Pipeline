@@ -3,43 +3,9 @@ import json
 import os
 from typing import Dict, List, Optional
 
-
 from datasets import load_dataset_builder
 
-
-def save_dataset_info(ds_builder, dataset_name: str, base_path: str = "./dataset_info") -> str:
-    dataset_path = os.path.join(base_path, dataset_name)
-
-    print(f"Saving dataset information for {dataset_name}")
-    if not os.path.exists(dataset_path):
-        print(f"Creating directory {dataset_path}")
-        os.makedirs(dataset_path)
-    ds_builder.info.write_to_directory(dataset_path, True)
-
-    for filename in glob.glob(os.path.join(dataset_path, '*.json')):
-        with open(filename, 'a') as f:
-            f.write('\n')
-
-    return dataset_path
-
-
-def print_dataset_debug_info(ds_builder):
-    print(f"Homepage: {ds_builder.info.homepage}")
-    print(f"Description: {ds_builder.info.description}")
-    print(f"License: {ds_builder.info.license}")
-    print(f"Download Size (Bytes): {ds_builder.info.download_size}")
-    print(f"Dataset Version: {ds_builder.info.version}")
-
-    print("Features: ")
-    for feature, details in ds_builder.info.features.items():
-        print(f"{feature}: {details}")
-
-    print("Splits: ")
-    if isinstance(ds_builder.info.splits, dict):
-        for split, details in ds_builder.info.splits.items():
-            print(f"{split}: {details}")
-    else:
-        print(f"Single split: {ds_builder.info.splits}")
+import get_hf_features
 
 
 def get_recommended_image_feature(ds_builder) -> Optional[str]:
@@ -106,11 +72,7 @@ def create_mapping_file(dataset_name: str, recommended_fields: Dict[str, Optiona
 
 
 def main(dataset_name: str):
-    ds_builder = load_dataset_builder(dataset_name)
-    dataset_path = save_dataset_info(ds_builder, dataset_name)
-    print(f"Dataset information saved to {dataset_path}")
-
-    print_dataset_debug_info(ds_builder)
+    ds_builder = get_hf_features.get_ds_builder(dataset_name)
 
     recommended_fields = get_recommended_fields(ds_builder)
     create_mapping_file(dataset_name, recommended_fields)

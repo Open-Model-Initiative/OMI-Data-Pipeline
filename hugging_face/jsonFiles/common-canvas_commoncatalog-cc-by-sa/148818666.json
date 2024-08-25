@@ -15,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:22:56.395093",
-  "updatedAt": "2024-08-24T13:22:56.395105",
+  "createdAt": "2024-08-25T14:28:26.735862",
+  "updatedAt": "2024-08-25T14:28:26.735876",
   "name": "Fun+with+Flash",
   "width": 1885,
   "height": 1931,
@@ -36,15 +36,14 @@
       "content": 148818666,
       "annotation": {
         "type": "image-description",
-        "text": "a tree with pink flowers in the sun",
-        "tags": []
+        "text": "a tree with pink flowers in the sun"
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:22:56.395093",
-      "updatedAt": "2024-08-24T13:22:56.395105",
+      "createdAt": "2024-08-25T14:28:26.735862",
+      "updatedAt": "2024-08-25T14:28:26.735876",
       "overallRating": null
     }
   ]

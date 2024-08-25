@@ -15,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:22:56.465165",
-  "updatedAt": "2024-08-24T13:22:56.465176",
+  "createdAt": "2024-08-25T14:28:26.817211",
+  "updatedAt": "2024-08-25T14:28:26.817227",
   "name": "where+they+meet",
   "width": 1856,
   "height": 1856,
@@ -36,15 +36,14 @@
       "content": 9280002,
       "annotation": {
         "type": "image-description",
-        "text": "a grassy area with a dirt patch and a patch of grass",
-        "tags": []
+        "text": "a grassy area with a dirt patch and a patch of grass"
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:22:56.465165",
-      "updatedAt": "2024-08-24T13:22:56.465176",
+      "createdAt": "2024-08-25T14:28:26.817211",
+      "updatedAt": "2024-08-25T14:28:26.817227",
       "overallRating": null
     }
   ]

@@ -15,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:22:56.483998",
-  "updatedAt": "2024-08-24T13:22:56.484006",
+  "createdAt": "2024-08-25T14:28:26.839225",
+  "updatedAt": "2024-08-25T14:28:26.839237",
   "name": "WeedSpiral.JPG",
   "width": 1728,
   "height": 1700,
@@ -36,15 +36,14 @@
       "content": 164611278,
       "annotation": {
         "type": "image-description",
-        "text": "a close up of a plant with many green leaves",
-        "tags": []
+        "text": "a close up of a plant with many green leaves"
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:22:56.483998",
-      "updatedAt": "2024-08-24T13:22:56.484006",
+      "createdAt": "2024-08-25T14:28:26.839225",
+      "updatedAt": "2024-08-25T14:28:26.839237",
       "overallRating": null
     }
   ]

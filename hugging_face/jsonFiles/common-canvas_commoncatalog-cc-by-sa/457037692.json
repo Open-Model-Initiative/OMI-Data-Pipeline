@@ -15,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:22:56.434498",
-  "updatedAt": "2024-08-24T13:22:56.434510",
+  "createdAt": "2024-08-25T14:28:26.783559",
+  "updatedAt": "2024-08-25T14:28:26.783582",
   "name": "Holly",
   "width": 1024,
   "height": 1024,
@@ -36,15 +36,14 @@
       "content": 457037692,
       "annotation": {
         "type": "image-description",
-        "text": "a close up of the bark of a tree",
-        "tags": []
+        "text": "a close up of the bark of a tree"
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:22:56.434498",
-      "updatedAt": "2024-08-24T13:22:56.434510",
+      "createdAt": "2024-08-25T14:28:26.783559",
+      "updatedAt": "2024-08-25T14:28:26.783582",
       "overallRating": null
     }
   ]

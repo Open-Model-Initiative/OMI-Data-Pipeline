@@ -11,6 +11,7 @@ import requests
 from PIL import Image
 from datasets import load_dataset, Dataset, Image as HF_Image
 
+dataset_repo = "openmodelinitiative/initial-test-dataset-private"
 
 # Taken from https://github.com/huggingface/diffusers/blob/2dad462d9bf9890df09bfb088bf0a446c6074bec/src/diffusers/pipelines/pixart_alpha/pipeline_pixart_alpha.py#L135
 ASPECT_RATIO_256_BIN = {
@@ -60,7 +61,6 @@ def upload_chunk(output_dir):
 
     jsonFile = os.path.join(output_dir, 'metadata.jsonl')
 
-    # Load the dataset
     dataset = load_dataset('json', data_files=jsonFile)['train']
 
     # Get the list of image paths
@@ -71,7 +71,7 @@ def upload_chunk(output_dir):
     image_dataset = Dataset.from_dict({"image": image_paths})
 
     # Cast the 'image' column to Image type
-    image_dataset = image_dataset.cast_column("image", HF_Image())
+    image_dataset = image_dataset.cast_column("image", HF_Image(decode=False))
 
     # Combine the original dataset with the image dataset
     combined_dataset = Dataset.from_dict({
@@ -80,7 +80,7 @@ def upload_chunk(output_dir):
     })
 
     print(combined_dataset)
-    # combined_dataset.push_to_hub("openmodelinitiative/initial-test-dataset-private", private=True)
+    # combined_dataset.push_to_hub(dataset_repo, private=True)
 
 
 def delete_chunk(output_dir):
@@ -100,11 +100,24 @@ def get_target_size(img):
     return int(target_width), int(target_height)
 
 
+def get_image_bytes(img, format='JPEG'):
+    img_byte_arr = io.BytesIO()
+    img.save(img_byte_arr, format=format)
+    contents = img_byte_arr.getvalue()
+
+    return len(contents)
+
+
 def process_jsonl(input_file, chunk_size):
     input_path = Path(input_file).resolve()
     input_dir = input_path.parent
     output_dir = input_dir.parent / f"{input_dir.name}_processed"
     output_dir.mkdir(exist_ok=True)
+
+    output_file = output_dir / f"{input_path.name}"
+
+    if output_file.exists():
+        output_file.unlink()
 
     processed_count = 0
 
@@ -141,7 +154,8 @@ def process_jsonl(input_file, chunk_size):
 
                 img_resized.save(output_dir / image_filename)
 
-            output_file = output_dir / f"{input_path.name}"
+                data['processed_size'] = get_image_bytes(img_resized)
+
             with open(output_file, 'a') as f:
                 json.dump(data, f)
                 f.write('\n')
@@ -158,7 +172,7 @@ def process_jsonl(input_file, chunk_size):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process JSONL file and download images.")
     parser.add_argument("input_file", help="Path to the input JSONL file")
-    parser.add_argument("--chunk_size", type=int, default=100, help="Number of images to process in a batch before uploading the dataset")
+    parser.add_argument("--chunk_size", type=int, default=5, help="Number of images to process in a batch before uploading the dataset")
     args = parser.parse_args()
 
     process_jsonl(args.input_file, args.chunk_size)

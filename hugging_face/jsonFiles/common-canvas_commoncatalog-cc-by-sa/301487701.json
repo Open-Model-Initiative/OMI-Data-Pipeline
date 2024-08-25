@@ -15,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:22:56.306160",
-  "updatedAt": "2024-08-24T13:22:56.306167",
+  "createdAt": "2024-08-25T14:28:26.621249",
+  "updatedAt": "2024-08-25T14:28:26.621263",
   "name": "Blackish+and+American+Oystercatcher+hybrid",
   "width": 1074,
   "height": 1074,
@@ -36,15 +36,14 @@
       "content": 301487701,
       "annotation": {
         "type": "image-description",
-        "text": "a bird with a red beak and a red beak",
-        "tags": []
+        "text": "a bird with a red beak and a red beak"
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:22:56.306160",
-      "updatedAt": "2024-08-24T13:22:56.306167",
+      "createdAt": "2024-08-25T14:28:26.621249",
+      "updatedAt": "2024-08-25T14:28:26.621263",
       "overallRating": null
     }
   ]

@@ -15,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:22:56.422475",
-  "updatedAt": "2024-08-24T13:22:56.422485",
+  "createdAt": "2024-08-25T14:28:26.769791",
+  "updatedAt": "2024-08-25T14:28:26.769807",
   "name": "congratulations",
   "width": 2035,
   "height": 2035,
@@ -36,15 +36,14 @@
       "content": 117156873,
       "annotation": {
         "type": "image-description",
-        "text": "a man is hugging another man",
-        "tags": []
+        "text": "a man is hugging another man"
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:22:56.422475",
-      "updatedAt": "2024-08-24T13:22:56.422485",
+      "createdAt": "2024-08-25T14:28:26.769791",
+      "updatedAt": "2024-08-25T14:28:26.769807",
       "overallRating": null
     }
   ]

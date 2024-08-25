@@ -15,8 +15,8 @@
   "fromUser": null,
   "fromTeam": null,
   "embeddings": [],
-  "createdAt": "2024-08-24T13:22:56.369754",
-  "updatedAt": "2024-08-24T13:22:56.369767",
+  "createdAt": "2024-08-25T14:28:26.704031",
+  "updatedAt": "2024-08-25T14:28:26.704052",
   "name": "sempre+em+frente",
   "width": 1900,
   "height": 1900,
@@ -36,15 +36,14 @@
       "content": 99324237,
       "annotation": {
         "type": "image-description",
-        "text": "a red and yellow flag is painted on a rock",
-        "tags": []
+        "text": "a red and yellow flag is painted on a rock"
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
       "fromTeam": null,
-      "createdAt": "2024-08-24T13:22:56.369754",
-      "updatedAt": "2024-08-24T13:22:56.369767",
+      "createdAt": "2024-08-25T14:28:26.704031",
+      "updatedAt": "2024-08-25T14:28:26.704052",
       "overallRating": null
     }
   ]
