@@ -85,7 +85,7 @@ def main(dataset_name: str):
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 2:
-        print("Usage: python script.py <dataset_name>")
+        print("Usage: python get_hf_mappings.py <dataset_name>")
         sys.exit(1)
 
     main(sys.argv[1])

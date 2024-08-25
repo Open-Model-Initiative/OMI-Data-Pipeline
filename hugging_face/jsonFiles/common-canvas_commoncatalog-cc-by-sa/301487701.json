@@ -13,10 +13,10 @@
     "hf-dataset-id": 2
   },
   "fromUser": null,
-  "fromTeam": null,
+  "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-25T14:28:26.621249",
-  "updatedAt": "2024-08-25T14:28:26.621263",
+  "createdAt": "2024-08-25T16:39:36.225922",
+  "updatedAt": "2024-08-25T16:39:36.225934",
   "name": "Blackish+and+American+Oystercatcher+hybrid",
   "width": 1074,
   "height": 1074,
@@ -36,14 +36,15 @@
       "content": 301487701,
       "annotation": {
         "type": "image-description",
-        "text": "a bird with a red beak and a red beak"
+        "text": "a bird with a red beak and a red beak",
+        "tokens": 13
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
-      "fromTeam": null,
-      "createdAt": "2024-08-25T14:28:26.621249",
-      "updatedAt": "2024-08-25T14:28:26.621263",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-25T16:39:36.225922",
+      "updatedAt": "2024-08-25T16:39:36.225934",
       "overallRating": null
     }
   ]

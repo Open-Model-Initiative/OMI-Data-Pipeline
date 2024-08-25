@@ -36,7 +36,7 @@ def convert_to_jsonl(input_dir, output_file):
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python script.py <relative_path>")
+        print("Usage: python combine_json.py <relative_path>")
         sys.exit(1)
 
     relative_path = sys.argv[1]

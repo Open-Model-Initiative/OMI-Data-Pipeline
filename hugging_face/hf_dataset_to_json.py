@@ -7,6 +7,8 @@ from typing import Any, Dict
 from datasets import load_dataset
 from PIL import Image
 
+import count_tokens
+
 
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -42,7 +44,7 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
             "hf-dataset-id": id
         },
         "fromUser": None,
-        "fromTeam": None,
+        "fromTeam": "OMI",
         "embeddings": [],
         "createdAt": datetime.now().isoformat(),
         "updatedAt": datetime.now().isoformat(),
@@ -68,12 +70,13 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
                     "content": entry['id'],
                     "annotation": {
                         "type": "image-description",
-                        "text": item[source_field]
+                        "text": item[source_field],
+                        "tokens": count_tokens.count_tokens(item[source_field])
                     },
                     "manuallyAdjusted": False,
                     "embedding": None,
                     "fromUser": None,
-                    "fromTeam": None,
+                    "fromTeam": "OMI",
                     "createdAt": entry['createdAt'],
                     "updatedAt": entry['updatedAt'],
                     "overallRating": None

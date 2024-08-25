@@ -13,10 +13,10 @@
     "hf-dataset-id": 4
   },
   "fromUser": null,
-  "fromTeam": null,
+  "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-25T14:28:26.704031",
-  "updatedAt": "2024-08-25T14:28:26.704052",
+  "createdAt": "2024-08-25T16:39:36.314750",
+  "updatedAt": "2024-08-25T16:39:36.314776",
   "name": "sempre+em+frente",
   "width": 1900,
   "height": 1900,
@@ -36,14 +36,15 @@
       "content": 99324237,
       "annotation": {
         "type": "image-description",
-        "text": "a red and yellow flag is painted on a rock"
+        "text": "a red and yellow flag is painted on a rock",
+        "tokens": 11
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
-      "fromTeam": null,
-      "createdAt": "2024-08-25T14:28:26.704031",
-      "updatedAt": "2024-08-25T14:28:26.704052",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-25T16:39:36.314750",
+      "updatedAt": "2024-08-25T16:39:36.314776",
       "overallRating": null
     }
   ]

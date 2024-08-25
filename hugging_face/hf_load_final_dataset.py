@@ -56,7 +56,7 @@ def save_image(image, image_id):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Process the first available item from a Hugging Face dataset.")
+    parser = argparse.ArgumentParser(description="Load one of our private Hugging Face datasets locally.")
     parser.add_argument("dataset_name", help="Name of the Hugging Face dataset")
     args = parser.parse_args()
 

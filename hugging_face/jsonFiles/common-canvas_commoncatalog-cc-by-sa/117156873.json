@@ -13,10 +13,10 @@
     "hf-dataset-id": 6
   },
   "fromUser": null,
-  "fromTeam": null,
+  "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-25T14:28:26.769791",
-  "updatedAt": "2024-08-25T14:28:26.769807",
+  "createdAt": "2024-08-25T16:39:36.384101",
+  "updatedAt": "2024-08-25T16:39:36.384113",
   "name": "congratulations",
   "width": 2035,
   "height": 2035,
@@ -36,14 +36,15 @@
       "content": 117156873,
       "annotation": {
         "type": "image-description",
-        "text": "a man is hugging another man"
+        "text": "a man is hugging another man",
+        "tokens": 9
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
-      "fromTeam": null,
-      "createdAt": "2024-08-25T14:28:26.769791",
-      "updatedAt": "2024-08-25T14:28:26.769807",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-25T16:39:36.384101",
+      "updatedAt": "2024-08-25T16:39:36.384113",
       "overallRating": null
     }
   ]

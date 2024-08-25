@@ -13,10 +13,10 @@
     "hf-dataset-id": 9
   },
   "fromUser": null,
-  "fromTeam": null,
+  "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-25T14:28:26.839225",
-  "updatedAt": "2024-08-25T14:28:26.839237",
+  "createdAt": "2024-08-25T16:39:36.454670",
+  "updatedAt": "2024-08-25T16:39:36.454682",
   "name": "WeedSpiral.JPG",
   "width": 1728,
   "height": 1700,
@@ -36,14 +36,15 @@
       "content": 164611278,
       "annotation": {
         "type": "image-description",
-        "text": "a close up of a plant with many green leaves"
+        "text": "a close up of a plant with many green leaves",
+        "tokens": 11
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
-      "fromTeam": null,
-      "createdAt": "2024-08-25T14:28:26.839225",
-      "updatedAt": "2024-08-25T14:28:26.839237",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-25T16:39:36.454670",
+      "updatedAt": "2024-08-25T16:39:36.454682",
       "overallRating": null
     }
   ]

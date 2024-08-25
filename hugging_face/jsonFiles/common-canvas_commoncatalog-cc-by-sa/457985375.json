@@ -13,10 +13,10 @@
     "hf-dataset-id": 0
   },
   "fromUser": null,
-  "fromTeam": null,
+  "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-25T14:28:26.579629",
-  "updatedAt": "2024-08-25T14:28:26.579642",
+  "createdAt": "2024-08-25T16:39:36.177612",
+  "updatedAt": "2024-08-25T16:39:36.177626",
   "name": "",
   "width": 1921,
   "height": 1921,
@@ -36,14 +36,15 @@
       "content": 457985375,
       "annotation": {
         "type": "image-description",
-        "text": "the house of the duke of braganza"
+        "text": "the house of the duke of braganza",
+        "tokens": 11
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
-      "fromTeam": null,
-      "createdAt": "2024-08-25T14:28:26.579629",
-      "updatedAt": "2024-08-25T14:28:26.579642",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-25T16:39:36.177612",
+      "updatedAt": "2024-08-25T16:39:36.177626",
       "overallRating": null
     }
   ]

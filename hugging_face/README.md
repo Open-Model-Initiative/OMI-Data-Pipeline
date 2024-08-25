@@ -48,7 +48,8 @@ python hf_load_final_dataset.py 'openmodelinitiative/initial-test-dataset-privat
 # TODO
 - [ ] Test pixelprose/make mapping updates if needed.
 - [ ] Handle putting multiple source datasets together into one target dataset.
-- [ ] Add token count to annotation data
+- [ ] Improve file structure for one dataset containing data from multiple sources.
+- [x] Add token count to annotation data
 - [ ] Make annotation type short or long depending on token count
 - [ ] Make config to set fromUser and fromTeam for content, set to OMI team/me for now?
 - [ ] Refactor all scripts to use argparse?

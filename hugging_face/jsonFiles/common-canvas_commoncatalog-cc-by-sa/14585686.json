@@ -13,10 +13,10 @@
     "hf-dataset-id": 1
   },
   "fromUser": null,
-  "fromTeam": null,
+  "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-25T14:28:26.607286",
-  "updatedAt": "2024-08-25T14:28:26.607313",
+  "createdAt": "2024-08-25T16:39:36.209093",
+  "updatedAt": "2024-08-25T16:39:36.209112",
   "name": "wooden+railing",
   "width": 1930,
   "height": 1930,
@@ -36,14 +36,15 @@
       "content": 14585686,
       "annotation": {
         "type": "image-description",
-        "text": "a bird is sitting on a wooden bench"
+        "text": "a bird is sitting on a wooden bench",
+        "tokens": 10
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
-      "fromTeam": null,
-      "createdAt": "2024-08-25T14:28:26.607286",
-      "updatedAt": "2024-08-25T14:28:26.607313",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-25T16:39:36.209093",
+      "updatedAt": "2024-08-25T16:39:36.209112",
       "overallRating": null
     }
   ]

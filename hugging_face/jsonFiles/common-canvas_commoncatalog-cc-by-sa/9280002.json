@@ -13,10 +13,10 @@
     "hf-dataset-id": 8
   },
   "fromUser": null,
-  "fromTeam": null,
+  "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-25T14:28:26.817211",
-  "updatedAt": "2024-08-25T14:28:26.817227",
+  "createdAt": "2024-08-25T16:39:36.432442",
+  "updatedAt": "2024-08-25T16:39:36.432513",
   "name": "where+they+meet",
   "width": 1856,
   "height": 1856,
@@ -36,14 +36,15 @@
       "content": 9280002,
       "annotation": {
         "type": "image-description",
-        "text": "a grassy area with a dirt patch and a patch of grass"
+        "text": "a grassy area with a dirt patch and a patch of grass",
+        "tokens": 15
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
-      "fromTeam": null,
-      "createdAt": "2024-08-25T14:28:26.817211",
-      "updatedAt": "2024-08-25T14:28:26.817227",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-25T16:39:36.432442",
+      "updatedAt": "2024-08-25T16:39:36.432513",
       "overallRating": null
     }
   ]

@@ -13,10 +13,10 @@
     "hf-dataset-id": 5
   },
   "fromUser": null,
-  "fromTeam": null,
+  "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-25T14:28:26.735862",
-  "updatedAt": "2024-08-25T14:28:26.735876",
+  "createdAt": "2024-08-25T16:39:36.349414",
+  "updatedAt": "2024-08-25T16:39:36.349451",
   "name": "Fun+with+Flash",
   "width": 1885,
   "height": 1931,
@@ -36,14 +36,15 @@
       "content": 148818666,
       "annotation": {
         "type": "image-description",
-        "text": "a tree with pink flowers in the sun"
+        "text": "a tree with pink flowers in the sun",
+        "tokens": 10
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
-      "fromTeam": null,
-      "createdAt": "2024-08-25T14:28:26.735862",
-      "updatedAt": "2024-08-25T14:28:26.735876",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-25T16:39:36.349414",
+      "updatedAt": "2024-08-25T16:39:36.349451",
       "overallRating": null
     }
   ]

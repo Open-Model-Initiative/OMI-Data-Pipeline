@@ -13,10 +13,10 @@
     "hf-dataset-id": 7
   },
   "fromUser": null,
-  "fromTeam": null,
+  "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-25T14:28:26.783559",
-  "updatedAt": "2024-08-25T14:28:26.783582",
+  "createdAt": "2024-08-25T16:39:36.397330",
+  "updatedAt": "2024-08-25T16:39:36.397347",
   "name": "Holly",
   "width": 1024,
   "height": 1024,
@@ -36,14 +36,15 @@
       "content": 457037692,
       "annotation": {
         "type": "image-description",
-        "text": "a close up of the bark of a tree"
+        "text": "a close up of the bark of a tree",
+        "tokens": 11
       },
       "manuallyAdjusted": false,
       "embedding": null,
       "fromUser": null,
-      "fromTeam": null,
-      "createdAt": "2024-08-25T14:28:26.783559",
-      "updatedAt": "2024-08-25T14:28:26.783582",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-25T16:39:36.397330",
+      "updatedAt": "2024-08-25T16:39:36.397347",
       "overallRating": null
     }
   ]
