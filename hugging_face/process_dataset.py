@@ -1,15 +1,13 @@
 import argparse
-import json
+import base64
 import io
-import math
+import json
 import os
-
-from io import BytesIO
-from pathlib import Path
-
 import requests
+from pathlib import Path
 from PIL import Image
-from datasets import load_dataset, Dataset, Image as HF_Image
+from io import BytesIO
+from datasets import load_dataset, Dataset
 
 dataset_repo = "openmodelinitiative/initial-test-dataset-private"
 
@@ -58,29 +56,10 @@ def process_chunk(output_dir):
 
 def upload_chunk(output_dir):
     print("Uploading Chunk ...")
-
     jsonFile = os.path.join(output_dir, 'metadata.jsonl')
-
     dataset = load_dataset('json', data_files=jsonFile)['train']
 
-    # Get the list of image paths
-    image_paths = [os.path.join(output_dir, example['image']) if 'image' in example and example['image'] is not None else None
-                   for example in dataset]
-
-    # Create a new dataset with the image paths
-    image_dataset = Dataset.from_dict({"image": image_paths})
-
-    # Cast the 'image' column to Image type
-    image_dataset = image_dataset.cast_column("image", HF_Image(decode=False))
-
-    # Combine the original dataset with the image dataset
-    combined_dataset = Dataset.from_dict({
-        **{col: dataset[col] for col in dataset.column_names},
-        "image": image_dataset["image"]
-    })
-
-    print(combined_dataset)
-    combined_dataset.push_to_hub(dataset_repo, private=False)  # TODO Temporarily false to see preview
+    dataset.push_to_hub(dataset_repo, private=True)  # Private as we do not want to host image data for others.
 
 
 def delete_chunk(output_dir):
@@ -106,6 +85,12 @@ def get_image_bytes(img, format='JPEG'):
     contents = img_byte_arr.getvalue()
 
     return len(contents)
+
+
+def image_to_base64(img):
+    buffered = BytesIO()
+    img.save(buffered, format="JPEG")
+    return base64.b64encode(buffered.getvalue()).decode()
 
 
 def process_jsonl(input_file, chunk_size):
@@ -139,9 +124,6 @@ def process_jsonl(input_file, chunk_size):
             if not image_downloaded:
                 data['status'] = 'unavailable'
             else:
-                image_filename = url.split('/')[-1]
-                data['image'] = image_filename
-
                 img = Image.open(BytesIO(image_content))
 
                 data['original_width'], data['original_height'] = img.size
@@ -152,8 +134,7 @@ def process_jsonl(input_file, chunk_size):
 
                 img_resized = img.resize((target_width, target_height))
 
-                img_resized.save(output_dir / image_filename)
-
+                data['image'] = image_to_base64(img_resized)
                 data['processed_size'] = get_image_bytes(img_resized)
 
             with open(output_file, 'a') as f:

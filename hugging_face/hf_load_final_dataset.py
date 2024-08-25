@@ -1,16 +1,27 @@
 import argparse
-from datasets import load_dataset
-from PIL import Image
+import base64
 import io
+import os
+from datasets import load_dataset
+from io import BytesIO
+from PIL import Image
 
 
 def process_item(item):
     """
     Process a single item from the dataset.
-    Display its properties and show the image.
+    Display its properties, show the image, and save it.
     """
     display_item_properties(item)
-    display_item_image(item)
+
+    image_data = item.get('image')
+    if image_data:
+        image = base64_to_image(image_data)
+        image.show()
+        id = item.get('id')
+        save_image(image, id)
+    else:
+        print("No image found in the item.")
 
 
 def display_item_properties(item):
@@ -23,16 +34,25 @@ def display_item_properties(item):
             print(f"{key}: {value}")
 
 
-def display_item_image(item):
+def base64_to_image(base64_string):
+    img_data = base64.b64decode(base64_string)
+    return Image.open(BytesIO(img_data))
+
+
+def save_image(image, image_id):
     """
-    Display the image from the given item.
+    Save the image to a folder called dataset_images.
+    Create the folder if it doesn't exist.
     """
-    image_data = item.get('image')
-    # image_data = item.get('jpg')
-    if image_data:
-        image_data.show()
-    else:
-        print("No image found in the item.")
+    folder_name = 'dataset_images'
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+
+    file_name = f"{image_id}.png"
+    file_path = os.path.join(folder_name, file_name)
+
+    image.save(file_path)
+    print(f"Image saved as {file_path}")
 
 
 def main():
