@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from odr_api.api.main import app
+from odr_api.main import app
 
 
 # Create a test client using the FastAPI app
