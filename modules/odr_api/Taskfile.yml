@@ -15,8 +15,3 @@ tasks:
     cmds:
       - cmd: python -m debugpy --listen 0.0.0.0:5678 --wait-for-client ./modules/odr_api/odr_api/main.py
         platforms: [windows, linux, darwin]
-
-  test_api:
-    desc: Run smoke test for the API
-    cmds:
-      - pytest -s modules/odr_api/tests/integration/models/test_health.py
