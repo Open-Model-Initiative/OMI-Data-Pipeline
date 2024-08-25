@@ -114,7 +114,7 @@ def convert_dataset_to_json(dataset_name: str, mapping_file: str, output_dir: st
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 4 or len(sys.argv) > 5:
-        print("Usage: python script.py <dataset_name> <mapping_file> <output_dir> [num_samples]")
+        print("Usage: python hf_dataset_to_json.py <dataset_name> <mapping_file> <output_dir> [num_samples]")
         sys.exit(1)
 
     dataset_name = sys.argv[1]

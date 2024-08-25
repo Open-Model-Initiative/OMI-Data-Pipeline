@@ -30,19 +30,15 @@ pip install huggingface_hub[hf_transfer]
 # Running
 
 ```shell
-python hf_dataset_info.py <dataset_name>
-
-python hf_dataset_to_json.py <dataset_name> <mapping_file> <output_dir> [num_samples]
-```
-
-e.g.
-
-```shell
 python get_hf_mappings.py 'common-canvas/commoncatalog-cc-by-sa'
 
 python hf_dataset_to_json.py 'common-canvas/commoncatalog-cc-by-sa' './mappings/common-canvas_commoncatalog-cc-by-sa_mapping.json' './jsonFiles/common-canvas_commoncatalog-cc-by-sa' 10
 
 python combine_json.py ./jsonFiles/common-canvas_commoncatalog-cc-by-sa
+
+huggingface-cli login
+
+python upload_public_dataset.py "openmodelinitiative/initial-test-dataset" './jsonFiles/common-canvas_commoncatalog-cc-by-sa/metadata.jsonl'
 
 python process_dataset.py './jsonFiles/common-canvas_commoncatalog-cc-by-sa/metadata.jsonl'
 

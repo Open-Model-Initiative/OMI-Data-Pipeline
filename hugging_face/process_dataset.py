@@ -80,7 +80,7 @@ def upload_chunk(output_dir):
     })
 
     print(combined_dataset)
-    # combined_dataset.push_to_hub(dataset_repo, private=True)
+    combined_dataset.push_to_hub(dataset_repo, private=False)  # TODO Temporarily false to see preview
 
 
 def delete_chunk(output_dir):
