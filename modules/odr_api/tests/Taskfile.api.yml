@@ -1,32 +1,32 @@
-version: '3'
+version: "3"
 
 tasks:
   test-integration:
     desc: Run integration tests
-    dir: '{{.ROOT_DIR}}'
+    dir: "{{.ROOT_DIR}}"
     cmds:
       - >
         python modules/odr_api/tests/integration/run_integration.py
         --api-base-url={{.API_BASE_URL}}
         --tests={{.TESTS}}
     vars:
-      API_BASE_URL: 'http://localhost:31100'
-      TESTS: '{{.CLI_ARGS}}'
+      API_BASE_URL: "http://localhost:31100"
+      TESTS: "{{.CLI_ARGS}}"
 
   test-all:
     desc: Run all tests in order
     cmds:
       - task: health-check
       - task: test-integration
-        vars: {CLI_ARGS: 'all'}
+        vars: { CLI_ARGS: "all" }
 
   model:
     desc: Run tests for a specific model
-    dir: '{{.ROOT_DIR}}'
+    dir: "{{.ROOT_DIR}}"
     cmds:
       - task: test-integration
         vars:
-          TESTS: '{{.CLI_ARGS}}'
+          TESTS: "{{.CLI_ARGS}}"
   help:
     desc: Display help information about using the test suite
     cmds:
@@ -34,5 +34,10 @@ tasks:
 
   health-check:
     desc: Run smoke test for the API
+    dir: "{{.ROOT_DIR}}"
     cmds:
-      - pytest -s modules/odr_api/tests/integration/models/test_health.py
+      - python modules/odr_api/tests/integration/models/test_health.py --host={{.API_HOST}} --port={{.API_PORT}}
+    vars:
+      API_HOST: '{{.API_HOST | default "localhost"}}'
+
+      API_PORT: '{{.API_PORT | default "31100"}}'

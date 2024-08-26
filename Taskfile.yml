@@ -6,7 +6,7 @@ includes:
   db: ./modules/odr_database/Taskfile.yml
   core: ./modules/odr_core/Taskfile.yml
   data: ./modules/odr_datamodel/Taskfile.yml
-  api-test: ./modules/odr_api/tests/Taskfile.yml
+  api-test: ./modules/odr_api/tests/Taskfile.api.yml
 
 dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
 vars:
