@@ -17,7 +17,8 @@ ignore =
     # F401 (Module imported but unused) is temporary to reduce scope of changes at the moment.
     F401,
     # W503 line break before binary operator
-    W503
+    W503,
+    E305
 select =
     B,
     C,
