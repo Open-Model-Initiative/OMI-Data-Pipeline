@@ -19,6 +19,7 @@ def main():
     parser = argparse.ArgumentParser(description="Run the entire dataset processing pipeline")
     parser.add_argument("-d", "--dataset_name", required=True, help="Name of the dataset to load from")
     parser.add_argument("-r", "--dataset_repo", required=True, help="Name of the dataset repository to push up to")
+    parser.add_argument("-u", "--uploaded_by", required=True, help="User who is uploading the dataset")
     parser.add_argument("-n", "--num_samples", type=int, default=10, help="Number of samples (default: 10)")
 
     args = parser.parse_args()
@@ -38,6 +39,7 @@ def main():
                  "--dataset_name", args.dataset_name,
                  "--mapping_file", mapping_file,
                  "--output_dir", output_dir,
+                 "--uploaded_by", args.uploaded_by,
                  "--num_samples", str(args.num_samples)])
 
     # Run combine_json.py

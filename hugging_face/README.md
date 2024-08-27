@@ -33,7 +33,7 @@ Using the helper "run_pipeline.py":
 ```shell
 huggingface-cli login
 
-python run_pipeline.py --dataset_name "common-canvas/commoncatalog-cc-by-sa" --dataset_repo "openmodelinitiative/initial-test-dataset" --num_samples 10
+python run_pipeline.py --dataset_name "common-canvas/commoncatalog-cc-by-sa" --dataset_repo "openmodelinitiative/initial-test-dataset" --uploaded_by 'CheesyLaZanya' --num_samples 10
 ```
 
 Or using the scripts individually:
@@ -41,7 +41,7 @@ Or using the scripts individually:
 ```shell
 python get_hf_mappings.py --dataset_name 'common-canvas/commoncatalog-cc-by-sa'
 
-python hf_dataset_to_json.py --dataset_name 'common-canvas/commoncatalog-cc-by-sa' --mapping_file './mappings/common-canvas_commoncatalog-cc-by-sa_mapping.json' --output_dir './jsonFiles/common-canvas_commoncatalog-cc-by-sa' --num_samples 10
+python hf_dataset_to_json.py --dataset_name 'common-canvas/commoncatalog-cc-by-sa' --mapping_file './mappings/common-canvas_commoncatalog-cc-by-sa_mapping.json' --output_dir './jsonFiles/common-canvas_commoncatalog-cc-by-sa' --uploaded_by 'CheesyLaZanya' --num_samples 10
 
 python combine_json.py --path ./jsonFiles/common-canvas_commoncatalog-cc-by-sa
 
@@ -56,11 +56,13 @@ python hf_load_final_dataset.py --dataset_name 'openmodelinitiative/initial-test
 
 # TODO
 - [ ] Test pixelprose/make mapping updates if needed.
+- [ ] Handle datasets that have images but no URLs.
+- [ ] Fix upload process to not store all data in the same metadata.jsonl, to avoid size issues when storing binary data in the jsonl.
 - [ ] Handle putting multiple source datasets together into one target dataset.
 - [ ] Improve file structure for one dataset containing data from multiple sources.
 - [x] Add token count to annotation data
 - [ ] Make annotation type short or long depending on token count
-- [ ] Make config to set fromUser and fromTeam for content, set to OMI team/me for now?
-- [ ] Refactor all scripts to use argparse?
+- [x] Make config to set fromUser and fromTeam for content, set to OMI team/me for now? (hardcoded group to OMI and take new uploaded_by argument instead)
+- [x] Refactor all scripts to use argparse?
 - [ ] Investigate making APIs for get dataset info/selecting mapping, adding to our data, etc.
 - [ ] Hook up UI to those APIs in order to allow users to contribute hugging face datasets.
