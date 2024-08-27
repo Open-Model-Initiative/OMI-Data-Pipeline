@@ -15,8 +15,8 @@
   "fromUser": "CheesyLaZanya",
   "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-27T13:49:24.386400",
-  "updatedAt": "2024-08-27T13:49:24.386413",
+  "createdAt": "2024-08-27T14:49:04.944075",
+  "updatedAt": "2024-08-27T14:49:04.944087",
   "name": "WeedSpiral.JPG",
   "width": 1728,
   "height": 1700,
@@ -36,6 +36,7 @@
       "content": 164611278,
       "annotation": {
         "type": "image-description",
+        "original_field": "blip2_caption",
         "text": "a close up of a plant with many green leaves",
         "tokens": 11
       },
@@ -43,8 +44,8 @@
       "embedding": null,
       "fromUser": "CheesyLaZanya",
       "fromTeam": "OMI",
-      "createdAt": "2024-08-27T13:49:24.386400",
-      "updatedAt": "2024-08-27T13:49:24.386413",
+      "createdAt": "2024-08-27T14:49:04.944075",
+      "updatedAt": "2024-08-27T14:49:04.944087",
       "overallRating": null
     }
   ]

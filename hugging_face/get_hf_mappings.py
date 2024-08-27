@@ -17,12 +17,10 @@ def get_recommended_image_feature(ds_builder) -> Optional[str]:
     return None
 
 
-def get_recommended_annotation_feature(ds_builder) -> Optional[str]:
+def get_recommended_annotation_features(ds_builder) -> List[str]:
     annotation_keywords = ['caption', 'description', 'text', 'annotation']
-    for feature in ds_builder.info.features:
-        if any(keyword in feature.lower() for keyword in annotation_keywords):
-            return feature
-    return None
+    return [feature for feature in ds_builder.info.features
+            if any(keyword in feature.lower() for keyword in annotation_keywords)]
 
 
 def get_recommended_fields(ds_builder) -> Dict[str, Optional[str]]:
@@ -49,7 +47,7 @@ def get_recommended_fields(ds_builder) -> Dict[str, Optional[str]]:
             recommended_fields[target_field] = None
 
     recommended_fields['image'] = get_recommended_image_feature(ds_builder)
-    recommended_fields['annotation'] = get_recommended_annotation_feature(ds_builder)
+    recommended_fields['annotations'] = get_recommended_annotation_features(ds_builder)
 
     return recommended_fields
 

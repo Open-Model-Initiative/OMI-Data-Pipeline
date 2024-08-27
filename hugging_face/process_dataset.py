@@ -9,8 +9,6 @@ from PIL import Image
 from io import BytesIO
 from datasets import load_dataset, Dataset
 
-dataset_repo = "openmodelinitiative/initial-test-dataset-private"
-
 # Taken from https://github.com/huggingface/diffusers/blob/2dad462d9bf9890df09bfb088bf0a446c6074bec/src/diffusers/pipelines/pixart_alpha/pipeline_pixart_alpha.py#L135
 ASPECT_RATIO_256_BIN = {
     "0.25": [128.0, 512.0],
@@ -49,12 +47,12 @@ ASPECT_RATIO_256_BIN = {
 }
 
 
-def process_chunk(output_dir):
-    upload_chunk(output_dir)
+def process_chunk(output_dir, dataset_repo):
+    upload_chunk(output_dir, dataset_repo)
     delete_chunk(output_dir)
 
 
-def upload_chunk(output_dir):
+def upload_chunk(output_dir, dataset_repo):
     print("Uploading Chunk ...")
     jsonFile = os.path.join(output_dir, 'metadata.jsonl')
     dataset = load_dataset('json', data_files=jsonFile)['train']
@@ -93,7 +91,7 @@ def image_to_base64(img):
     return base64.b64encode(buffered.getvalue()).decode()
 
 
-def process_jsonl(input_file, chunk_size):
+def process_jsonl(dataset_repo, input_file, chunk_size):
     input_path = Path(input_file).resolve()
     input_dir = input_path.parent
     output_dir = input_dir.parent / f"{input_dir.name}_processed"
@@ -144,16 +142,17 @@ def process_jsonl(input_file, chunk_size):
             processed_count += 1
 
             if processed_count % chunk_size == 0:
-                process_chunk(output_dir)
+                process_chunk(output_dir, dataset_repo)
 
     # Process any remaining data after finishing
-    process_chunk(output_dir)
+    process_chunk(output_dir, dataset_repo)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process JSONL dataset file and download images.")
+    parser.add_argument("-d", "--dataset_repo", required=True, help="The repository name for the dataset on Hugging Face Hub")
     parser.add_argument("-f", "--dataset_file", help="Path to the input JSONL file")
     parser.add_argument("-c", "--chunk_size", type=int, default=50, help="Number of items to process in a batch before uploading the dataset")
     args = parser.parse_args()
 
-    process_jsonl(args.dataset_file, args.chunk_size)
+    process_jsonl(args.dataset_repo, args.dataset_file, args.chunk_size)

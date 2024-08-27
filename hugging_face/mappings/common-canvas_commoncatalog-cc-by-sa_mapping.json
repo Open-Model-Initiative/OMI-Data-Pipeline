@@ -12,6 +12,8 @@
     "contentAuthor": "unickname",
     "url": "url",
     "image": "jpg",
-    "annotation": "blip2_caption"
+    "annotations": [
+      "blip2_caption"
+    ]
   }
 }

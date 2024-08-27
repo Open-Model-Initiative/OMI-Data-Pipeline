@@ -1,0 +1,52 @@
+{
+  "id": "617b77c7b2ce0883beff0c11043278419e31b35d4f4919cf996db2a2c3d603e4",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [
+    "https://photogallery.indiatimes.com/photo/65515678.cms"
+  ],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "tomg-group-umd/pixelprose",
+    "hf-dataset-id": 8
+  },
+  "fromUser": "CheesyLaZanya",
+  "fromTeam": "OMI",
+  "embeddings": [],
+  "createdAt": "2024-08-27T14:46:42.225318",
+  "updatedAt": "2024-08-27T14:46:42.225323",
+  "name": null,
+  "width": 991,
+  "height": 800,
+  "format": null,
+  "license": null,
+  "licenseUrl": null,
+  "contentAuthor": [
+    {
+      "id": "null-author",
+      "name": "null",
+      "url": null
+    }
+  ],
+  "annotations": [
+    {
+      "id": "617b77c7b2ce0883beff0c11043278419e31b35d4f4919cf996db2a2c3d603e4-annotation-1",
+      "content": "617b77c7b2ce0883beff0c11043278419e31b35d4f4919cf996db2a2c3d603e4",
+      "annotation": {
+        "type": "image-description",
+        "original_field": "vlm_caption",
+        "text": " This image displays: A young woman with long black hair and a black T-shirt is standing in front of a blue wooden door. She is looking at the camera with a slight smile on her face. The background is out of focus and is made up of a brick wall to the left and a blue wall with two shuttered windows to the right.",
+        "tokens": 75
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": "CheesyLaZanya",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-27T14:46:42.225318",
+      "updatedAt": "2024-08-27T14:46:42.225323",
+      "overallRating": null
+    }
+  ]
+}

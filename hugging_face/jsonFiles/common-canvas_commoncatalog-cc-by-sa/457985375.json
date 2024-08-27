@@ -15,8 +15,8 @@
   "fromUser": "CheesyLaZanya",
   "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-27T13:49:24.139210",
-  "updatedAt": "2024-08-27T13:49:24.139223",
+  "createdAt": "2024-08-27T14:49:04.693519",
+  "updatedAt": "2024-08-27T14:49:04.693531",
   "name": "",
   "width": 1921,
   "height": 1921,
@@ -36,6 +36,7 @@
       "content": 457985375,
       "annotation": {
         "type": "image-description",
+        "original_field": "blip2_caption",
         "text": "the house of the duke of braganza",
         "tokens": 11
       },
@@ -43,8 +44,8 @@
       "embedding": null,
       "fromUser": "CheesyLaZanya",
       "fromTeam": "OMI",
-      "createdAt": "2024-08-27T13:49:24.139210",
-      "updatedAt": "2024-08-27T13:49:24.139223",
+      "createdAt": "2024-08-27T14:49:04.693519",
+      "updatedAt": "2024-08-27T14:49:04.693531",
       "overallRating": null
     }
   ]

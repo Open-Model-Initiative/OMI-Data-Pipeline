@@ -1,0 +1,52 @@
+{
+  "id": "3d652d76feea1b487781bdb6a3d2cf961a4e52097b3b70250544b14df03e1a9e",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [
+    "https://themaydan.com/wp-content/uploads/2019/04/Muslim-Idenitity.jpg"
+  ],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "tomg-group-umd/pixelprose",
+    "hf-dataset-id": 6
+  },
+  "fromUser": "CheesyLaZanya",
+  "fromTeam": "OMI",
+  "embeddings": [],
+  "createdAt": "2024-08-27T14:46:42.220317",
+  "updatedAt": "2024-08-27T14:46:42.220331",
+  "name": null,
+  "width": 926,
+  "height": 618,
+  "format": null,
+  "license": null,
+  "licenseUrl": null,
+  "contentAuthor": [
+    {
+      "id": "null-author",
+      "name": "null",
+      "url": null
+    }
+  ],
+  "annotations": [
+    {
+      "id": "3d652d76feea1b487781bdb6a3d2cf961a4e52097b3b70250544b14df03e1a9e-annotation-1",
+      "content": "3d652d76feea1b487781bdb6a3d2cf961a4e52097b3b70250544b14df03e1a9e",
+      "annotation": {
+        "type": "image-description",
+        "original_field": "vlm_caption",
+        "text": " This image displays: A family of four is sitting at a table in a restaurant. There are two adults, one child, and one grandmother. The adults are sitting on either side of the child. The grandmother is sitting across from the child. The table is set with a variety of food. There are two plates of rice, two plates of curry, and a plate of flatbread. There are also two glasses of water. The family is all smiling and talking. The background is a blur. The image is a photograph.",
+        "tokens": 121
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": "CheesyLaZanya",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-27T14:46:42.220317",
+      "updatedAt": "2024-08-27T14:46:42.220331",
+      "overallRating": null
+    }
+  ]
+}

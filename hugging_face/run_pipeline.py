@@ -1,7 +1,31 @@
 import argparse
+import json
 import os
 import subprocess
 # import time
+
+
+def display_and_confirm_mappings(mapping_file):
+    while True:
+        with open(mapping_file, 'r') as f:
+            mappings = json.load(f)
+
+        print("\nCurrent mappings:")
+        print(json.dumps(mappings, indent=2))
+
+        response = input("\nDo the mappings look correct? (yes/no): ").lower().strip()
+        if response in ['yes', 'y']:
+            return True
+        elif response in ['no', 'n']:
+            # Open the file in the default editor
+            if os.name == 'nt':  # For Windows
+                os.startfile(mapping_file)
+            else:  # For macOS and Linux
+                subprocess.call(['xdg-open', mapping_file])
+
+            input("Press Enter when you've finished editing the mappings...")
+        else:
+            print("Please answer 'yes' or 'no'.")
 
 
 def run_command(command):
@@ -34,6 +58,9 @@ def main():
     # Run get_hf_mappings.py
     run_command(["python", "get_hf_mappings.py", "--dataset_name", args.dataset_name])
 
+    # Display mappings, allow editing, and ask for confirmation
+    display_and_confirm_mappings(mapping_file)
+
     # Run hf_dataset_to_json.py
     run_command(["python", "hf_dataset_to_json.py",
                  "--dataset_name", args.dataset_name,
@@ -51,7 +78,9 @@ def main():
                  "--dataset_file", jsonl_file])
 
     # Run process_dataset.py
-    run_command(["python", "process_dataset.py", "--dataset_file", jsonl_file])
+    run_command(["python", "process_dataset.py",
+                 "--dataset_repo", final_dataset_name,
+                 "--dataset_file", jsonl_file])
 
     # Run hf_load_final_dataset.py
     run_command(["python", "hf_load_final_dataset.py", "--dataset_name", final_dataset_name])

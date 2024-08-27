@@ -3,11 +3,20 @@ import json
 import os
 from typing import Dict
 
-from datasets import load_dataset_builder
+from datasets import load_dataset_builder, load_dataset
 
 
 def get_ds_builder(dataset_name: str):
     ds_builder = load_dataset_builder(dataset_name)
+
+    # Handle datasets where the ds_builder does not include features.
+    if not ds_builder.info.features:
+        print(f"Dataset builder features are missing for {dataset_name}. Loading a sample from the dataset.")
+        dataset = load_dataset(dataset_name, split='train', streaming=True)
+
+        features = dataset.features
+        ds_builder.info.features = features
+
     dataset_path = save_dataset_info(ds_builder, dataset_name)
     print(f"Dataset information saved to {dataset_path}")
 

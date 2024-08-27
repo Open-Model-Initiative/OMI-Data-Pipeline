@@ -55,33 +55,42 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
         "format": None,
         "license": None,
         "licenseUrl": None,
-        "contentAuthor": None
+        "contentAuthor": None,
+        "annotations": []
     }
 
     for target_field, source_field in mapping.items():
-        if source_field and source_field in dataset.features:
+        if target_field == 'annotations':
+            if isinstance(source_field, list):
+                for idx, annotation_field in enumerate(source_field, start=1):
+                    if annotation_field in dataset.features:
+
+                        annotation = item[annotation_field]
+                        token_count = count_tokens.count_tokens(annotation)
+
+                        entry['annotations'].append({
+                            "id": f"{entry['id']}-annotation-{idx}",
+                            "content": entry['id'],
+                            "annotation": {
+                                "type": "image-description",
+                                "original_field": annotation_field,
+                                "text": annotation,
+                                "tokens": token_count
+                            },
+                            "manuallyAdjusted": False,
+                            "embedding": None,
+                            "fromUser": uploaded_by,
+                            "fromTeam": "OMI",
+                            "createdAt": entry['createdAt'],
+                            "updatedAt": entry['updatedAt'],
+                            "overallRating": None
+                        })
+        elif source_field and source_field in dataset.features:
             if target_field == 'image':
                 image = load_hugging_face_image(item, source_field)
                 entry['width'] = image.width
                 entry['height'] = image.height
                 entry['format'] = image.format.lower() if image.format else 'unknown'
-            elif target_field == 'annotation':
-                entry['annotations'] = [{
-                    "id": f"{entry['id']}-annotation-1",
-                    "content": entry['id'],
-                    "annotation": {
-                        "type": "image-description",
-                        "text": item[source_field],
-                        "tokens": count_tokens.count_tokens(item[source_field])
-                    },
-                    "manuallyAdjusted": False,
-                    "embedding": None,
-                    "fromUser": uploaded_by,
-                    "fromTeam": "OMI",
-                    "createdAt": entry['createdAt'],
-                    "updatedAt": entry['updatedAt'],
-                    "overallRating": None
-                }]
             elif target_field == 'contentAuthor':
                 entry['contentAuthor'] = [{
                     "id": f"{item[source_field]}-author",

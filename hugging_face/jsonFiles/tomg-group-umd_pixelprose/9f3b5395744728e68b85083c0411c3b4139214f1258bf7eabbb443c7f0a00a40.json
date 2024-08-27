@@ -1,0 +1,52 @@
+{
+  "id": "9f3b5395744728e68b85083c0411c3b4139214f1258bf7eabbb443c7f0a00a40",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [
+    "https://southernersays.com/wp-content/uploads/2018/04/Whale5-1024x662.jpg"
+  ],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "tomg-group-umd/pixelprose",
+    "hf-dataset-id": 4
+  },
+  "fromUser": "CheesyLaZanya",
+  "fromTeam": "OMI",
+  "embeddings": [],
+  "createdAt": "2024-08-27T14:46:42.213351",
+  "updatedAt": "2024-08-27T14:46:42.213356",
+  "name": null,
+  "width": 1024,
+  "height": 662,
+  "format": null,
+  "license": null,
+  "licenseUrl": null,
+  "contentAuthor": [
+    {
+      "id": "null-author",
+      "name": "null",
+      "url": null
+    }
+  ],
+  "annotations": [
+    {
+      "id": "9f3b5395744728e68b85083c0411c3b4139214f1258bf7eabbb443c7f0a00a40-annotation-1",
+      "content": "9f3b5395744728e68b85083c0411c3b4139214f1258bf7eabbb443c7f0a00a40",
+      "annotation": {
+        "type": "image-description",
+        "original_field": "vlm_caption",
+        "text": " This image displays:\nA photograph of a whale's tail fin emerging from the ocean. The whale's tail fin is black and white, and the ocean is blue and white. The whale's tail fin is in the center of the image, and the ocean is in the background. The whale's tail fin is curved, and the ocean is rippling. The image is clear and bright, and the whale's tail fin is in focus. The style of the image is realistic and captures the beauty of nature.",
+        "tokens": 120
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": "CheesyLaZanya",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-27T14:46:42.213351",
+      "updatedAt": "2024-08-27T14:46:42.213356",
+      "overallRating": null
+    }
+  ]
+}

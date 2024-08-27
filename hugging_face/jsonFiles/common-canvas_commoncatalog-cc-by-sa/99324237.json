@@ -15,8 +15,8 @@
   "fromUser": "CheesyLaZanya",
   "fromTeam": "OMI",
   "embeddings": [],
-  "createdAt": "2024-08-27T13:49:24.256946",
-  "updatedAt": "2024-08-27T13:49:24.256960",
+  "createdAt": "2024-08-27T14:49:04.812667",
+  "updatedAt": "2024-08-27T14:49:04.812678",
   "name": "sempre+em+frente",
   "width": 1900,
   "height": 1900,
@@ -36,6 +36,7 @@
       "content": 99324237,
       "annotation": {
         "type": "image-description",
+        "original_field": "blip2_caption",
         "text": "a red and yellow flag is painted on a rock",
         "tokens": 11
       },
@@ -43,8 +44,8 @@
       "embedding": null,
       "fromUser": "CheesyLaZanya",
       "fromTeam": "OMI",
-      "createdAt": "2024-08-27T13:49:24.256946",
-      "updatedAt": "2024-08-27T13:49:24.256960",
+      "createdAt": "2024-08-27T14:49:04.812667",
+      "updatedAt": "2024-08-27T14:49:04.812678",
       "overallRating": null
     }
   ]

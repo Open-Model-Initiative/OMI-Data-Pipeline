@@ -1,0 +1,129 @@
+{
+    "description": "",
+    "citation": "",
+    "homepage": "",
+    "license": "",
+    "features": {
+        "uid": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "url": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "key": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "status": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "original_caption": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "vlm_model": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "vlm_caption": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "toxicity": {
+            "dtype": "float64",
+            "_type": "Value"
+        },
+        "severe_toxicity": {
+            "dtype": "float64",
+            "_type": "Value"
+        },
+        "obscene": {
+            "dtype": "float64",
+            "_type": "Value"
+        },
+        "identity_attack": {
+            "dtype": "float64",
+            "_type": "Value"
+        },
+        "insult": {
+            "dtype": "float64",
+            "_type": "Value"
+        },
+        "threat": {
+            "dtype": "float64",
+            "_type": "Value"
+        },
+        "sexual_explicit": {
+            "dtype": "float64",
+            "_type": "Value"
+        },
+        "watermark_class_id": {
+            "dtype": "float64",
+            "_type": "Value"
+        },
+        "watermark_class_score": {
+            "dtype": "float64",
+            "_type": "Value"
+        },
+        "aesthetic_score": {
+            "dtype": "float64",
+            "_type": "Value"
+        },
+        "error_message": {
+            "dtype": "null",
+            "_type": "Value"
+        },
+        "width": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "height": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "original_width": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "original_height": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "exif": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "sha256": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "image_id": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "author": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "subreddit": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "score": {
+            "dtype": "int64",
+            "_type": "Value"
+        }
+    },
+    "builder_name": "parquet",
+    "dataset_name": "pixelprose",
+    "config_name": "default",
+    "version": {
+        "version_str": "0.0.0",
+        "major": 0,
+        "minor": 0,
+        "patch": 0
+    }
+}

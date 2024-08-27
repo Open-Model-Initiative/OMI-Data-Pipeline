@@ -1,0 +1,52 @@
+{
+  "id": "c33657d3a7daaed5eed638e37dc26618811a9f216e631db3fa95b21175edd228",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [
+    "https://i.pinimg.com/originals/ae/f4/f3/aef4f34a16c78727fbffcc77597e15f3.jpg"
+  ],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "tomg-group-umd/pixelprose",
+    "hf-dataset-id": 7
+  },
+  "fromUser": "CheesyLaZanya",
+  "fromTeam": "OMI",
+  "embeddings": [],
+  "createdAt": "2024-08-27T14:46:42.222797",
+  "updatedAt": "2024-08-27T14:46:42.222803",
+  "name": null,
+  "width": 414,
+  "height": 414,
+  "format": null,
+  "license": null,
+  "licenseUrl": null,
+  "contentAuthor": [
+    {
+      "id": "null-author",
+      "name": "null",
+      "url": null
+    }
+  ],
+  "annotations": [
+    {
+      "id": "c33657d3a7daaed5eed638e37dc26618811a9f216e631db3fa95b21175edd228-annotation-1",
+      "content": "c33657d3a7daaed5eed638e37dc26618811a9f216e631db3fa95b21175edd228",
+      "annotation": {
+        "type": "image-description",
+        "original_field": "vlm_caption",
+        "text": " This image displays:\n\nA bathroom vanity with a white ceramic sink and gray painted wooden cabinet. There are two doors with round white ceramic knobs. Inside the cabinet are two shelves and a gray wicker basket with a handle. There is a faucet on the sink. There is a toothbrush holder on the left side of the sink. There are two bar soap bottles on the right side of the sink. There is a hand towel on the left side of the vanity. There is a gray tile floor. White beadboard paneling on the walls. There is a toilet on the right.",
+        "tokens": 140
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": "CheesyLaZanya",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-27T14:46:42.222797",
+      "updatedAt": "2024-08-27T14:46:42.222803",
+      "overallRating": null
+    }
+  ]
+}

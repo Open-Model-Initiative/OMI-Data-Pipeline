@@ -55,7 +55,9 @@ python hf_load_final_dataset.py --dataset_name 'openmodelinitiative/initial-test
 ```
 
 # TODO
-- [ ] Test pixelprose/make mapping updates if needed.
+- [x] Test pixelprose/make mapping updates if needed.
+- [x] Add support for multiple annotations from one dataset.
+- [x] Add process to confirm mappings before proceeding.
 - [ ] Handle datasets that have images but no URLs.
 - [ ] Fix upload process to not store all data in the same metadata.jsonl, to avoid size issues when storing binary data in the jsonl.
 - [ ] Handle putting multiple source datasets together into one target dataset.

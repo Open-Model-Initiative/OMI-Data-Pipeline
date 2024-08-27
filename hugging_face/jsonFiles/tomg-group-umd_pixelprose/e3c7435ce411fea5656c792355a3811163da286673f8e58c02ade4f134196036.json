@@ -1,0 +1,52 @@
+{
+  "id": "e3c7435ce411fea5656c792355a3811163da286673f8e58c02ade4f134196036",
+  "type": "image",
+  "hash": "tbd",
+  "phash": "tbd",
+  "urls": [
+    "https://i.pinimg.com/originals/9a/f5/a6/9af5a623e24e12e436dd58ca61f2d5d9.jpg"
+  ],
+  "status": "available",
+  "flags": 0,
+  "meta": {
+    "hf-dataset-name": "tomg-group-umd/pixelprose",
+    "hf-dataset-id": 5
+  },
+  "fromUser": "CheesyLaZanya",
+  "fromTeam": "OMI",
+  "embeddings": [],
+  "createdAt": "2024-08-27T14:46:42.216976",
+  "updatedAt": "2024-08-27T14:46:42.216990",
+  "name": null,
+  "width": 1820,
+  "height": 1024,
+  "format": null,
+  "license": null,
+  "licenseUrl": null,
+  "contentAuthor": [
+    {
+      "id": "null-author",
+      "name": "null",
+      "url": null
+    }
+  ],
+  "annotations": [
+    {
+      "id": "e3c7435ce411fea5656c792355a3811163da286673f8e58c02ade4f134196036-annotation-1",
+      "content": "e3c7435ce411fea5656c792355a3811163da286673f8e58c02ade4f134196036",
+      "annotation": {
+        "type": "image-description",
+        "original_field": "vlm_caption",
+        "text": " This image displays:\n\nText that reads \"20% Duo\" in the middle.\n\"20%\" is in black with a yellow outline, and \"Duo\" is in yellow with a black outline.\nThe \"0\" in 20% is a graphic of two guns. \nThere are two silhouettes of people holding guns behind the text.\nOne silhouette is behind \"20%\", and the other is behind \"Duo\".\nBoth silhouettes are facing each other.\nThe image is a 3D render with a white background.",
+        "tokens": 128
+      },
+      "manuallyAdjusted": false,
+      "embedding": null,
+      "fromUser": "CheesyLaZanya",
+      "fromTeam": "OMI",
+      "createdAt": "2024-08-27T14:46:42.216976",
+      "updatedAt": "2024-08-27T14:46:42.216990",
+      "overallRating": null
+    }
+  ]
+}
