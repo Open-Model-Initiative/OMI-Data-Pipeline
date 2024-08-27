@@ -1,3 +1,4 @@
+import argparse
 import glob
 import json
 import os
@@ -83,9 +84,9 @@ def main(dataset_name: str):
 
 
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) != 2:
-        print("Usage: python get_hf_mappings.py <dataset_name>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Get Hugging Face dataset mappings for translation to our data structure")
+    parser.add_argument("-d", "--dataset_name", required=True, help="Name of the Hugging Face dataset")
 
-    main(sys.argv[1])
+    args = parser.parse_args()
+
+    main(args.dataset_name)

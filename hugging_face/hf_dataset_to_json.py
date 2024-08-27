@@ -1,3 +1,4 @@
+import argparse
 import io
 import json
 import os
@@ -114,15 +115,17 @@ def convert_dataset_to_json(dataset_name: str, mapping_file: str, output_dir: st
     print(f"Created {num_samples} JSON files in {output_dir}")
 
 
+def main():
+    parser = argparse.ArgumentParser(description="Convert Hugging Face dataset to our JSON structure")
+    parser.add_argument("-d", "--dataset_name", required=True, help="Name of the dataset")
+    parser.add_argument("-m", "--mapping_file", required=True, help="Path to the mapping file")
+    parser.add_argument("-o", "--output_dir", required=True, help="Output directory")
+    parser.add_argument("-n", "--num_samples", type=int, default=10, help="Number of samples (default: 10)")
+
+    args = parser.parse_args()
+
+    convert_dataset_to_json(args.dataset_name, args.mapping_file, args.output_dir, args.num_samples)
+
+
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) < 4 or len(sys.argv) > 5:
-        print("Usage: python hf_dataset_to_json.py <dataset_name> <mapping_file> <output_dir> [num_samples]")
-        sys.exit(1)
-
-    dataset_name = sys.argv[1]
-    mapping_file = sys.argv[2]
-    output_dir = sys.argv[3]
-    num_samples = int(sys.argv[4]) if len(sys.argv) == 5 else 10
-
-    convert_dataset_to_json(dataset_name, mapping_file, output_dir, num_samples)
+    main()

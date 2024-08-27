@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import sys
@@ -35,20 +36,19 @@ def convert_to_jsonl(input_dir, output_file):
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python combine_json.py <relative_path>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Combine JSON files into a single JSONL file")
+    parser.add_argument("-p", "--path", required=True, help="Relative path to the directory containing JSON files")
 
-    relative_path = sys.argv[1]
+    args = parser.parse_args()
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    input_dir = os.path.join(current_dir, relative_path)
+    input_dir = os.path.join(current_dir, args.path)
 
     if not os.path.isdir(input_dir):
         print(f"Error: The specified path '{input_dir}' is not a valid directory.")
         sys.exit(1)
 
     output_file = os.path.join(input_dir, 'metadata.jsonl')
-
     convert_to_jsonl(input_dir, output_file)
     print(f'JSONL file created: {output_file}')
 

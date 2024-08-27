@@ -151,9 +151,9 @@ def process_jsonl(input_file, chunk_size):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process JSONL file and download images.")
-    parser.add_argument("input_file", help="Path to the input JSONL file")
-    parser.add_argument("--chunk_size", type=int, default=5, help="Number of images to process in a batch before uploading the dataset")
+    parser = argparse.ArgumentParser(description="Process JSONL dataset file and download images.")
+    parser.add_argument("-f", "--dataset_file", help="Path to the input JSONL file")
+    parser.add_argument("-c", "--chunk_size", type=int, default=5, help="Number of items to process in a batch before uploading the dataset")
     args = parser.parse_args()
 
-    process_jsonl(args.input_file, args.chunk_size)
+    process_jsonl(args.dataset_file, args.chunk_size)

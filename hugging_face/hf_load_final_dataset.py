@@ -57,7 +57,7 @@ def save_image(image, image_id):
 
 def main():
     parser = argparse.ArgumentParser(description="Load one of our private Hugging Face datasets locally.")
-    parser.add_argument("dataset_name", help="Name of the Hugging Face dataset")
+    parser.add_argument("-d", "--dataset_name", help="Name of the Hugging Face dataset")
     args = parser.parse_args()
 
     dataset = load_dataset(args.dataset_name, split='train', streaming=True)
