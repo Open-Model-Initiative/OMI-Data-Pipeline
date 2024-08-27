@@ -1,4 +1,3 @@
-import os
 from typing import Any, Dict, Union
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
@@ -72,8 +71,24 @@ def logout_all(db=Depends(get_db), current_user: User = Depends(AuthProvider()))
     return UserLogout()
 
 
-# OAuth
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"  # Remove this line in production
+def ouath2_login_and_signup(
+    request: Request,
+    user: OpenID,
+    db=Depends(get_db),
+):
+    if not user.email:
+        raise HTTPException(status_code=400, detail="Unable to get user email")
+
+    user = user_crud.get_user_by_email(db, user.email)
+    if not user:
+        user = user_crud.create_user_from_openid(db, user)
+
+    session = user_crud.login_openid_user(db, user)
+
+    response = RedirectResponse(url=f"{request.base_url}{settings.API_V1_STR}/auth/login")
+    response.set_cookie(key="session", value=session.id, httponly=True)
+
+    return response
 
 
 # Google SSO
@@ -95,8 +110,8 @@ async def google_login(request: Request):
 @router.get("/auth/google/callback")
 async def google_callback(request: Request):
     with google_sso:
-        user = google_sso.verify_and_process(request)
-        return await user
+        user = await google_sso.verify_and_process(request)
+        return ouath2_login_and_signup(request, user)
 
 
 # Github SSO
@@ -117,8 +132,8 @@ async def github_login(request: Request):
 @router.get("/auth/github/callback")
 async def github_callback(request: Request):
     with github_sso:
-        user = github_sso.verify_and_process(request)
-        return await user
+        user = await github_sso.verify_and_process(request)
+        return ouath2_login_and_signup(request, user)
 
 
 # Discord SSO
@@ -126,8 +141,19 @@ def convert_discord_openid(
     response: Dict[str, Any], _client: Union[AsyncClient, None]
 ) -> OpenID:
     """Convert user information returned by OIDC"""
-    print(response)
-    return OpenID(display_name=response["sub"])
+
+    if "user" not in response:
+        raise HTTPException(status_code=400, detail="Invalid response from Discord")
+
+    user = response["user"]
+
+    return OpenID(
+        id=user.get("id"),
+        name=user.get("username"),
+        email=user.get("email"),
+        picture=user.get("avatar"),
+        provider="discord",
+    )
 
 
 discovery_document: DiscoveryDocument = {
@@ -139,6 +165,7 @@ discovery_document: DiscoveryDocument = {
 
 DiscordSSO = create_provider(
     name="discord",
+    default_scope=["identify", "email"],
     discovery_document=discovery_document,
     response_convertor=convert_discord_openid,
 )
@@ -161,5 +188,5 @@ async def discord_login(request: Request):
 @router.get("/auth/discord/callback")
 async def discord_callback(request: Request):
     with discord_sso:
-        user = discord_sso.verify_and_process(request)
-        return await user
+        user = await discord_sso.verify_and_process(request)
+        return ouath2_login_and_signup(request, user)
