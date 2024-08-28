@@ -59,7 +59,7 @@ python hf_load_final_dataset.py --dataset_name 'openmodelinitiative/initial-test
 - [x] Add support for multiple annotations from one dataset.
 - [x] Add process to confirm mappings before proceeding.
 - [x] Handle datasets that have images but no URLs.
-- [ ] Add option to avoid overwriting map if it already exists.
+- [x] Add option to avoid overwriting map if it already exists.
 - [ ] Avoid pulling down the whole dataset to get image data when URLs aren't present
 - [ ] Fix upload process to not store all data in the same metadata.jsonl, to avoid size issues when storing binary data in the jsonl.
 - [ ] Handle putting multiple source datasets together into one target dataset.
@@ -70,3 +70,4 @@ python hf_load_final_dataset.py --dataset_name 'openmodelinitiative/initial-test
 - [x] Refactor all scripts to use argparse?
 - [ ] Investigate making APIs for get dataset info/selecting mapping, adding to our data, etc.
 - [ ] Hook up UI to those APIs in order to allow users to contribute hugging face datasets.
+- [ ] Update to support sub datasets/configurations: https://huggingface.co/docs/datasets/load_hub#configurations

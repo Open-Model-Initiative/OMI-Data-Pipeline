@@ -5,6 +5,20 @@ import subprocess
 # import time
 
 
+def check_overwrite_mappings(mapping_file):
+    if os.path.exists(mapping_file):
+        while True:
+            response = input(f"\nMapping file '{mapping_file}' already exists. Do you want to overwrite it? (yes/no): ").lower().strip()
+            if response in ['yes', 'y']:
+                return True
+            elif response in ['no', 'n']:
+                return False
+            else:
+                print("Please answer 'yes' or 'no'.")
+    else:
+        return True
+
+
 def display_and_confirm_mappings(mapping_file):
     while True:
         with open(mapping_file, 'r') as f:
@@ -55,8 +69,9 @@ def main():
     jsonl_file = f'{output_dir}/metadata.jsonl'
     final_dataset_name = f"{args.dataset_repo}-private"
 
-    # Run get_hf_mappings.py
-    run_command(["python", "get_hf_mappings.py", "--dataset_name", args.dataset_name])
+    if check_overwrite_mappings(mapping_file):
+        # Run get_hf_mappings.py
+        run_command(["python", "get_hf_mappings.py", "--dataset_name", args.dataset_name])
 
     # Display mappings, allow editing, and ask for confirmation
     display_and_confirm_mappings(mapping_file)
