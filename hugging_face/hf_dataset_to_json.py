@@ -32,8 +32,9 @@ def load_hugging_face_image(item, column: str) -> Image.Image:
 
 
 def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[str, str], uploaded_by: str) -> Dict[str, Any]:
+    dataset_name_underscore = dataset_name.replace("/", "_")
     entry = {
-        "id": f"{dataset_name}-{id}",
+        "id": f"{dataset_name_underscore}-{id}",
         "type": "image",
         "hash": "tbd",
         "phash": "tbd",
@@ -42,7 +43,8 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
         "flags": 0,
         "meta": {
             "hf-dataset-name": dataset_name,
-            "hf-dataset-id": id
+            "hf-dataset-id": id,
+            "hf-dataset-split": 'train'
         },
         "fromUser": uploaded_by,
         "fromTeam": "OMI",
@@ -86,8 +88,9 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
                             "overallRating": None
                         })
         elif source_field and source_field in dataset.features:
-            if target_field == 'image':
+            if target_field == 'image_column':
                 image = load_hugging_face_image(item, source_field)
+                entry['image_column'] = source_field
                 entry['width'] = image.width
                 entry['height'] = image.height
                 entry['format'] = image.format.lower() if image.format else 'unknown'

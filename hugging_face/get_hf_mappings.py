@@ -46,7 +46,7 @@ def get_recommended_fields(ds_builder) -> Dict[str, Optional[str]]:
         if target_field not in recommended_fields:
             recommended_fields[target_field] = None
 
-    recommended_fields['image'] = get_recommended_image_feature(ds_builder)
+    recommended_fields['image_column'] = get_recommended_image_feature(ds_builder)
     recommended_fields['annotations'] = get_recommended_annotation_features(ds_builder)
 
     return recommended_fields

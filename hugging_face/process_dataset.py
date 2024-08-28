@@ -91,6 +91,69 @@ def image_to_base64(img):
     return base64.b64encode(buffered.getvalue()).decode()
 
 
+def try_downloading_image(data):
+    def try_urls(urls):
+        for url in urls:
+            try:
+                response = requests.get(url, timeout=10)
+                response.raise_for_status()
+                return Image.open(io.BytesIO(response.content))
+            except requests.RequestException:
+                continue
+
+        print("Could not download image from urls")
+        return None
+
+    def try_hugging_face(meta, image_column):
+        try:
+            dataset_name = meta.get('hf-dataset-name')
+            split = meta.get('hf-dataset-split')
+            id = meta.get('hf-dataset-id')
+
+            if not all([dataset_name, split, id, image_column]):
+                missing_values = []
+                if not dataset_name:
+                    missing_values.append("dataset_name")
+                if not split:
+                    missing_values.append("split")
+                if not id:
+                    missing_values.append("id")
+                if not image_column:
+                    missing_values.append("image_column")
+
+                if missing_values:
+                    print(f"Missing information for: {', '.join(missing_values)}")
+                    return None
+
+            dataset = load_dataset(dataset_name, split=split)
+            if image_column not in dataset.features:
+                print(f"{image_column} was not in dataset features")
+                return None
+
+            item = dataset[id][image_column]
+
+            if isinstance(item, dict) and 'bytes' in item:
+                return Image.open(io.BytesIO(item['bytes']))
+            elif isinstance(item, Image.Image):
+                return item
+            elif isinstance(item, str):
+                return Image.open(item)
+            else:
+                return None
+        except Exception as exception:
+            print(f"An exception occurred while trying to load image from hugging face: {str(exception)}")
+            return None
+
+    # Try downloading from URLs first
+    image = try_urls(data.get('urls', []))
+
+    # If URL download fails, try Hugging Face
+    if image is None:
+        image = try_hugging_face(data.get('meta', {}), data.get('image_column'))
+
+    return image is not None, image
+
+
 def process_jsonl(dataset_repo, input_file, chunk_size):
     input_path = Path(input_file).resolve()
     input_dir = input_path.parent
@@ -108,32 +171,21 @@ def process_jsonl(dataset_repo, input_file, chunk_size):
         for line in f:
             data = json.loads(line)
 
-            image_downloaded = False
-            for url in data.get('urls', []):
-                try:
-                    response = requests.get(url, timeout=10)
-                    response.raise_for_status()
-                    image_content = response.content
-                    image_downloaded = True
-                    break
-                except requests.RequestException:
-                    continue
+            image_downloaded, image = try_downloading_image(data)
 
             if not image_downloaded:
                 data['status'] = 'unavailable'
             else:
-                img = Image.open(BytesIO(image_content))
+                data['original_width'], data['original_height'] = image.size
 
-                data['original_width'], data['original_height'] = img.size
-
-                target_width, target_height = get_target_size(img)
+                target_width, target_height = get_target_size(image)
                 data['width'] = target_width
                 data['height'] = target_height
 
-                img_resized = img.resize((target_width, target_height))
+                image_resized = image.resize((target_width, target_height))
 
-                data['image'] = image_to_base64(img_resized)
-                data['processed_size'] = get_image_bytes(img_resized)
+                data['image'] = image_to_base64(image_resized)
+                data['processed_size'] = get_image_bytes(image_resized)
 
             with open(output_file, 'a') as f:
                 json.dump(data, f)
