@@ -58,6 +58,7 @@ node_modules/
 .coverage
 .htmlcov/
 .tox/
+coverage.xml
 
 # Packaging
 *.tar.gz

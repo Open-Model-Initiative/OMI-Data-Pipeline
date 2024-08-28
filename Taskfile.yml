@@ -7,6 +7,7 @@ includes:
   core: ./modules/odr_core/Taskfile.yml
   data: ./modules/odr_datamodel/Taskfile.yml
   api-test: ./modules/odr_api/tests/Taskfile.yml
+  monitoring: ./modules/odr_monitoring/Taskfile.yml
 
 dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
 vars:
@@ -75,6 +76,7 @@ tasks:
         task core:test-db &
         task db:test-postgres &
         task api-test:test-all &
+        task monitoring:test &
         wait
       - echo "All testing complete"
 
