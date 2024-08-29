@@ -42,6 +42,8 @@ class User(Base):
     sessions = relationship("UserSession", back_populates="user")
     user_type = Column(Enum(UserType), default=UserType.user)
 
+    content_events = relationship("ContentEvents", back_populates="user")
+
     def __repr__(self):
         return f"<User(id={self.id}, username={self.username}, email={self.email})>"
 

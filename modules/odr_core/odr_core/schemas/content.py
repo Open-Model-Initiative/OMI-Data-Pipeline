@@ -34,6 +34,10 @@ class ContentAuthorCreate(ContentAuthorBase):
     pass
 
 
+class ContentAuthorUpdate(ContentAuthorBase):
+    pass
+
+
 class ContentAuthor(ContentAuthorBase):
     id: int
     content_id: int
@@ -117,6 +121,30 @@ class Content(ContentBase):
 
     class Config:
         from_attribute = True
+
+
+class ContentEventBase(BaseModel):
+    content_id: int
+    status: ContentStatus
+    set_by: int
+    note: Optional[str] = None
+
+
+class ContentEventCreate(ContentEventBase):
+    pass
+
+
+class ContentEventUpdate(BaseModel):
+    status: Optional[ContentStatus] = None
+    note: Optional[str] = None
+
+
+class ContentEvent(ContentEventBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
 
 
 def httpurl_to_str(url: Optional[HttpUrl]) -> Optional[str]:

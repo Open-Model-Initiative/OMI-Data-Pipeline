@@ -68,6 +68,7 @@ class Content(Base):
     annotations = relationship("Annotation", back_populates="content")
     embeddings = relationship("ContentEmbedding", back_populates="content")
     sources = relationship("ContentSource", back_populates="content", cascade="all,delete-orphan")
+    events = relationship("ContentEvents", back_populates="content")
 
 
 class ContentAuthor(Base):
@@ -95,3 +96,18 @@ class ContentSource(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     content = relationship("Content", back_populates="sources")
+
+
+class ContentEvents(Base):
+    __tablename__ = "content_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content_id = Column(Integer, ForeignKey("contents.id"), nullable=False)
+    status = Column(Enum(ContentStatus), nullable=False)
+    set_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    note = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    content = relationship("Content", back_populates="events")
+    user = relationship("User", back_populates="content_events")
