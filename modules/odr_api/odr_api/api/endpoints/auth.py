@@ -19,7 +19,7 @@ def login_for_access_token(db=Depends(get_db), form_data: OAuth2PasswordRequestF
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
     scopes = form_data.scopes
-    access_token = create_access_token(user=user, scopes=scopes)
+    access_token = create_access_token(user=user, scope=scopes)
 
     return UserToken(access_token=access_token, token_type="bearer")
 
