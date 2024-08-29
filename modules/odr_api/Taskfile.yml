@@ -1,15 +1,17 @@
 version: 3
 
 tasks:
-  test:
-    desc: Run tests for the api server
-    cmds:
-      - python -m pytest -v ${ROOT_DIR}/modules/odr_api/tests/test_user_api.py
   start:
     desc: Start the api server
     cmds:
-      - cmd: powershell.exe -ExecutionPolicy ByPass ${ROOT_DIR}/modules/odr_api/scripts/run_server.ps1
+      - cmd: powershell.exe -ExecutionPolicy ByPass ./modules/odr_api/scripts/run_server.ps1 -debug
         platforms: [windows]
-      - cmd: ./modules/odr_api/scripts/start_server.sh
+      - cmd: ./modules/odr_api/scripts/start_server.sh --debug
         platforms: [linux, darwin]
       - echo 'Start server stub'
+
+  debug:
+    desc: Start the api server in debug mode
+    cmds:
+      - cmd: python -m debugpy --listen 0.0.0.0:5678 --wait-for-client ./modules/odr_api/odr_api/main.py
+        platforms: [windows, linux, darwin]

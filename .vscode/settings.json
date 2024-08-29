@@ -1,0 +1,13 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 35432,
+            "driver": "PostgreSQL",
+            "name": "opendatarepository",
+            "username": "opendatarepository",
+            "database": "opendatarepository"
+        }
+    ]
+}

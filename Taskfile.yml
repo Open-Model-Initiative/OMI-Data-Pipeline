@@ -7,6 +7,8 @@ includes:
   core: ./modules/odr_core/Taskfile.yml
   data: ./modules/odr_datamodel/Taskfile.yml
   frontend: ./modules/odr_frontend/Taskfile.yml
+  api-test: ./modules/odr_api/tests/Taskfile.yml
+  monitoring: ./modules/odr_monitoring/Taskfile.yml
 
 dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
 vars:
@@ -65,9 +67,21 @@ tasks:
       - echo "Stopping all services..."
       - |
         task db:stop-postgres &
-        task api:stop &
         wait
       - echo "All services stopped"
+
+  test-all:
+    desc: Run all tests
+    cmds:
+      - echo "Starting all tests ..."
+      - |
+        task core:test &
+        task core:test-db &
+        task db:test-postgres &
+        task api-test:test-all &
+        task monitoring:test &
+        wait
+      - echo "All testing complete"
 
   watch-all-logs:
     desc: Watch all service logs
@@ -78,3 +92,9 @@ tasks:
         task api:watch-api-logs &
         wait
       - echo "All logs watched"
+
+  smoke_tests:
+    desc: Run smoke tests for both API and PostgreSQL
+    cmds:
+      - task api-test:health-check
+      - task db:test-postgres

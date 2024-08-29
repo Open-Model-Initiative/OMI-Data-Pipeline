@@ -1,0 +1,115 @@
+from sqlalchemy.orm import Session
+from typing import List, Optional
+from datetime import datetime, timezone
+
+from odr_core.models.annotation import Annotation, AnnotationSource
+from odr_core.schemas.annotation import AnnotationCreate, AnnotationUpdate
+from odr_core.schemas.user import User
+
+
+def create_annotation(
+    db: Session, annotation: AnnotationCreate, current_user: User
+) -> Annotation:
+    db_annotation = Annotation(
+        content_id=annotation.content_id,
+        annotation=annotation.annotation,
+        manually_adjusted=annotation.manually_adjusted,
+        overall_rating=annotation.overall_rating,
+        from_user_id=(
+            annotation.from_user_id if annotation.from_user_id else current_user.id
+        ),
+        from_team_id=annotation.from_team_id,
+        updated_at=datetime.now(timezone.utc),
+    )
+
+    if annotation.annotation_source_ids:
+        db_annotation.annotation_sources = (
+            db.query(AnnotationSource)
+            .filter(AnnotationSource.id.in_(annotation.annotation_source_ids))
+            .all()
+        )
+
+    db.add(db_annotation)
+    db.commit()
+    db.refresh(db_annotation)
+    return db_annotation
+
+
+def get_annotation(db: Session, annotation_id: int) -> Optional[Annotation]:
+    return db.query(Annotation).filter(Annotation.id == annotation_id).first()
+
+
+def get_annotations(db: Session, skip: int = 0, limit: int = 100) -> List[Annotation]:
+    return db.query(Annotation).offset(skip).limit(limit).all()
+
+
+def update_annotation(
+    db: Session,
+    annotation_id: int,
+    annotation_update: AnnotationUpdate,
+    current_user: User,
+) -> Optional[Annotation]:
+    db_annotation = db.query(Annotation).filter(Annotation.id == annotation_id).first()
+    if db_annotation is None:
+        return None
+
+    update_data = annotation_update.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_annotation, key, value)
+
+    if "annotation_source_ids" in update_data:
+        db_annotation.annotation_sources = (
+            db.query(AnnotationSource)
+            .filter(AnnotationSource.id.in_(update_data["annotation_source_ids"]))
+            .all()
+        )
+
+    db.commit()
+    db.refresh(db_annotation)
+    return db_annotation
+
+
+def delete_annotation(db: Session, annotation_id: int, current_user: User) -> bool:
+    db_annotation = db.query(Annotation).filter(Annotation.id == annotation_id).first()
+    if db_annotation is None:
+        return False
+
+    db.delete(db_annotation)
+    db.commit()
+    return True
+
+
+def get_annotations_by_content(
+    db: Session, content_id: int, skip: int = 0, limit: int = 100
+) -> List[Annotation]:
+    return (
+        db.query(Annotation)
+        .filter(Annotation.content_id == content_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+
+def get_annotations_by_user(
+    db: Session, user_id: int, skip: int = 0, limit: int = 100
+) -> List[Annotation]:
+    return (
+        db.query(Annotation)
+        .filter(Annotation.from_user_id == user_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+
+def get_annotations_by_team(
+    db: Session, team_id: int, skip: int = 0, limit: int = 100
+) -> List[Annotation]:
+    return (
+        db.query(Annotation)
+        .filter(Annotation.from_team_id == team_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )

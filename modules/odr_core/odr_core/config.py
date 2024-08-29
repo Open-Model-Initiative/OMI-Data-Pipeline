@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_PORT: str
 
+    # PGADMIN
+    PGADMIN_DEFAULT_EMAIL: str
+    PGADMIN_DEFAULT_PASSWORD: str
+
     # Auth - make sure to set this to False in production
     SKIP_AUTH: bool = False
 
