@@ -5,24 +5,24 @@ from enum import Enum
 
 
 class ContentType(str, Enum):
-    IMAGE = "image"
-    VIDEO = "video"
-    VOICE = "voice"
-    MUSIC = "music"
-    TEXT = "text"
+    IMAGE = "IMAGE"
+    VIDEO = "VIDEO"
+    VOICE = "VOICE"
+    MUSIC = "MUSIC"
+    TEXT = "TEXT"
 
 
 class ContentStatus(str, Enum):
-    PENDING = "pending"
-    AVAILABLE = "available"
-    UNAVAILABLE = "unavailable"
-    DELISTED = "delisted"
+    PENDING = "PENDING"
+    AVAILABLE = "AVAILABLE"
+    UNAVAILABLE = "UNAVAILABLE"
+    DELISTED = "DELISTED"
 
 
 class ContentSourceType(str, Enum):
-    URL = "url"
-    PATH = "path"
-    HUGGING_FACE = "hugging_face"
+    URL = "URL"
+    PATH = "PATH"
+    HUGGING_FACE = "HUGGING_FACE"
 
 
 class ContentAuthorBase(BaseModel):
@@ -79,6 +79,7 @@ class ContentBase(BaseModel):
     phash: str
     width: Optional[int] = None
     height: Optional[int] = None
+    url: List[HttpUrl] = []
     format: str
     size: int
     status: ContentStatus = ContentStatus.PENDING

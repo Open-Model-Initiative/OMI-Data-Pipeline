@@ -10,26 +10,26 @@ from sqlalchemy import (
     ARRAY,
     DateTime,
 )
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
+from sqlalchemy import Enum as SQLAlchemyEnum
 import enum
 
 
 class ContentType(enum.Enum):
-    IMAGE = "image"
-    VIDEO = "video"
-    VOICE = "voice"
-    MUSIC = "music"
-    TEXT = "text"
+    IMAGE = "IMAGE"
+    VIDEO = "VIDEO"
+    VOICE = "VOICE"
+    MUSIC = "MUSIC"
+    TEXT = "TEXT"
 
 
 class ContentStatus(enum.Enum):
-    PENDING = "pending"
-    AVAILABLE = "available"
-    UNAVAILABLE = "unavailable"
-    DELISTED = "delisted"
+    PENDING = "PENDING"
+    AVAILABLE = "AVAILABLE"
+    UNAVAILABLE = "UNAVAILABLE"
+    DELISTED = "DELISTED"
 
 
 class ContentSourceType(enum.Enum):
@@ -44,13 +44,15 @@ class Content(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=True)
     type = Column(Enum(ContentType))
+    type = Column(SQLAlchemyEnum(ContentType))
     hash = Column(String, index=True)
     phash = Column(String, index=True)
+    url = Column(String, nullable=True)
     width = Column(Integer, nullable=True)
     height = Column(Integer, nullable=True)
     format = Column(String)
     size = Column(Integer)
-    status = Column(Enum(ContentStatus), default=ContentStatus.PENDING)
+    status = Column(SQLAlchemyEnum(ContentStatus), default=ContentStatus.PENDING)
     license = Column(String)
     license_url = Column(String, nullable=True)
     flags = Column(Integer, default=0)
@@ -91,7 +93,7 @@ class ContentSource(Base):
     content_id = Column(Integer, ForeignKey("contents.id"))
     type = Column(Enum(ContentSourceType))
     value = Column(String, unique=True)
-    source_metadata = Column(JSONB, nullable=True)
+    source_metadata = Column(String, nullable=True)  # JSON
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

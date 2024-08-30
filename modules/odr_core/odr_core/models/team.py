@@ -27,8 +27,5 @@ class UserTeam(Base):
     team_id = Column(Integer, ForeignKey("teams.id"), primary_key=True)
     role = Column(String)  # e.g., 'admin', 'member'
 
-    user = relationship("User", back_populates="team_users")
-    team = relationship("Team", back_populates="team_users")
-
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
