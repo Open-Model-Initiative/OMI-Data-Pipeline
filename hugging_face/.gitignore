@@ -1,3 +1,5 @@
 env
 *_processed/
 dataset_images
+
+cache

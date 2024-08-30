@@ -18,7 +18,7 @@ def get_recommended_image_feature(ds_builder) -> Optional[str]:
 
 
 def get_recommended_annotation_features(ds_builder) -> List[str]:
-    annotation_keywords = ['caption', 'description', 'text', 'annotation']
+    annotation_keywords = ['caption', 'description', 'text', 'annotation', 'annotated', 'tag']
     return [feature for feature in ds_builder.info.features
             if any(keyword in feature.lower() for keyword in annotation_keywords)]
 

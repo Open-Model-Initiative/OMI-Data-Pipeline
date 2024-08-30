@@ -9,6 +9,8 @@ from PIL import Image
 from io import BytesIO
 from datasets import load_dataset, Dataset
 
+from embeddings.image_embeddings import calculate_image_embedding, instantiate_model, is_unique_image
+
 # Taken from https://github.com/huggingface/diffusers/blob/2dad462d9bf9890df09bfb088bf0a446c6074bec/src/diffusers/pipelines/pixart_alpha/pipeline_pixart_alpha.py#L135
 ASPECT_RATIO_256_BIN = {
     "0.25": [128.0, 512.0],
@@ -45,6 +47,46 @@ ASPECT_RATIO_256_BIN = {
     "3.0": [432.0, 144.0],
     "4.0": [512.0, 128.0],
 }
+
+
+annotationReplacementList = [
+    ('The image showcases ', ''),
+    ('The image portrays ', ''),
+    ('The image appears to be ', ''),
+    ('The image is ', ''),
+    ('The image depicts ', ''),
+    ('The image features ', ''),
+    ('The image captures ', ''),
+    ('The image shows ', ''),
+    ('The image displays ', ''),
+    ('The image presents ', ''),
+    ('This image showcases ', ''),
+    ('This image portrays ', ''),
+    ('This image appears to be ', ''),
+    ('This image is ', ''),
+    ('This image depicts ', ''),
+    ('This image features ', ''),
+    ('This image captures ', ''),
+    ('This image shows ', ''),
+    ('This image displays ', ''),
+    ('This image presents ', ''),
+    ('In this picture, ', ''),
+    ('In this artwork, ', 'Artwork of '),
+    ('In this illustration, ', 'Illustration of '),
+    ('In this depiction, ', ''),
+    ('In this piece, ', ''),
+    ('In this image, ', ''),
+    ('In this art piece, ', 'Art of '),
+    ('In this scene, ', ''),
+    ('In the picture, ', ''),
+    ('In the artwork, ', 'Artwork of '),
+    ('In the illustration, ', 'Illustration of '),
+    ('In the depiction, ', ''),
+    ('In the piece, ', ''),
+    ('In the image, ', ''),
+    ('In the art piece, ', 'Art of '),
+    ('In the scene, ', ''),
+]
 
 
 def process_chunk(output_dir, dataset_repo):
@@ -154,6 +196,14 @@ def try_downloading_image(data):
     return image is not None, image
 
 
+def clean_annotation(annotation):
+    cleaned_annotation = annotation
+    for old, new in annotationReplacementList:
+        cleaned_annotation = cleaned_annotation.replace(old, new)
+
+    return cleaned_annotation
+
+
 def process_jsonl(dataset_repo, input_file, chunk_size):
     input_path = Path(input_file).resolve()
     input_dir = input_path.parent
@@ -166,6 +216,8 @@ def process_jsonl(dataset_repo, input_file, chunk_size):
         output_file.unlink()
 
     processed_count = 0
+
+    embedding_model, model_name, collection = instantiate_model()
 
     with open(input_file, 'r') as f:
         for line in f:
@@ -186,6 +238,23 @@ def process_jsonl(dataset_repo, input_file, chunk_size):
 
                 data['image'] = image_to_base64(image_resized)
                 data['processed_size'] = get_image_bytes(image_resized)
+
+                for annotation in data["annotations"]:
+                    annotation_text = annotation["annotation"]["text"]
+                    cleaned_annotation = clean_annotation(annotation_text)
+                    annotation["annotation"]["clean_text"] = cleaned_annotation
+
+                # Calculate and add embedding
+                embedding = calculate_image_embedding(embedding_model, image_resized)
+                data['embeddings'].append({
+                    "model": model_name,
+                    "embedding": embedding.tolist()
+                })
+
+                # Use ChromaDB to check for uniqueness
+                image_id = str(processed_count)  # or use a unique identifier from your data
+                unique_image = is_unique_image(collection, embedding, image_id)
+                data['is_unique'] = unique_image
 
             with open(output_file, 'a') as f:
                 json.dump(data, f)

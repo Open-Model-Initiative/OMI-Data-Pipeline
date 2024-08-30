@@ -58,7 +58,7 @@ def search_similar_images(
             if file.endswith(tuple(allowed_image_extensions)):
                 images_paths.append(os.path.join(folder_path, file))
 
-    # conveert to batches
+    # convert to batches
     batches = [images_paths[i:i + batch_size] for i in range(0, len(images_paths), batch_size)]
 
     model = ImageEmbedding(
