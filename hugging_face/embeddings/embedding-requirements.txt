@@ -1,0 +1,4 @@
+chromadb
+# fastembed-gpu
+pillow
+fastembed
