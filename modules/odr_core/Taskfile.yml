@@ -19,6 +19,13 @@ tasks:
     cmds:
       - python -m pytest tests
 
+  coverage:
+    desc: Run tests with coverage report
+    deps: [install]
+    dir: modules/odr_core
+    cmds:
+      - python -m pytest --cov=odr_core --cov-report=term-missing --cov-report=xml tests
+
   test-db:
     desc: Run tests for the database manager
     cmds:

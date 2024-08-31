@@ -17,6 +17,11 @@ vars:
     sh: echo ${ROOT_DIR}/.env
 
 tasks:
+  default:
+    desc: List all the tasks
+    cmds:
+      - task --list
+
   echo-project-root:
     desc: Echo the project root directory. Helps ensure environment is set up and tasks will run.
     cmds:
