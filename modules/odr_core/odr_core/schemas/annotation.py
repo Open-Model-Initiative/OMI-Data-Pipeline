@@ -1,7 +1,7 @@
-from pydantic import BaseModel, Field, field_serializer
+from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from datetime import datetime
-from enum import Enum
+from odr_core.enums import AnnotationSourceType, ReportType
 
 
 class AnnotationBase(BaseModel):
@@ -82,12 +82,6 @@ class AnnotationRating(AnnotationRatingBase):
         from_attributes = True
 
 
-class ReportType(str, Enum):
-    ILLEGAL_CONTENT = "illegal_content"
-    MALICIOUS_ANNOTATION = "malicious_annotation"
-    OTHER = "other"
-
-
 class AnnotationReportBase(BaseModel):
     type: ReportType
     description: Optional[str] = None
@@ -106,13 +100,6 @@ class AnnotationReport(AnnotationReportBase):
 
     class Config:
         from_attributes = True
-
-
-class AnnotationSourceType(str, Enum):
-    CONTENT_DESCRIPTION = "content_description"
-    SPATIAL_ANALYSIS = "spatial_analysis"
-    TAGS = "tags"
-    OTHER = "other"
 
 
 class AnnotationSourceBase(BaseModel):

@@ -1,13 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
-from enum import Enum
+from odr_core.enums import UserType
 import uuid
-
-
-class UserType(str, Enum):
-    user = "user"
-    bot = "bot"
 
 
 class UserBase(BaseModel):

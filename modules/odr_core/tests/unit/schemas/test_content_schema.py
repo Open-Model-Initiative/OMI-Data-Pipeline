@@ -22,9 +22,9 @@ def test_content_schema():
     content = ContentSchema(**content_data)
     assert content.id == 1
     assert content.name == "Test Image"
-    assert content.type == ContentType.IMAGE.value
+    assert content.type is ContentType.IMAGE
     assert content.hash == "abcdef123456"
-    assert content.status == ContentStatus.PENDING.value
+    assert content.status is ContentStatus.PENDING
     assert len(content.url) == 1
     assert content.url[0].unicode_string() == "http://example.com/image3.jpg"
 

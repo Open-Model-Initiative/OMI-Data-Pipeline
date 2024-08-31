@@ -14,28 +14,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
 from sqlalchemy import Enum as SQLAlchemyEnum
-import enum
-
-
-class ContentType(enum.Enum):
-    IMAGE = "IMAGE"
-    VIDEO = "VIDEO"
-    VOICE = "VOICE"
-    MUSIC = "MUSIC"
-    TEXT = "TEXT"
-
-
-class ContentStatus(enum.Enum):
-    PENDING = "PENDING"
-    AVAILABLE = "AVAILABLE"
-    UNAVAILABLE = "UNAVAILABLE"
-    DELISTED = "DELISTED"
-
-
-class ContentSourceType(enum.Enum):
-    URL = "url"
-    PATH = "path"
-    HUGGING_FACE = "hugging_face"
+from odr_core.enums import ContentType, ContentStatus, ContentSourceType, ReportStatus
 
 
 class Content(Base):
@@ -66,11 +45,13 @@ class Content(Base):
 
     from_user = relationship("User", back_populates="contents")
     from_team = relationship("Team", back_populates="contents")
-    content_authors = relationship("ContentAuthor", back_populates="content")
     annotations = relationship("Annotation", back_populates="content")
     embeddings = relationship("ContentEmbedding", back_populates="content")
     sources = relationship("ContentSource", back_populates="content", cascade="all,delete-orphan")
     events = relationship("ContentEvents", back_populates="content")
+    reports = relationship("ContentReport", back_populates="content")
+    content_authors = relationship("ContentAuthor", back_populates="content")
+    content_sets = relationship("ContentSet", secondary="content_set_items", back_populates="contents")
 
 
 class ContentAuthor(Base):
@@ -91,7 +72,7 @@ class ContentSource(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     content_id = Column(Integer, ForeignKey("contents.id"))
-    type = Column(Enum(ContentSourceType))
+    type = Column(SQLAlchemyEnum(ContentSourceType))
     value = Column(String, unique=True)
     source_metadata = Column(String, nullable=True)  # JSON
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -113,3 +94,41 @@ class ContentEvents(Base):
 
     content = relationship("Content", back_populates="events")
     user = relationship("User", back_populates="content_events")
+
+
+class ContentReport(Base):
+    __tablename__ = "content_reports"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content_id = Column(Integer, ForeignKey("contents.id"), nullable=False)
+    reporter_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    reason = Column(String, nullable=False)
+    description = Column(String)
+    status = Column(Enum(ReportStatus), default=ReportStatus.PENDING)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False, server_default=func.now())
+
+    content = relationship("Content", back_populates="reports")
+    reporter = relationship("User", back_populates="content_reports")
+
+
+class ContentSet(Base):
+    __tablename__ = "content_sets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    description = Column(String)
+    created_by_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False, server_default=func.now())
+
+    created_by = relationship("User", back_populates="content_sets")
+    contents = relationship("Content", secondary="content_set_items", back_populates="content_sets")
+
+
+class ContentSetItem(Base):
+    __tablename__ = "content_set_items"
+
+    content_set_id = Column(Integer, ForeignKey("content_sets.id"), primary_key=True)
+    content_id = Column(Integer, ForeignKey("contents.id"), primary_key=True)
+    added_at = Column(DateTime(timezone=True), server_default=func.now())

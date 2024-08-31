@@ -1,28 +1,7 @@
 from pydantic import BaseModel, HttpUrl
 from typing import List, Optional
 from datetime import datetime
-from enum import Enum
-
-
-class ContentType(str, Enum):
-    IMAGE = "IMAGE"
-    VIDEO = "VIDEO"
-    VOICE = "VOICE"
-    MUSIC = "MUSIC"
-    TEXT = "TEXT"
-
-
-class ContentStatus(str, Enum):
-    PENDING = "PENDING"
-    AVAILABLE = "AVAILABLE"
-    UNAVAILABLE = "UNAVAILABLE"
-    DELISTED = "DELISTED"
-
-
-class ContentSourceType(str, Enum):
-    URL = "URL"
-    PATH = "PATH"
-    HUGGING_FACE = "HUGGING_FACE"
+from odr_core.enums import ContentStatus, ContentType, ContentSourceType
 
 
 class ContentAuthorBase(BaseModel):

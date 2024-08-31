@@ -17,7 +17,6 @@ from odr_core.schemas.content import (
     httpurl_to_str,
 )
 from typing import List, Optional
-from sqlalchemy import Enum as SQLAlchemyEnum
 from loguru import logger
 from datetime import datetime, timezone
 from sqlalchemy.exc import IntegrityError
