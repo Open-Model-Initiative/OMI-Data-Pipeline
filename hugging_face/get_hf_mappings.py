@@ -52,7 +52,7 @@ def get_recommended_fields(ds_builder) -> Dict[str, Optional[str]]:
     return recommended_fields
 
 
-def create_mapping_file(dataset_name: str, recommended_fields: Dict[str, Optional[str]], output_path: str = "./mappings"):
+def create_mapping_file(dataset_name: str, recommended_fields: Dict[str, Optional[str]], output_path: str = "./datasets/mappings"):
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 

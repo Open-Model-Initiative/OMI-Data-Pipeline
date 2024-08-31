@@ -25,7 +25,7 @@ def get_ds_builder(dataset_name: str):
     return ds_builder
 
 
-def save_dataset_info(ds_builder, dataset_name: str, base_path: str = "./dataset_info") -> str:
+def save_dataset_info(ds_builder, dataset_name: str, base_path: str = "./datasets/dataset_info") -> str:
     dataset_path = os.path.join(base_path, dataset_name)
 
     print(f"Saving dataset information for {dataset_name}")

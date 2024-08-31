@@ -1,5 +1,5 @@
 env
-*_processed/
+jsonFiles
 dataset_images
 
 cache

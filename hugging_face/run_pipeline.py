@@ -65,7 +65,7 @@ def main():
     # Derive other variables
     dataset_name_underscore = args.dataset_name.replace("/", "_")
     mapping_file = f'./mappings/{dataset_name_underscore}_mapping.json'
-    output_dir = f'./jsonFiles/{dataset_name_underscore}'
+    output_dir = f'./datasets/jsonFiles/{dataset_name_underscore}'
     jsonl_file = f'{output_dir}/metadata.jsonl'
     final_dataset_name = f"{args.dataset_repo}-private"
 
