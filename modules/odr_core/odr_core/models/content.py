@@ -13,7 +13,6 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
-from sqlalchemy import Enum as SQLAlchemyEnum
 from odr_core.enums import ContentType, ContentStatus, ContentSourceType, ReportStatus
 
 
@@ -23,7 +22,7 @@ class Content(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=True)
     type = Column(Enum(ContentType))
-    type = Column(SQLAlchemyEnum(ContentType))
+    type = Column(Enum(ContentType))
     hash = Column(String, index=True)
     phash = Column(String, index=True)
     url = Column(String, nullable=True)
@@ -31,7 +30,7 @@ class Content(Base):
     height = Column(Integer, nullable=True)
     format = Column(String)
     size = Column(Integer)
-    status = Column(SQLAlchemyEnum(ContentStatus), default=ContentStatus.PENDING)
+    status = Column(Enum(ContentStatus), default=ContentStatus.PENDING)
     license = Column(String)
     license_url = Column(String, nullable=True)
     flags = Column(Integer, default=0)
@@ -72,7 +71,7 @@ class ContentSource(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     content_id = Column(Integer, ForeignKey("contents.id"))
-    type = Column(SQLAlchemyEnum(ContentSourceType))
+    type = Column(Enum(ContentSourceType))
     value = Column(String, unique=True)
     source_metadata = Column(String, nullable=True)  # JSON
     created_at = Column(DateTime(timezone=True), server_default=func.now())

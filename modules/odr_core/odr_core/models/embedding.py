@@ -14,20 +14,14 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
-import enum
+from odr_core.enums import EmbeddingEngineType
 from pgvector.sqlalchemy import Vector
-
-
-class EmbeddingEngineType(enum.Enum):
-    IMAGE = "image"
-    VIDEO = "video"
-    VOICE = "voice"
-    MUSIC = "music"
-    TEXT = "text"
+from odr_core.config import settings
 
 
 class EmbeddingEngine(Base):
     __tablename__ = "embedding_engines"
+    __table_args__ = (UniqueConstraint('name', name='uq_embedding_engine_name'),)
 
     id = Column(Integer, primary_key=True, index=True)
     type = Column(Enum(EmbeddingEngineType))
@@ -35,7 +29,7 @@ class EmbeddingEngine(Base):
     description = Column(String, nullable=True)
     version = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
     supported = Column(Boolean, default=False)
 
     # Relationships
@@ -60,7 +54,7 @@ class ContentEmbedding(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     content_id = Column(Integer, ForeignKey("contents.id"))
-    embedding = Column(Vector(512))
+    embedding = Column(Vector(settings.CONTENT_EMBEDDING_DIMENSION))
     embedding_engine_id = Column(Integer, ForeignKey("embedding_engines.id"))
     from_user_id = Column(Integer, ForeignKey("users.id"))
     from_team_id = Column(Integer, ForeignKey("teams.id"), nullable=True)
@@ -86,7 +80,7 @@ class AnnotationEmbedding(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     annotation_id = Column(Integer, ForeignKey("annotations.id"))
-    embedding = Column(Vector(384))
+    embedding = Column(Vector(settings.ANNOTATION_EMBEDDING_DIMENSION))
     embedding_engine_id = Column(Integer, ForeignKey("embedding_engines.id"))
     from_user_id = Column(Integer, ForeignKey("users.id"))
     from_team_id = Column(Integer, ForeignKey("teams.id"), nullable=True)
