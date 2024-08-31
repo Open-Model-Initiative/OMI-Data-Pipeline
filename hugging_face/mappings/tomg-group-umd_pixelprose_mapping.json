@@ -11,7 +11,7 @@
     "licenseUrl": null,
     "contentAuthor": "author",
     "url": "url",
-    "image": "image_id",
+    "image_column": "image_id",
     "annotations": [
       "original_caption",
       "vlm_caption"

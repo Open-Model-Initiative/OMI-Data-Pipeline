@@ -5,7 +5,7 @@ import json
 import os
 import requests
 from pathlib import Path
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from io import BytesIO
 from datasets import load_dataset, Dataset
 
@@ -139,11 +139,16 @@ def try_downloading_image(data):
             try:
                 response = requests.get(url, timeout=10)
                 response.raise_for_status()
-                return Image.open(io.BytesIO(response.content))
-            except requests.RequestException:
+                try:
+                    return Image.open(io.BytesIO(response.content))
+                except (IOError, UnidentifiedImageError) as img_error:
+                    print(f"Failed to open image from {url}: {str(img_error)}")
+                    continue
+            except requests.RequestException as req_error:
+                print(f"Failed to download image from {url}: {str(req_error)}")
                 continue
 
-        print("Could not download image from urls")
+        print("Could not download or open image from any of the provided URLs")
         return None
 
     def try_hugging_face(meta, image_column):
@@ -193,7 +198,7 @@ def try_downloading_image(data):
     if image is None:
         image = try_hugging_face(data.get('meta', {}), data.get('image_column'))
 
-    return image is not None, image
+    return (image is not None, image)
 
 
 def clean_annotation(annotation):

@@ -34,6 +34,11 @@ Using the helper "run_pipeline.py":
 huggingface-cli login
 
 python run_pipeline.py --dataset_name "common-canvas/commoncatalog-cc-by-sa" --dataset_repo "openmodelinitiative/initial-test-dataset" --uploaded_by 'CheesyLaZanya' --num_samples 10
+
+python run_pipeline.py --dataset_name "tomg-group-umd/pixelprose" --dataset_repo "openmodelinitiative/initial-test-dataset-pixelprose" --uploaded_by 'CheesyLaZanya' --num_samples 10
+
+python run_pipeline.py --dataset_name "zlicastro/zanya-custom-dataset-test" --dataset_repo "openmodelinitiative/initial-test-dataset-zanyacustom" --uploaded_by 'CheesyLaZanya' --num_samples 2
+
 ```
 
 Or using the scripts individually:
