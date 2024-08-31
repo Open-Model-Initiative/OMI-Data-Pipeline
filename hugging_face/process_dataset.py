@@ -4,6 +4,7 @@ import io
 import json
 import os
 import requests
+import shutil
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 from io import BytesIO
@@ -89,24 +90,22 @@ annotationReplacementList = [
 ]
 
 
-def process_chunk(output_dir, dataset_repo):
-    upload_chunk(output_dir, dataset_repo)
-    delete_chunk(output_dir)
+def process_chunk(output_dir, dataset_repo, chunk_number, dataset_name):
+    chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
+    upload_chunk(chunk_dir, dataset_repo)
+    delete_chunk(chunk_dir)
 
 
-def upload_chunk(output_dir, dataset_repo):
-    print("Uploading Chunk ...")
-    jsonFile = os.path.join(output_dir, 'metadata.jsonl')
-    dataset = load_dataset('json', data_files=jsonFile)['train']
-
+def upload_chunk(chunk_dir, dataset_repo):
+    print(f"Uploading Chunk {chunk_dir.name}...")
+    jsonFile = chunk_dir / 'metadata.jsonl'
+    dataset = load_dataset('json', data_files=str(jsonFile))['train']
     dataset.push_to_hub(dataset_repo, private=True)  # Private as we do not want to host image data for others.
 
 
-def delete_chunk(output_dir):
-    print("Processed next chunk. Deleting processed images...")
-    for file in output_dir.glob('*'):
-        if file.is_file() and file.suffix.lower() in ['.jpg', '.jpeg', '.png', '.gif']:
-            file.unlink()
+def delete_chunk(chunk_dir):
+    print(f"Processed {chunk_dir.name}. Deleting chunk directory...")
+    shutil.rmtree(chunk_dir)
 
 
 def get_target_size(img):
@@ -134,23 +133,6 @@ def image_to_base64(img):
 
 
 def try_downloading_image(data):
-    def try_urls(urls):
-        for url in urls:
-            try:
-                response = requests.get(url, timeout=10)
-                response.raise_for_status()
-                try:
-                    return Image.open(io.BytesIO(response.content))
-                except (IOError, UnidentifiedImageError) as img_error:
-                    print(f"Failed to open image from {url}: {str(img_error)}")
-                    continue
-            except requests.RequestException as req_error:
-                print(f"Failed to download image from {url}: {str(req_error)}")
-                continue
-
-        print("Could not download or open image from any of the provided URLs")
-        return None
-
     def try_hugging_face(meta, image_column):
         try:
             dataset_name = meta.get('hf-dataset-name')
@@ -191,12 +173,29 @@ def try_downloading_image(data):
             print(f"An exception occurred while trying to load image from hugging face: {str(exception)}")
             return None
 
-    # Try downloading from URLs first
-    image = try_urls(data.get('urls', []))
+    def try_urls(urls):
+        for url in urls:
+            try:
+                response = requests.get(url, timeout=10)
+                response.raise_for_status()
+                try:
+                    return Image.open(io.BytesIO(response.content))
+                except (IOError, UnidentifiedImageError) as img_error:
+                    print(f"Failed to open image from {url}: {str(img_error)}")
+                    continue
+            except requests.RequestException as req_error:
+                print(f"Failed to download image from {url}: {str(req_error)}")
+                continue
 
-    # If URL download fails, try Hugging Face
+        print("Could not download or open image from any of the provided URLs")
+        return None
+
+    # Try downloading from Hugging Face image first
+    image = try_hugging_face(data.get('meta', {}), data.get('image_column'))
+
+    # If Hugging Face download fails, try URLs
     if image is None:
-        image = try_hugging_face(data.get('meta', {}), data.get('image_column'))
+        image = try_urls(data.get('urls', []))
 
     return (image is not None, image)
 
@@ -215,18 +214,22 @@ def process_jsonl(dataset_repo, input_file, chunk_size):
     output_dir = input_dir.parent / f"{input_dir.name}_processed"
     output_dir.mkdir(exist_ok=True)
 
-    output_file = output_dir / f"{input_path.name}"
-
-    if output_file.exists():
-        output_file.unlink()
-
+    dataset_name = input_path.stem
     processed_count = 0
+    chunk_number = 1
 
     embedding_model, model_name, collection = instantiate_model()
+
+    current_chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
+    current_chunk_dir.mkdir(exist_ok=True)
+    current_chunk_file = current_chunk_dir / 'metadata.jsonl'
 
     with open(input_file, 'r') as f:
         for line in f:
             data = json.loads(line)
+
+            if data.get('processed', False):
+                continue
 
             image_downloaded, image = try_downloading_image(data)
 
@@ -241,6 +244,11 @@ def process_jsonl(dataset_repo, input_file, chunk_size):
 
                 image_resized = image.resize((target_width, target_height))
 
+                # Save the image in the current chunk directory
+                image_filename = f"image_{processed_count}.jpg"
+                image_path = current_chunk_dir / image_filename
+                image_resized.save(image_path, format="JPEG")
+
                 data['image'] = image_to_base64(image_resized)
                 data['processed_size'] = get_image_bytes(image_resized)
 
@@ -249,29 +257,34 @@ def process_jsonl(dataset_repo, input_file, chunk_size):
                     cleaned_annotation = clean_annotation(annotation_text)
                     annotation["annotation"]["clean_text"] = cleaned_annotation
 
-                # Calculate and add embedding
                 embedding = calculate_image_embedding(embedding_model, image_resized)
                 data['embeddings'].append({
                     "model": model_name,
                     "embedding": embedding.tolist()
                 })
 
-                # Use ChromaDB to check for uniqueness
-                image_id = str(processed_count)  # or use a unique identifier from your data
+                image_id = str(processed_count)
                 unique_image = is_unique_image(collection, embedding, image_id)
                 data['is_unique'] = unique_image
 
-            with open(output_file, 'a') as f:
+                data['processed'] = True
+
+            with open(current_chunk_file, 'a') as f:
                 json.dump(data, f)
                 f.write('\n')
 
             processed_count += 1
 
             if processed_count % chunk_size == 0:
-                process_chunk(output_dir, dataset_repo)
+                process_chunk(output_dir, dataset_repo, chunk_number, dataset_name)
+                chunk_number += 1
+                current_chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
+                current_chunk_dir.mkdir(exist_ok=True)
+                current_chunk_file = current_chunk_dir / 'metadata.jsonl'
 
     # Process any remaining data after finishing
-    process_chunk(output_dir, dataset_repo)
+    if processed_count % chunk_size != 0:
+        process_chunk(output_dir, dataset_repo, chunk_number, dataset_name)
 
 
 if __name__ == "__main__":

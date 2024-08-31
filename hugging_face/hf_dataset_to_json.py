@@ -31,10 +31,9 @@ def load_hugging_face_image(item, column: str) -> Image.Image:
         raise ValueError(f"Unknown image format: {type(image)}")
 
 
-def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[str, str], uploaded_by: str) -> Dict[str, Any]:
-    dataset_name_underscore = dataset_name.replace("/", "_")
+def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[str, str], uploaded_by: str, content_id: str) -> Dict[str, Any]:
     entry = {
-        "id": f"{dataset_name_underscore}-{id}",
+        "id": content_id,
         "type": "image",
         "hash": "tbd",
         "phash": "tbd",
@@ -117,14 +116,25 @@ def convert_dataset_to_json(dataset_name: str, mapping_file: str, output_dir: st
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    processed_count = 0
     for i, item in enumerate(dataset.take(num_samples)):
-        json_entry = create_json_entry(dataset, dataset_name, item, i, mapping, uploaded_by)
-        output_file = os.path.join(output_dir, f"{json_entry['id']}.json")
+        dataset_name_underscore = dataset_name.replace("/", "_")
+        content_id = f"{dataset_name_underscore}-{i}"
+        output_file = os.path.join(output_dir, f"{content_id}.json")
+
+        if os.path.exists(output_file):
+            print(f"Skipping existing file: {output_file}")
+            continue
+
+        json_entry = create_json_entry(dataset, dataset_name, item, i, mapping, uploaded_by, content_id)
         with open(output_file, 'w') as f:
             json.dump(json_entry, f, indent=2, cls=DateTimeEncoder)
             f.write('\n')
 
-    print(f"Created {num_samples} JSON files in {output_dir}")
+        processed_count += 1
+
+    print(f"Created {processed_count} new JSON files in {output_dir}")
+    print(f"Total files (including existing): {num_samples}")
 
 
 def main():

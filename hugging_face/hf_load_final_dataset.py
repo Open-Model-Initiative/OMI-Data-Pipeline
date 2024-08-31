@@ -6,6 +6,8 @@ from datasets import load_dataset
 from io import BytesIO
 from PIL import Image
 
+import get_hf_features
+
 
 def process_item(item):
     """
@@ -60,7 +62,11 @@ def main():
     parser.add_argument("-d", "--dataset_name", help="Name of the Hugging Face dataset")
     args = parser.parse_args()
 
-    dataset = load_dataset(args.dataset_name, split='train', streaming=True)
+    dataset_name = args.dataset_name
+
+    get_hf_features.get_ds_builder(dataset_name)
+
+    dataset = load_dataset(dataset_name, split='train', streaming=True)
 
     available_items = dataset.filter(lambda example: example.get('status') == 'available')
 
