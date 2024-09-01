@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from datetime import datetime
-from odr_core.enums import AnnotationSourceType, ReportType
+from odr_core.enums import AnnotationSourceType, ReportType, ReportStatus
 
 
 class AnnotationBase(BaseModel):
@@ -92,8 +92,15 @@ class AnnotationReportCreate(AnnotationReportBase):
     reported_by_id: int
 
 
+class AnnotationReportUpdate(BaseModel):
+    reason: str | None = None
+    description: str | None = None
+    status: ReportStatus | None = None
+
+
 class AnnotationReport(AnnotationReportBase):
     id: int
+    status: ReportStatus
     annotation_id: int
     reported_by_id: int
     created_at: datetime

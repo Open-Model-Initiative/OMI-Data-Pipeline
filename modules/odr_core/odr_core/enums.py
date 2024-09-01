@@ -10,10 +10,10 @@ class ContentType(str, Enum):
 
 
 class ContentStatus(str, Enum):
-    PENDING = "PENDING"
-    AVAILABLE = "AVAILABLE"
-    UNAVAILABLE = "UNAVAILABLE"
-    DELISTED = "DELISTED"
+    PENDING = "pending"
+    AVAILABLE = "available"
+    UNAVAILABLE = "unavailable"
+    DELISTED = "delisted"
 
 
 class ContentSourceType(str, Enum):
