@@ -9,7 +9,7 @@ from PIL import Image
 import get_hf_features
 
 
-def process_item(item, dataset_name):
+def process_item(item: dict, dataset_name: str) -> None:
     """
     Process a single item from the dataset.
     Display its properties, show the image, and save it.
@@ -26,7 +26,7 @@ def process_item(item, dataset_name):
         print("No image found in the item.")
 
 
-def display_item_properties(item):
+def display_item_properties(item: dict) -> None:
     """
     Display the properties of the given item.
     """
@@ -36,12 +36,12 @@ def display_item_properties(item):
             print(f"{key}: {value}")
 
 
-def base64_to_image(base64_string):
+def base64_to_image(base64_string: str) -> Image.Image:
     img_data = base64.b64decode(base64_string)
     return Image.open(BytesIO(img_data))
 
 
-def save_image(image, image_id, dataset_name):
+def save_image(image: Image.Image, image_id: str, dataset_name: str) -> None:
     """
     Save the image to a folder called dataset_images/{dataset_name}.
     Create the folders if they don't exist.
@@ -64,7 +64,7 @@ def save_image(image, image_id, dataset_name):
     print(f"Image saved as {file_path}")
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Load one of our private Hugging Face datasets locally.")
     parser.add_argument("-d", "--dataset_name", help="Name of the Hugging Face dataset")
     parser.add_argument("-n", "--num_items", type=int, default=1, help="Number of items to download (default: 1)")

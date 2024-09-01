@@ -3,10 +3,10 @@ import json
 import os
 from typing import Dict
 
-from datasets import load_dataset_builder, load_dataset
+from datasets import DatasetBuilder, load_dataset_builder, load_dataset
 
 
-def get_ds_builder(dataset_name: str):
+def get_ds_builder(dataset_name: str) -> DatasetBuilder:
     ds_builder = load_dataset_builder(dataset_name)
 
     # Handle datasets where the ds_builder does not include features.
@@ -25,7 +25,7 @@ def get_ds_builder(dataset_name: str):
     return ds_builder
 
 
-def save_dataset_info(ds_builder, dataset_name: str, base_path: str = "./datasets/dataset_info") -> str:
+def save_dataset_info(ds_builder: DatasetBuilder, dataset_name: str, base_path: str = "./datasets/dataset_info") -> str:
     dataset_path = os.path.join(base_path, dataset_name)
 
     print(f"Saving dataset information for {dataset_name}")
@@ -41,7 +41,7 @@ def save_dataset_info(ds_builder, dataset_name: str, base_path: str = "./dataset
     return dataset_path
 
 
-def print_dataset_debug_info(ds_builder):
+def print_dataset_debug_info(ds_builder: DatasetBuilder) -> None:
     print(f"Homepage: {ds_builder.info.homepage}")
     print(f"Description: {ds_builder.info.description}")
     print(f"License: {ds_builder.info.license}")

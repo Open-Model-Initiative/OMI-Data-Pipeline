@@ -4,12 +4,12 @@ import json
 import os
 from typing import Dict, List, Optional
 
-from datasets import load_dataset_builder
+from datasets import DatasetBuilder, load_dataset_builder
 
 import get_hf_features
 
 
-def get_recommended_image_feature(ds_builder) -> Optional[str]:
+def get_recommended_image_feature(ds_builder: DatasetBuilder) -> Optional[str]:
     image_keywords = ['jpg', 'image', 'img', 'picture', 'photo']
     for feature in ds_builder.info.features:
         if any(keyword in feature.lower() for keyword in image_keywords):
@@ -17,13 +17,13 @@ def get_recommended_image_feature(ds_builder) -> Optional[str]:
     return None
 
 
-def get_recommended_annotation_features(ds_builder) -> List[str]:
+def get_recommended_annotation_features(ds_builder: DatasetBuilder) -> List[str]:
     annotation_keywords = ['caption', 'description', 'text', 'annotation', 'annotated', 'tag']
     return [feature for feature in ds_builder.info.features
             if any(keyword in feature.lower() for keyword in annotation_keywords)]
 
 
-def get_recommended_fields(ds_builder) -> Dict[str, Optional[str]]:
+def get_recommended_fields(ds_builder: DatasetBuilder) -> Dict[str, Optional[str]]:
     field_mapping = {
         'id': ['photoid', 'uid', 'id', 'key'],
         'name': ['title', 'name'],
@@ -70,7 +70,14 @@ def create_mapping_file(dataset_name: str, recommended_fields: Dict[str, Optiona
     print(f"Mapping file created: {file_path}")
 
 
-def main(dataset_name: str):
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Get Hugging Face dataset mappings for translation to our data structure")
+    parser.add_argument("-d", "--dataset_name", required=True, help="Name of the Hugging Face dataset")
+
+    args = parser.parse_args()
+
+    dataset_name = args.dataset_name
+
     ds_builder = get_hf_features.get_ds_builder(dataset_name)
 
     recommended_fields = get_recommended_fields(ds_builder)
@@ -82,9 +89,4 @@ def main(dataset_name: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Get Hugging Face dataset mappings for translation to our data structure")
-    parser.add_argument("-d", "--dataset_name", required=True, help="Name of the Hugging Face dataset")
-
-    args = parser.parse_args()
-
-    main(args.dataset_name)
+    main()

@@ -7,7 +7,7 @@ TOKENIZER_NAME = "hf-internal-testing/llama-tokenizer"
 tokenizer = LlamaTokenizer.from_pretrained(TOKENIZER_NAME)
 
 
-def count_tokens(text):
+def count_tokens(text: str) -> int:
     """
     Count the number of tokens in the given text using the LlamaTokenizer.
 

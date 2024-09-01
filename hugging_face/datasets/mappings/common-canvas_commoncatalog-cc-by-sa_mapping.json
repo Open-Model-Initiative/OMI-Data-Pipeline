@@ -1,7 +1,7 @@
 {
   "dataset_name": "common-canvas/commoncatalog-cc-by-sa",
   "field_mapping": {
-    "id": "photoid",
+    "id": null,
     "name": "title",
     "width": "width",
     "height": "height",
@@ -9,7 +9,7 @@
     "size": null,
     "license": "licensename",
     "licenseUrl": "licenseurl",
-    "contentAuthor": "unickname",
+    "contentAuthor": null,
     "url": "url",
     "image_column": null,
     "annotations": [

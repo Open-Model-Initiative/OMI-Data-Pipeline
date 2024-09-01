@@ -37,7 +37,7 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
         "type": "image",
         "hash": "tbd",
         "phash": "tbd",
-        "urls": [],
+        "urls": [""],
         "status": "available",
         "flags": 0,
         "meta": {
@@ -54,10 +54,11 @@ def create_json_entry(dataset, dataset_name: str, item, id: int, mapping: Dict[s
         "width": None,
         "height": None,
         "format": None,
-        "license": None,
-        "licenseUrl": None,
+        "license": "",
+        "licenseUrl": "",
         "contentAuthor": None,
-        "annotations": []
+        "annotations": [],
+        "image_column": None
     }
 
     for target_field, source_field in mapping.items():

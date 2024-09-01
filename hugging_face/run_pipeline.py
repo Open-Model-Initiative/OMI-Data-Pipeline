@@ -5,7 +5,7 @@ import subprocess
 import time
 
 
-def check_overwrite_mappings(mapping_file):
+def check_overwrite_mappings(mapping_file: str) -> bool:
     if os.path.exists(mapping_file):
         while True:
             response = input(f"\nMapping file '{mapping_file}' already exists. Do you want to overwrite it? (yes/no): ").lower().strip()
@@ -19,7 +19,7 @@ def check_overwrite_mappings(mapping_file):
         return True
 
 
-def display_and_confirm_mappings(mapping_file):
+def display_and_confirm_mappings(mapping_file: str) -> bool:
     while True:
         with open(mapping_file, 'r') as f:
             mappings = json.load(f)
@@ -42,7 +42,7 @@ def display_and_confirm_mappings(mapping_file):
             print("Please answer 'yes' or 'no'.")
 
 
-def run_command(command):
+def run_command(command: list) -> None:
     print("\n" + "=" * 50)
     print(f"Running: {' '.join(command)}")
     print("=" * 50)
@@ -53,7 +53,7 @@ def run_command(command):
     print(f"Command execution time: {elapsed_time:.2f} seconds")
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Run the entire dataset processing pipeline")
     parser.add_argument("-d", "--dataset_name", required=True, help="Name of the dataset to load from")
     parser.add_argument("-r", "--dataset_repo", required=True, help="Name of the dataset repository to push up to")

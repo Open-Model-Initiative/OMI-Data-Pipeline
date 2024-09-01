@@ -8,9 +8,15 @@ import shutil
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 from io import BytesIO
-from datasets import concatenate_datasets, Dataset, load_dataset
+from datasets import Dataset, load_dataset
 
-from embeddings.image_embeddings import calculate_image_embedding, instantiate_model, is_unique_image
+from embeddings.image_embeddings import (
+    calculate_image_embedding,
+    instantiate_model,
+    is_unique_image
+)
+
+from dataset_utilities import append_datasets
 
 # Taken from https://github.com/huggingface/diffusers/blob/2dad462d9bf9890df09bfb088bf0a446c6074bec/src/diffusers/pipelines/pixart_alpha/pipeline_pixart_alpha.py#L135
 ASPECT_RATIO_256_BIN = {
@@ -90,7 +96,7 @@ annotationReplacementList = [
 ]
 
 
-def load_or_create_dataset(dataset_repo: str):
+def load_or_create_dataset(dataset_repo: str) -> Dataset | None:
     try:
         dataset = load_dataset(dataset_repo, split='train')
         print(f"Loaded existing dataset: {dataset_repo}")
@@ -100,41 +106,37 @@ def load_or_create_dataset(dataset_repo: str):
     return dataset
 
 
-def load_new_dataset(chunk_dir):
+def load_new_dataset(chunk_dir: str) -> Dataset:
     jsonFile = chunk_dir / 'metadata.jsonl'
     dataset = load_dataset('json', data_files=str(jsonFile))['train']
 
     return dataset
 
 
-def process_chunk(output_dir, dataset_repo, chunk_number, dataset_name, dataset):
+def process_chunk(output_dir: str, dataset_repo: str, chunk_number: int, dataset_name: str, dataset: Dataset | None) -> Dataset:
     chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
     print(f"Uploading Chunk {chunk_dir.name}...")
 
     new_dataset = load_new_dataset(chunk_dir)
 
-    try:
-        dataset = concatenate_datasets([dataset, new_dataset])
-    except Exception:
-        dataset = new_dataset
-        print(f"Creating new dataset: {dataset_repo}")
+    combined_dataset = append_datasets(dataset, new_dataset)
 
-    upload_dataset(dataset, dataset_repo)
+    upload_dataset(combined_dataset, dataset_repo)
     delete_chunk(chunk_dir)
 
     return dataset
 
 
-def upload_dataset(dataset, dataset_repo):
+def upload_dataset(dataset: Dataset, dataset_repo: str) -> None:
     dataset.push_to_hub(dataset_repo, private=True)  # Private as we do not want to host image data for others.
 
 
-def delete_chunk(chunk_dir):
+def delete_chunk(chunk_dir: str) -> None:
     print(f"Processed {chunk_dir.name}. Deleting chunk directory...")
     shutil.rmtree(chunk_dir)
 
 
-def get_target_size(img):
+def get_target_size(img: Image.Image) -> tuple[int, int]:
     width, height = img.size
     aspect_ratio = width / height
 
@@ -144,7 +146,7 @@ def get_target_size(img):
     return int(target_width), int(target_height)
 
 
-def get_image_bytes(img, format='JPEG'):
+def get_image_bytes(img: Image.Image, format: str = 'JPEG') -> int:
     img_byte_arr = io.BytesIO()
     img.save(img_byte_arr, format=format)
     contents = img_byte_arr.getvalue()
@@ -152,13 +154,13 @@ def get_image_bytes(img, format='JPEG'):
     return len(contents)
 
 
-def image_to_base64(img):
+def image_to_base64(img: Image.Image) -> str:
     buffered = BytesIO()
     img.save(buffered, format="JPEG")
     return base64.b64encode(buffered.getvalue()).decode()
 
 
-def try_downloading_image(data):
+def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
     def try_hugging_face(meta, image_column):
         try:
             dataset_name = meta.get('hf-dataset-name')
@@ -226,7 +228,7 @@ def try_downloading_image(data):
     return (image is not None, image)
 
 
-def clean_annotation(annotation):
+def clean_annotation(annotation: str) -> str:
     cleaned_annotation = annotation
     for old, new in annotationReplacementList:
         cleaned_annotation = cleaned_annotation.replace(old, new)
@@ -234,7 +236,7 @@ def clean_annotation(annotation):
     return cleaned_annotation
 
 
-def process_jsonl(dataset_repo, input_file, chunk_size):
+def process_jsonl(dataset_repo: str, input_file: str, chunk_size: int) -> None:
     dataset = load_or_create_dataset(dataset_repo)
 
     input_path = Path(input_file).resolve()
@@ -315,7 +317,7 @@ def process_jsonl(dataset_repo, input_file, chunk_size):
         dataset = process_chunk(output_dir, dataset_repo, chunk_number, dataset_name, dataset)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Process JSONL dataset file and download images.")
     parser.add_argument("-d", "--dataset_repo", required=True, help="The repository name for the dataset on Hugging Face Hub")
     parser.add_argument("-f", "--dataset_file", help="Path to the input JSONL file")

@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def convert_to_jsonl(input_dir, output_file):
+def convert_to_jsonl(input_dir: str, output_file: str) -> None:
     """
     Converts a folder of JSON files to a single JSONL file.
 
@@ -35,7 +35,7 @@ def convert_to_jsonl(input_dir, output_file):
     print(f"Total JSON files found: {json_files_found}")
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Combine JSON files into a single JSONL file")
     parser.add_argument("-p", "--path", required=True, help="Relative path to the directory containing JSON files")
 

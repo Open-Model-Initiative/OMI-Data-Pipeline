@@ -1,7 +1,7 @@
 {
   "dataset_name": "tomg-group-umd/pixelprose",
   "field_mapping": {
-    "id": "uid",
+    "id": null,
     "name": null,
     "width": "width",
     "height": "height",
@@ -9,7 +9,7 @@
     "size": null,
     "license": null,
     "licenseUrl": null,
-    "contentAuthor": "author",
+    "contentAuthor": null,
     "url": "url",
     "image_column": "image_id",
     "annotations": [
