@@ -1,3 +1,5 @@
+import logging
+
 from datasets import (
     concatenate_datasets,
     Dataset,
@@ -9,7 +11,7 @@ def append_datasets(existing_dataset: Dataset, new_dataset: Dataset) -> Dataset:
     try:
         combined_dataset = concatenate_datasets([existing_dataset, new_dataset])
     except Exception as e:
-        print(f"Could not append to existing dataset: {str(e)}")
+        logging.error(f"Could not append to existing dataset: {str(e)}")
         combined_dataset = new_dataset
 
     return combined_dataset
@@ -17,12 +19,12 @@ def append_datasets(existing_dataset: Dataset, new_dataset: Dataset) -> Dataset:
 
 def append_to_repo(dataset_repo: str, new_dataset: Dataset) -> Dataset:
     try:
-        print(f"Appending to existing dataset: {dataset_repo}")
+        logging.info(f"Appending to existing dataset: {dataset_repo}")
         existing_dataset = load_dataset(dataset_repo, split='train')
         combined_dataset = concatenate_datasets([existing_dataset, new_dataset])
     except Exception as e:
-        print(f"Could not append to existing dataset: {str(e)}")
-        print(f"Creating new dataset: {dataset_repo}")
+        logging.error(f"Could not append to existing dataset: {str(e)}")
+        logging.info(f"Creating new dataset: {dataset_repo}")
         combined_dataset = new_dataset
 
     return combined_dataset

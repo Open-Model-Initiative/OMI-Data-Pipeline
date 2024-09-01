@@ -2,6 +2,7 @@ import argparse
 import base64
 import io
 import json
+import logging
 import os
 import requests
 import shutil
@@ -99,10 +100,10 @@ annotationReplacementList = [
 def load_or_create_dataset(dataset_repo: str) -> Dataset | None:
     try:
         dataset = load_dataset(dataset_repo, split='train')
-        print(f"Loaded existing dataset: {dataset_repo}")
+        logging.debug(f"Loaded existing dataset: {dataset_repo}")
     except Exception:
         dataset = None
-        print(f"Dataset {dataset_repo} does not exist. Will create new.")
+        logging.debug(f"Dataset {dataset_repo} does not exist. Will create new.")
     return dataset
 
 
@@ -115,7 +116,7 @@ def load_new_dataset(chunk_dir: str) -> Dataset:
 
 def process_chunk(output_dir: str, dataset_repo: str, chunk_number: int, dataset_name: str, dataset: Dataset | None) -> Dataset:
     chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
-    print(f"Uploading Chunk {chunk_dir.name}...")
+    logging.debug(f"Uploading Chunk {chunk_dir.name}...")
 
     new_dataset = load_new_dataset(chunk_dir)
 
@@ -132,7 +133,7 @@ def upload_dataset(dataset: Dataset, dataset_repo: str) -> None:
 
 
 def delete_chunk(chunk_dir: str) -> None:
-    print(f"Processed {chunk_dir.name}. Deleting chunk directory...")
+    logging.debug(f"Processed {chunk_dir.name}. Deleting chunk directory...")
     shutil.rmtree(chunk_dir)
 
 
@@ -179,12 +180,12 @@ def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
                     missing_values.append("image_column")
 
                 if missing_values:
-                    print(f"Missing information for: {', '.join(missing_values)}")
+                    logging.debug(f"Missing information for: {', '.join(missing_values)}")
                     return None
 
             dataset = load_dataset(dataset_name, split=split)
             if image_column not in dataset.features:
-                print(f"{image_column} was not in dataset features")
+                logging.debug(f"{image_column} was not in dataset features")
                 return None
 
             item = dataset[id][image_column]
@@ -198,7 +199,7 @@ def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
             else:
                 return None
         except Exception as exception:
-            print(f"An exception occurred while trying to load image from hugging face: {str(exception)}")
+            logging.debug(f"An exception occurred while trying to load image from hugging face: {str(exception)}")
             return None
 
     def try_urls(urls):
@@ -209,13 +210,13 @@ def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
                 try:
                     return Image.open(io.BytesIO(response.content))
                 except (IOError, UnidentifiedImageError) as img_error:
-                    print(f"Failed to open image from {url}: {str(img_error)}")
+                    logging.debug(f"Failed to open image from {url}: {str(img_error)}")
                     continue
             except requests.RequestException as req_error:
-                print(f"Failed to download image from {url}: {str(req_error)}")
+                logging.debug(f"Failed to download image from {url}: {str(req_error)}")
                 continue
 
-        print("Could not download or open image from any of the provided URLs")
+        logging.debug("Could not download or open image from any of the provided URLs")
         return None
 
     # Try downloading from Hugging Face image first
@@ -328,4 +329,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()

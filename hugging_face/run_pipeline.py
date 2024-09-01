@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 import os
 import subprocess
 import time
@@ -50,7 +51,7 @@ def run_command(command: list) -> None:
     subprocess.run(command, check=True)
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(f"Command execution time: {elapsed_time:.2f} seconds")
+    logging.debug(f"Command execution time: {elapsed_time:.2f} seconds")
 
 
 def main() -> None:
@@ -102,4 +103,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()

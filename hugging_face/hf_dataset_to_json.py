@@ -1,6 +1,7 @@
 import argparse
 import io
 import json
+import logging
 import os
 from datetime import datetime
 from typing import Any, Dict
@@ -124,8 +125,10 @@ def convert_dataset_to_json(dataset_name: str, mapping_file: str, output_dir: st
         output_file = os.path.join(output_dir, f"{content_id}.json")
 
         if os.path.exists(output_file):
-            print(f"Skipping existing file: {output_file}")
+            logging.debug(f"Skipping existing file: {output_file}")
             continue
+
+        logging.debug(f"Creating file: {output_file}")
 
         json_entry = create_json_entry(dataset, dataset_name, item, i, mapping, uploaded_by, content_id)
         with open(output_file, 'w') as f:
@@ -134,8 +137,8 @@ def convert_dataset_to_json(dataset_name: str, mapping_file: str, output_dir: st
 
         processed_count += 1
 
-    print(f"Created {processed_count} new JSON files in {output_dir}")
-    print(f"Total files (including existing): {num_samples}")
+    logging.debug(f"Created {processed_count} new JSON files in {output_dir}")
+    logging.debug(f"Total files (including existing): {num_samples}")
 
 
 def main():
@@ -152,4 +155,5 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()

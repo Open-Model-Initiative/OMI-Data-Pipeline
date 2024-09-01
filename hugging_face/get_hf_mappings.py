@@ -1,6 +1,7 @@
 import argparse
 import glob
 import json
+import logging
 import os
 from typing import Dict, List, Optional
 
@@ -67,7 +68,7 @@ def create_mapping_file(dataset_name: str, recommended_fields: Dict[str, Optiona
         json.dump(mapping, f, indent=2)
         f.write('\n')
 
-    print(f"Mapping file created: {file_path}")
+    logging.info(f"Mapping file created: {file_path}")
 
 
 def main() -> None:
@@ -83,10 +84,11 @@ def main() -> None:
     recommended_fields = get_recommended_fields(ds_builder)
     create_mapping_file(dataset_name, recommended_fields)
 
-    print("Recommended field mapping:")
+    logging.info("Recommended field mapping:")
     for target_field, source_field in recommended_fields.items():
-        print(f"{target_field}: {source_field}")
+        logging.info(f"{target_field}: {source_field}")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()

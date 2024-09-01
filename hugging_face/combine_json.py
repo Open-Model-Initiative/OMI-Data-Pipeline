@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 import os
 import sys
 
@@ -12,7 +13,7 @@ def convert_to_jsonl(input_dir: str, output_file: str) -> None:
         input_dir (str): Path to the directory containing the JSON files.
         output_file (str): Path to the output JSONL file.
     """
-    print(f"Searching for JSON files in: {input_dir}")
+    logging.info(f"Searching for JSON files in: {input_dir}")
     json_files_found = 0
 
     with open(output_file, 'w') as f:
@@ -20,19 +21,19 @@ def convert_to_jsonl(input_dir: str, output_file: str) -> None:
             if filename.endswith('.json'):
                 json_files_found += 1
                 file_path = os.path.join(input_dir, filename)
-                print(f"Processing JSON file: {file_path}")
+                logging.debug(f"Processing JSON file: {file_path}")
                 try:
                     with open(file_path, 'r') as json_file:
                         data = json.load(json_file)
                         json.dump(data, f)
                         f.write('\n')
-                    print(f"Successfully processed: {filename}")
+                    logging.debug(f"Successfully processed: {filename}")
                 except json.JSONDecodeError:
-                    print(f"Error: {filename} is not a valid JSON file")
+                    logging.error(f"Error: {filename} is not a valid JSON file")
                 except Exception as e:
-                    print(f"Error processing {filename}: {str(e)}")
+                    logging.error(f"Error processing {filename}: {str(e)}")
 
-    print(f"Total JSON files found: {json_files_found}")
+    logging.info(f"Total JSON files found: {json_files_found}")
 
 
 def main() -> None:
@@ -45,13 +46,14 @@ def main() -> None:
     input_dir = os.path.join(current_dir, args.path)
 
     if not os.path.isdir(input_dir):
-        print(f"Error: The specified path '{input_dir}' is not a valid directory.")
+        logging.error(f"Error: The specified path '{input_dir}' is not a valid directory.")
         sys.exit(1)
 
     output_file = os.path.join(input_dir, 'metadata.jsonl')
     convert_to_jsonl(input_dir, output_file)
-    print(f'JSONL file created: {output_file}')
+    logging.info(f'JSONL file created: {output_file}')
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()

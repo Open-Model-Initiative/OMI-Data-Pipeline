@@ -1,6 +1,7 @@
 import argparse
 import base64
 import io
+import logging
 import os
 from datasets import load_dataset
 from io import BytesIO
@@ -23,17 +24,17 @@ def process_item(item: dict, dataset_name: str) -> None:
         id = item.get('id')
         save_image(image, id, dataset_name)
     else:
-        print("No image found in the item.")
+        logging.debug("No image found in the item.")
 
 
 def display_item_properties(item: dict) -> None:
     """
     Display the properties of the given item.
     """
-    print("Item properties:")
+    logging.debug("Item properties:")
     for key, value in item.items():
         if key != 'image':
-            print(f"{key}: {value}")
+            logging.debug(f"{key}: {value}")
 
 
 def base64_to_image(base64_string: str) -> Image.Image:
@@ -61,7 +62,7 @@ def save_image(image: Image.Image, image_id: str, dataset_name: str) -> None:
     file_path = os.path.join(dataset_folder, file_name)
 
     image.save(file_path)
-    print(f"Image saved as {file_path}")
+    logging.debug(f"Image saved as {file_path}")
 
 
 def main() -> None:
@@ -73,7 +74,8 @@ def main() -> None:
     dataset_name = args.dataset_name
     num_items = args.num_items
 
-    get_hf_features.get_ds_builder(dataset_name)
+    ds_builder = get_hf_features.get_ds_builder(dataset_name)
+    get_hf_features.print_splits(ds_builder)
 
     dataset = load_dataset(dataset_name, split='train', streaming=True)
 
@@ -84,4 +86,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()

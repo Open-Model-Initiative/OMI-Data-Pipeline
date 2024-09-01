@@ -211,11 +211,11 @@
     "splits": {
         "train": {
             "name": "train",
-            "num_bytes": 435161,
-            "num_examples": 12,
+            "num_bytes": 745399,
+            "num_examples": 22,
             "dataset_name": null
         }
     },
-    "download_size": 377267,
-    "dataset_size": 435161
+    "download_size": 623480,
+    "dataset_size": 745399
 }
