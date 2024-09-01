@@ -1,10 +1,19 @@
 import argparse
-from datasets import load_dataset
+from datasets import concatenate_datasets, load_dataset
 
 
 def upload_public_dataset(dataset_repo: str, jsonl_file: str):
-    dataset = load_dataset('json', data_files=jsonl_file)['train']
-    dataset.push_to_hub(dataset_repo, private=False)
+    new_dataset = load_dataset('json', data_files=jsonl_file)['train']
+
+    try:
+        existing_dataset = load_dataset(dataset_repo, split='train')
+        combined_dataset = concatenate_datasets([existing_dataset, new_dataset])
+        print(f"Appending to existing dataset: {dataset_repo}")
+    except Exception:
+        combined_dataset = new_dataset
+        print(f"Creating new dataset: {dataset_repo}")
+
+    combined_dataset.push_to_hub(dataset_repo, private=False)
 
 
 def main():

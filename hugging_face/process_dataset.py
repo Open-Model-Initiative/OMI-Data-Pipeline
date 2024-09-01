@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 from io import BytesIO
-from datasets import load_dataset, Dataset
+from datasets import concatenate_datasets, Dataset, load_dataset
 
 from embeddings.image_embeddings import calculate_image_embedding, instantiate_model, is_unique_image
 
@@ -90,16 +90,42 @@ annotationReplacementList = [
 ]
 
 
-def process_chunk(output_dir, dataset_repo, chunk_number, dataset_name):
-    chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
-    upload_chunk(chunk_dir, dataset_repo)
-    delete_chunk(chunk_dir)
+def load_or_create_dataset(dataset_repo: str):
+    try:
+        dataset = load_dataset(dataset_repo, split='train')
+        print(f"Loaded existing dataset: {dataset_repo}")
+    except Exception:
+        dataset = None
+        print(f"Dataset {dataset_repo} does not exist. Will create new.")
+    return dataset
 
 
-def upload_chunk(chunk_dir, dataset_repo):
-    print(f"Uploading Chunk {chunk_dir.name}...")
+def load_new_dataset(chunk_dir):
     jsonFile = chunk_dir / 'metadata.jsonl'
     dataset = load_dataset('json', data_files=str(jsonFile))['train']
+
+    return dataset
+
+
+def process_chunk(output_dir, dataset_repo, chunk_number, dataset_name, dataset):
+    chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
+    print(f"Uploading Chunk {chunk_dir.name}...")
+
+    new_dataset = load_new_dataset(chunk_dir)
+
+    try:
+        dataset = concatenate_datasets([dataset, new_dataset])
+    except Exception:
+        dataset = new_dataset
+        print(f"Creating new dataset: {dataset_repo}")
+
+    upload_dataset(dataset, dataset_repo)
+    delete_chunk(chunk_dir)
+
+    return dataset
+
+
+def upload_dataset(dataset, dataset_repo):
     dataset.push_to_hub(dataset_repo, private=True)  # Private as we do not want to host image data for others.
 
 
@@ -209,6 +235,8 @@ def clean_annotation(annotation):
 
 
 def process_jsonl(dataset_repo, input_file, chunk_size):
+    dataset = load_or_create_dataset(dataset_repo)
+
     input_path = Path(input_file).resolve()
     input_dir = input_path.parent
     output_dir = input_dir.parent / f"{input_dir.name}_processed"
@@ -276,7 +304,7 @@ def process_jsonl(dataset_repo, input_file, chunk_size):
             processed_count += 1
 
             if processed_count % chunk_size == 0:
-                process_chunk(output_dir, dataset_repo, chunk_number, dataset_name)
+                dataset = process_chunk(output_dir, dataset_repo, chunk_number, dataset_name, dataset)
                 chunk_number += 1
                 current_chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
                 current_chunk_dir.mkdir(exist_ok=True)
@@ -284,10 +312,10 @@ def process_jsonl(dataset_repo, input_file, chunk_size):
 
     # Process any remaining data after finishing
     if processed_count % chunk_size != 0:
-        process_chunk(output_dir, dataset_repo, chunk_number, dataset_name)
+        dataset = process_chunk(output_dir, dataset_repo, chunk_number, dataset_name, dataset)
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Process JSONL dataset file and download images.")
     parser.add_argument("-d", "--dataset_repo", required=True, help="The repository name for the dataset on Hugging Face Hub")
     parser.add_argument("-f", "--dataset_file", help="Path to the input JSONL file")
@@ -295,3 +323,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     process_jsonl(args.dataset_repo, args.dataset_file, args.chunk_size)
+
+
+if __name__ == "__main__":
+    main()
