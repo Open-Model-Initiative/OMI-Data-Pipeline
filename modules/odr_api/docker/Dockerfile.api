@@ -1,0 +1,34 @@
+# Build stage
+FROM python:3.11-slim-bookworm
+
+RUN apt-get update && apt-get install -y gcc && rm -rf /var/lib/apt/lists/*
+
+ENV PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100
+
+WORKDIR /app
+
+# Copy requirements file
+COPY modules/odr_api/requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY modules/odr_core /app/modules/odr_core
+RUN pip install --no-cache-dir -e /app/modules/odr_core
+
+COPY modules/odr_api /app
+RUN pip install --no-cache-dir .
+
+# Set Python path to include the modules
+ENV PYTHONPATH=/app:/app/modules:$PYTHONPATH
+
+# Expose the port the app runs on
+EXPOSE 31100
+# Set the entrypoint
+# CMD ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["uvicorn"]
+CMD ["odr_api.app:app", "--host", "0.0.0.0", "--port", "31100"]

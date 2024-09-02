@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "OMI-DataModel"
 
     # Postgres
-    POSTGRES_HOST: str = "localhost"
+    POSTGRES_HOST: str
     POSTGRES_DB: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str

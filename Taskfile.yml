@@ -2,12 +2,12 @@ version: '3'
 
 
 includes:
-  api: ./modules/odr_api/Taskfile.yml
+  api: ./modules/odr_api/Taskfile.api.yml
   db: ./modules/odr_database/Taskfile.yml
   core: ./modules/odr_core/Taskfile.yml
   data: ./modules/odr_datamodel/Taskfile.yml
   frontend: ./modules/odr_frontend/Taskfile.yml
-  api-test: ./modules/odr_api/tests/Taskfile.yml
+  api-test: ./modules/odr_api/tests/Taskfile.api.test.yml
   monitoring: ./modules/odr_monitoring/Taskfile.yml
 
 dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
@@ -56,9 +56,7 @@ tasks:
     cmds:
       - echo "Starting all services..."
       - |
-        task db:start-postgres &
-        task api:start &
-        task frontend:dev &
+        task start-containers
         wait
       - echo "All services started"
   stop-all:
@@ -66,8 +64,7 @@ tasks:
     cmds:
       - echo "Stopping all services..."
       - |
-        task db:stop-postgres &
-        wait
+        task stop-containers
       - echo "All services stopped"
 
   test-all:
@@ -87,14 +84,23 @@ tasks:
     desc: Watch all service logs
     cmds:
       - echo "Watching all logs..."
-      - |
-        task db:watch-postgres-logs &
-        task api:watch-api-logs &
-        wait
-      - echo "All logs watched"
+      - docker compose logs -f
 
   smoke_tests:
     desc: Run smoke tests for both API and PostgreSQL
     cmds:
       - task api-test:health-check
       - task db:test-postgres
+
+  build-all:
+    desc: Build all services
+    cmds:
+      - docker compose build
+  start-containers:
+    desc: Start all services
+    cmds:
+      - docker compose up -d
+  stop-containers:
+    desc: Stop all running containers
+    cmds:
+      - docker compose down
