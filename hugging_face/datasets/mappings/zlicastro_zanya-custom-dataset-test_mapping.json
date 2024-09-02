@@ -15,8 +15,7 @@
     "annotations": [
       "vlm_annotation",
       "hand_annotated_short",
-      "hand_annotated_long",
-      "tags"
+      "hand_annotated_long"
     ]
   }
 }

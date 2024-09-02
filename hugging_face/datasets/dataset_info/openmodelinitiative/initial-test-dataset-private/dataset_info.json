@@ -81,7 +81,7 @@
             "_type": "Value"
         },
         "name": {
-            "dtype": "string",
+            "dtype": "null",
             "_type": "Value"
         },
         "width": {
@@ -193,10 +193,6 @@
         "is_unique": {
             "dtype": "bool",
             "_type": "Value"
-        },
-        "processed": {
-            "dtype": "bool",
-            "_type": "Value"
         }
     },
     "builder_name": "parquet",
@@ -211,11 +207,11 @@
     "splits": {
         "train": {
             "name": "train",
-            "num_bytes": 745399,
-            "num_examples": 22,
+            "num_bytes": 124707,
+            "num_examples": 4,
             "dataset_name": null
         }
     },
-    "download_size": 623480,
-    "dataset_size": 745399
+    "download_size": 86489,
+    "dataset_size": 124707
 }

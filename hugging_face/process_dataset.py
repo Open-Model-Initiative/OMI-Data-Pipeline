@@ -100,10 +100,10 @@ annotationReplacementList = [
 def load_or_create_dataset(dataset_repo: str) -> Dataset | None:
     try:
         dataset = load_dataset(dataset_repo, split='train')
-        logging.debug(f"Loaded existing dataset: {dataset_repo}")
+        logging.info(f"Loaded existing dataset: {dataset_repo}")
     except Exception:
         dataset = None
-        logging.debug(f"Dataset {dataset_repo} does not exist. Will create new.")
+        logging.info(f"Dataset {dataset_repo} does not exist. Will create new.")
     return dataset
 
 
@@ -116,14 +116,14 @@ def load_new_dataset(chunk_dir: str) -> Dataset:
 
 def process_chunk(output_dir: str, dataset_repo: str, chunk_number: int, dataset_name: str, dataset: Dataset | None) -> Dataset:
     chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
-    logging.debug(f"Uploading Chunk {chunk_dir.name}...")
+    logging.info(f"Uploading Chunk {chunk_dir.name}...")
 
     new_dataset = load_new_dataset(chunk_dir)
 
     combined_dataset = append_datasets(dataset, new_dataset)
 
     upload_dataset(combined_dataset, dataset_repo)
-    delete_chunk(chunk_dir)
+    # delete_chunk(chunk_dir)
 
     return dataset
 
@@ -157,8 +157,20 @@ def get_image_bytes(img: Image.Image, format: str = 'JPEG') -> int:
 
 def image_to_base64(img: Image.Image) -> str:
     buffered = BytesIO()
-    img.save(buffered, format="JPEG")
-    return base64.b64encode(buffered.getvalue()).decode()
+    if img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info):
+        img = img.convert('RGB')
+    try:
+        img.save(buffered, format="JPEG")
+    except Exception as e:
+        logging.warning(f"Error saving image as JPEG: {e}")
+        try:
+            buffered = BytesIO()
+            img.save(buffered, format="PNG")
+        except Exception as e:
+            logging.error(f"Error saving image as PNG: {e}")
+            return ""
+    contents = buffered.getvalue()
+    return base64.b64encode(contents).decode(), len(contents)
 
 
 def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
@@ -166,17 +178,17 @@ def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
         try:
             dataset_name = meta.get('hf-dataset-name')
             split = meta.get('hf-dataset-split')
-            id = meta.get('hf-dataset-id')
+            item_id = meta.get('hf-dataset-id')
 
-            if not all([dataset_name, split, id, image_column]):
+            if not all([dataset_name, split, item_id, image_column]):
                 missing_values = []
-                if not dataset_name:
+                if dataset_name is None or dataset_name == "":
                     missing_values.append("dataset_name")
-                if not split:
+                if split is None or split == "":
                     missing_values.append("split")
-                if not id:
-                    missing_values.append("id")
-                if not image_column:
+                if item_id is None or item_id == "":
+                    missing_values.append("item_id")
+                if image_column is None or image_column == "":
                     missing_values.append("image_column")
 
                 if missing_values:
@@ -188,7 +200,7 @@ def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
                 logging.debug(f"{image_column} was not in dataset features")
                 return None
 
-            item = dataset[id][image_column]
+            item = dataset[item_id][image_column]
 
             if isinstance(item, dict) and 'bytes' in item:
                 return Image.open(io.BytesIO(item['bytes']))
@@ -255,66 +267,62 @@ def process_jsonl(dataset_repo: str, input_file: str, chunk_size: int) -> None:
     current_chunk_dir.mkdir(exist_ok=True)
     current_chunk_file = current_chunk_dir / 'metadata.jsonl'
 
-    with open(input_file, 'r') as f:
-        for line in f:
-            data = json.loads(line)
+    with open(input_file, 'r') as input_jsonl:
+        with open(current_chunk_file, 'a') as output_jsonl:
+            for line in input_jsonl:
+                data = json.loads(line)
 
-            if data.get('processed', False):
-                continue
+                if data.get('processed', False):
+                    continue
 
-            image_downloaded, image = try_downloading_image(data)
+                image_downloaded, image = try_downloading_image(data)
 
-            if not image_downloaded:
-                data['status'] = 'unavailable'
-            else:
-                data['original_width'], data['original_height'] = image.size
+                if not image_downloaded:
+                    data['status'] = 'unavailable'
+                else:
+                    data['original_width'], data['original_height'] = image.size
 
-                target_width, target_height = get_target_size(image)
-                data['width'] = target_width
-                data['height'] = target_height
+                    target_width, target_height = get_target_size(image)
+                    data['width'] = target_width
+                    data['height'] = target_height
 
-                image_resized = image.resize((target_width, target_height))
+                    image_resized = image.resize((target_width, target_height))
 
-                # Save the image in the current chunk directory
-                image_filename = f"image_{processed_count}.jpg"
-                image_path = current_chunk_dir / image_filename
-                image_resized.save(image_path, format="JPEG")
+                    data['image'], data['processed_size'] = image_to_base64(image_resized)
 
-                data['image'] = image_to_base64(image_resized)
-                data['processed_size'] = get_image_bytes(image_resized)
+                    for annotation in data["annotations"]:
+                        cleaned_annotation = clean_annotation(annotation["annotation"]["text"])
+                        annotation["annotation"]["clean_text"] = cleaned_annotation
 
-                for annotation in data["annotations"]:
-                    annotation_text = annotation["annotation"]["text"]
-                    cleaned_annotation = clean_annotation(annotation_text)
-                    annotation["annotation"]["clean_text"] = cleaned_annotation
+                    embedding = calculate_image_embedding(embedding_model, image_resized)
+                    data['embeddings'].append({
+                        "model": model_name,
+                        "embedding": embedding.tolist()
+                    })
 
-                embedding = calculate_image_embedding(embedding_model, image_resized)
-                data['embeddings'].append({
-                    "model": model_name,
-                    "embedding": embedding.tolist()
-                })
+                    image_id = str(processed_count)
+                    unique_image = is_unique_image(collection, embedding, image_id)
+                    data['is_unique'] = unique_image
 
-                image_id = str(processed_count)
-                unique_image = is_unique_image(collection, embedding, image_id)
-                data['is_unique'] = unique_image
+                    data['processed'] = True
 
-                data['processed'] = True
+                json.dump(data, output_jsonl)
+                output_jsonl.write('\n')
 
-            with open(current_chunk_file, 'a') as f:
-                json.dump(data, f)
-                f.write('\n')
+                processed_count += 1
 
-            processed_count += 1
-
-            if processed_count % chunk_size == 0:
-                dataset = process_chunk(output_dir, dataset_repo, chunk_number, dataset_name, dataset)
-                chunk_number += 1
-                current_chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
-                current_chunk_dir.mkdir(exist_ok=True)
-                current_chunk_file = current_chunk_dir / 'metadata.jsonl'
+                if processed_count % chunk_size == 0:
+                    output_jsonl.close()
+                    dataset = process_chunk(output_dir, dataset_repo, chunk_number, dataset_name, dataset)
+                    chunk_number += 1
+                    current_chunk_dir = output_dir / f"{dataset_name}_chunk{chunk_number}"
+                    current_chunk_dir.mkdir(exist_ok=True)
+                    current_chunk_file = current_chunk_dir / 'metadata.jsonl'
+                    output_jsonl = open(current_chunk_file, 'a')
 
     # Process any remaining data after finishing
     if processed_count % chunk_size != 0:
+        output_jsonl.close()
         dataset = process_chunk(output_dir, dataset_repo, chunk_number, dataset_name, dataset)
 
 
@@ -322,7 +330,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Process JSONL dataset file and download images.")
     parser.add_argument("-d", "--dataset_repo", required=True, help="The repository name for the dataset on Hugging Face Hub")
     parser.add_argument("-f", "--dataset_file", help="Path to the input JSONL file")
-    parser.add_argument("-c", "--chunk_size", type=int, default=50, help="Number of items to process in a batch before uploading the dataset")
+    parser.add_argument("-c", "--chunk_size", type=int, default=100, help="Number of items to process in a batch before uploading the dataset")
     args = parser.parse_args()
 
     process_jsonl(args.dataset_repo, args.dataset_file, args.chunk_size)
