@@ -1,5 +1,6 @@
 import argparse
 import base64
+import hashlib
 import io
 import json
 import logging
@@ -48,7 +49,7 @@ ASPECT_RATIO_256_BIN = {
     "4.0": [512.0, 128.0],
 }
 
-dataset = None
+datasets = {}
 
 
 def get_target_size(img: Image.Image) -> tuple[int, int]:
@@ -61,27 +62,35 @@ def get_target_size(img: Image.Image) -> tuple[int, int]:
     return int(target_width), int(target_height)
 
 
+def standardize_image(img: Image.Image) -> Image.Image:
+    if img.mode not in ('RGB', 'RGBA'):
+        return img.convert('RGBA')
+    return img
+
+
 def image_to_base64(img: Image.Image) -> str:
+    img = standardize_image(img)
     buffered = BytesIO()
-    if img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info):
-        img = img.convert('RGB')
+
     try:
-        img.save(buffered, format="JPEG")
+        img.save(buffered, format="PNG")
     except Exception as e:
-        logging.warning(f"Error saving image as JPEG: {e}")
-        try:
-            buffered = BytesIO()
-            img.save(buffered, format="PNG")
-        except Exception as e:
-            logging.error(f"Error saving image as PNG: {e}")
-            return ""
+        logging.error(f"Error saving image as PNG: {e}")
+        return ""
+
     contents = buffered.getvalue()
     return base64.b64encode(contents).decode(), len(contents)
 
 
-def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
+def generate_image_filename(data):
+    # Create a unique hash based on the image data
+    hash_object = hashlib.md5(json.dumps(data, sort_keys=True).encode())
+    return f"image_{hash_object.hexdigest()}"
+
+
+def try_downloading_image(data: dict, local_image_dir: Path) -> tuple[bool, Image.Image | None]:
     def try_hugging_face(meta, image_column):
-        global dataset
+        global datasets
 
         try:
             dataset_name = meta.get('hf-dataset-name')
@@ -103,8 +112,12 @@ def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
                     logging.debug(f"Missing information for: {', '.join(missing_values)}")
                     return None
 
-            if dataset is None:
-                dataset = load_dataset(dataset_name, split=split)
+            dataset_key = f"{dataset_name}_{split}"
+
+            if dataset_key not in datasets:
+                datasets[dataset_key] = load_dataset(dataset_name, split=split)
+
+            dataset = datasets[dataset_key]
 
             if image_column not in dataset.features:
                 logging.debug(f"{image_column} was not in dataset features")
@@ -132,14 +145,24 @@ def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
                 try:
                     return Image.open(io.BytesIO(response.content))
                 except (IOError, UnidentifiedImageError) as img_error:
-                    logging.debug(f"Failed to open image from {url}: {str(img_error)}")
+                    logging.warning(f"Failed to open image from {url}: {str(img_error)}")
                     continue
             except requests.RequestException as req_error:
-                logging.debug(f"Failed to download image from {url}: {str(req_error)}")
+                logging.warning(f"Failed to download image from {url}: {str(req_error)}")
                 continue
 
-        logging.debug("Could not download or open image from any of the provided URLs")
+        logging.warning("Could not download or open image from any of the provided URLs")
         return None
+
+    image_filename = generate_image_filename(data)
+    local_image_path = local_image_dir / f"{image_filename}.png"
+
+    if local_image_path.exists():
+        try:
+            image = Image.open(local_image_path)
+            return True, standardize_image(image), True
+        except Exception as e:
+            logging.warning(f"Error opening local image {local_image_path}: {e}")
 
     # Try downloading from Hugging Face image first
     image = try_hugging_face(data.get('meta', {}), data.get('image_column'))
@@ -148,28 +171,56 @@ def try_downloading_image(data: dict) -> tuple[bool, Image.Image | None]:
     if image is None:
         image = try_urls(data.get('urls', []))
 
-    return (image is not None, image)
+    if image is not None:
+        image = standardize_image(image)
+
+    return (image is not None, image, False)
 
 
-def process_all_images(dataset_file: str) -> None:
+def save_processed_image(image: Image, data: dict, local_image_dir: Path):
+    image_standardized = standardize_image(image)
+
+    image_filename = generate_image_filename(data)
+    image_path = local_image_dir / image_filename
+    image_standardized.save(image_path, format="PNG")
+
+
+def process_all_images(dataset_file: str, local_image_dir: Path) -> None:
+    local_image_dir.mkdir(parents=True, exist_ok=True)
     temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False)
+
+    processed = 0
 
     with open(dataset_file, 'r') as input_jsonl:
         for line in input_jsonl:
+            logging.info(f"Processing row {processed + 1} . . .")
+
             data = json.loads(line)
-            image_downloaded, image = try_downloading_image(data)
+            image_downloaded, image, is_local = try_downloading_image(data, local_image_dir)
 
             if not image_downloaded:
                 data['status'] = 'unavailable'
             else:
-                data['original_width'], data['original_height'] = image.size
-                target_width, target_height = get_target_size(image)
-                data['width'] = target_width
-                data['height'] = target_height
+                try:
+                    if not is_local:
+                        data['original_width'], data['original_height'] = image.size
+                        target_width, target_height = get_target_size(image)
+                        data['width'] = target_width
+                        data['height'] = target_height
 
-                image_resized = image.resize((target_width, target_height))
+                        image_resized = image.resize((target_width, target_height))
+                        save_processed_image(image_resized, data, local_image_dir)
 
-                data['image'], data['processed_size'] = image_to_base64(image_resized)
+                        data['image'], data['processed_size'] = image_to_base64(image_resized)
+                    else:
+                        # If the image was loaded locally, we don't need to process it again
+                        data['width'], data['height'] = image.size
+                        data['image'], data['processed_size'] = image_to_base64(image)
+                except Exception as e:
+                    logging.warning(f"Error processing image: {e}")
+                    data['status'] = 'unavailable'
+
+            processed += 1
 
             json.dump(data, temp_file)
             temp_file.write('\n')
@@ -181,11 +232,13 @@ def process_all_images(dataset_file: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Process JSONL dataset file and download all images.")
     parser.add_argument("-f", "--dataset_file", help="Path to the input JSONL file")
+    parser.add_argument("-d", "--image_dir", default="./dataset_images/processed", help="Directory to store processed images")
     args = parser.parse_args()
 
-    process_all_images(args.dataset_file)
+    local_image_dir = Path(args.image_dir)
+    process_all_images(args.dataset_file, local_image_dir)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()

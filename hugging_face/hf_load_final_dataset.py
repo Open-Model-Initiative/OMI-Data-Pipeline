@@ -9,6 +9,10 @@ from PIL import Image
 
 import get_hf_features
 
+skip_fields = [
+    'original_caption'
+]
+
 
 def process_item(item: dict, dataset_name: str) -> None:
     """
@@ -21,8 +25,19 @@ def process_item(item: dict, dataset_name: str) -> None:
     if image_data:
         image = base64_to_image(image_data)
         # image.show()
-        id = item.get('id')
-        save_image(image, id, dataset_name)
+        content_id = item.get('id')
+        save_image(image, content_id, dataset_name)
+
+        annotations = item.get('annotations', [])
+        for annotation in annotations:
+            annotation_item = annotation.get('annotation', {})
+            annotation_field = annotation_item.get('original_field', '')
+
+            if (annotation_field not in skip_fields):
+                annotation_text = annotation_item.get('clean_text', '').replace('This image displays: ', '').strip()
+                print(f'\nAnnotation for {content_id}:')
+                print(f'{annotation_field}: {annotation_text}')
+                # TODO: Valid item to train on
     else:
         logging.debug("No image found in the item.")
 

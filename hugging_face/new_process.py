@@ -8,9 +8,9 @@ import time
 
 from process_annotations import clean_annotation
 
-dataset_info = {
-    "zlicastro/zanya-custom-dataset-test": 2
-}
+# dataset_info = {
+#     "zlicastro/zanya-custom-dataset-test": 2
+# }
 
 # dataset_info = {
 #     "zlicastro/zanya-custom-dataset-test": 2,
@@ -18,11 +18,11 @@ dataset_info = {
 #     "tomg-group-umd/pixelprose": 2,
 # }
 
-# dataset_info = {
-#     "zlicastro/zanya-custom-dataset-test": 69,
-#     "common-canvas/commoncatalog-cc-by-sa": 60000,
-#     "tomg-group-umd/pixelprose": 60000
-# }
+dataset_info = {
+    "zlicastro/zanya-custom-dataset-test": 69,
+    "common-canvas/commoncatalog-cc-by-sa": 60000,
+    "tomg-group-umd/pixelprose": 60000
+}
 
 
 def check_overwrite_mappings(mapping_file: str) -> bool:

@@ -79,3 +79,26 @@ python hf_load_final_dataset.py --dataset_name 'openmodelinitiative/initial-test
 - [ ] Investigate making APIs for get dataset info/selecting mapping, adding to our data, etc.
 - [ ] Hook up UI to those APIs in order to allow users to contribute hugging face datasets.
 - [ ] Update to support sub datasets/configurations: https://huggingface.co/docs/datasets/load_hub#configurations
+
+
+# Troubleshooting
+
+Check temp dir space:
+```shell
+df -h /tmp
+```
+
+Change temp dir to folder with more space:
+```shell
+export TMPDIR=/home/zanya/Desktop/Development/Repos/OMI-Data-Pipeline/hugging_face/tmp/
+```
+
+Confirm temp dir will be used:
+```shell
+python3 -c "import tempfile; print(tempfile.gettempdir())"
+```
+
+Check space for temp dir:
+```shell
+df -h $TMPDIR
+```

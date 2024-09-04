@@ -3,6 +3,9 @@ import json
 import shutil
 import tempfile
 
+
+# TODO: Add "This image displays:" and varients
+# Trim whitepsace for clean text rather then replacing whitespace
 annotationReplacementList = [
     ('The image showcases ', ''),
     ('The image portrays ', ''),
