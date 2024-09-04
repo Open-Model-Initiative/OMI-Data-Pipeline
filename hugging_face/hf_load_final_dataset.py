@@ -5,7 +5,7 @@ import logging
 import os
 from datasets import load_dataset
 from io import BytesIO
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 
 import get_hf_features
 
@@ -14,20 +14,57 @@ skip_fields = [
 ]
 
 
-def process_item(item: dict, dataset_name: str) -> None:
+def load_bad_images(bad_images_folder: str = 'datasets/bad_images') -> list:
+    """
+    Load all bad images from the specified folder into memory.
+    """
+    bad_images = []
+    for filename in os.listdir(bad_images_folder):
+        if filename.endswith(('.png', '.jpg', '.jpeg')):
+            bad_image_path = os.path.join(bad_images_folder, filename)
+            bad_image = Image.open(bad_image_path)
+            bad_images.append(list(bad_image.getdata()))
+    return bad_images
+
+
+def is_bad_image(image: Image.Image, bad_images: list) -> bool:
+    """
+    Compare the given image with known bad images.
+    Return True if the image matches any of the bad images, False otherwise.
+    """
+    image_data = list(image.getdata())
+    return any(image_data == bad_image for bad_image in bad_images)
+
+
+def process_item(item: dict, dataset_name: str, bad_images: list) -> bool:
     """
     Process a single item from the dataset.
-    Display its properties, show the image, and save it.
+    Display its properties and save it if it is valid.
     """
-    display_item_properties(item)
+    try:
+        display_item_properties(item)
 
-    image_data = item.get('image')
-    if image_data:
-        image = base64_to_image(image_data)
+        image_data = item.get('image')
+        if not image_data:
+            logging.debug("No image found in the item.")
+            return False
+
+        try:
+            image = base64_to_image(image_data)
+        except (ValueError, UnidentifiedImageError) as e:
+            logging.warning(f"Error processing image: {e}")
+            return False
+
+        # Note: only one image matched the currently know bad image (the first image), so this may be redudant.
+        if is_bad_image(image, bad_images):
+            logging.info("Detected a known bad image. Skipping processing.")
+            return False
+
         # image.show()
         content_id = item.get('id')
         save_image(image, content_id, dataset_name)
 
+        print(f'\nAnnotations for {content_id}:')
         annotations = item.get('annotations', [])
         for annotation in annotations:
             annotation_item = annotation.get('annotation', {})
@@ -35,11 +72,13 @@ def process_item(item: dict, dataset_name: str) -> None:
 
             if (annotation_field not in skip_fields):
                 annotation_text = annotation_item.get('clean_text', '').replace('This image displays: ', '').strip()
-                print(f'\nAnnotation for {content_id}:')
                 print(f'{annotation_field}: {annotation_text}')
                 # TODO: Valid item to train on
-    else:
-        logging.debug("No image found in the item.")
+
+        return True
+    except Exception as e:
+        logging.error(f"Unexpected error processing item: {e}")
+        return False
 
 
 def display_item_properties(item: dict) -> None:
@@ -89,6 +128,8 @@ def main() -> None:
     dataset_name = args.dataset_name
     num_items = args.num_items
 
+    bad_images = load_bad_images()
+
     ds_builder = get_hf_features.get_ds_builder(dataset_name)
     get_hf_features.print_splits(ds_builder)
 
@@ -96,8 +137,22 @@ def main() -> None:
 
     available_items = dataset.filter(lambda example: example.get('status') == 'available')
 
+    total_processed = 0
+    successful_count = 0
+    unsuccessful_count = 0
+
     for i, item in enumerate(available_items.take(num_items)):
-        process_item(item, dataset_name)
+        if process_item(item, dataset_name, bad_images):
+            successful_count += 1
+        else:
+            unsuccessful_count += 1
+
+        total_processed += 1
+
+        if total_processed % 1000 == 0:
+            logging.info(f"Processed {total_processed} items. Successful: {successful_count}, Unsuccessful: {unsuccessful_count}")
+
+    logging.info(f"\nProcessing complete. Successful items: {successful_count}, Unsuccessful items: {unsuccessful_count}")
 
 
 if __name__ == "__main__":
