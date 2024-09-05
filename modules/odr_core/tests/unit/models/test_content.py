@@ -22,7 +22,7 @@ def test_create_content(db):
         type=content_data.type,
         hash=content_data.hash,
         phash=content_data.phash,
-        url=' '.join(url_list),
+        url=url_list,
         format=content_data.format,
         size=content_data.size,
         license=content_data.license,
@@ -36,7 +36,7 @@ def test_create_content(db):
     assert db_content.type is ContentType.IMAGE
     assert db_content.hash == "abcdef123456"
     assert db_content.status is ContentStatus.PENDING
-    assert len(db_content.url.split(' ')) == 2
+    assert len(db_content.url) == 2
     assert "http://example.com/image1.jpg" in db_content.url
 
 
@@ -46,7 +46,7 @@ def test_content_author_relationship(db):
         type=ContentType.IMAGE,
         hash="abcdef123456",
         phash="123456abcdef",
-        url="http://example.com/image2.jpg",
+        url=["http://example.com/image2.jpg"],
         format="png",
         size=1024,
         license="CC0",

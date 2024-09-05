@@ -78,6 +78,7 @@ def create_content(db: Session, content: ContentCreate, from_user_id: int):
     db_content = Content(
         name=content.name,
         type=ContentType(content.type.value),
+        url=content.url,
         hash=content.hash,
         phash=content.phash,
         width=content.width,

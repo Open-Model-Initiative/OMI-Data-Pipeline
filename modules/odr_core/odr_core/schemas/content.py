@@ -66,6 +66,8 @@ class ContentBase(BaseModel):
     license_url: Optional[HttpUrl] = None
     flags: int = 0
     meta: Optional[dict] = None
+    contentAuthors: List[ContentAuthor] = []
+    sources: List[ContentSource] = []
 
 
 class ContentCreate(ContentBase):

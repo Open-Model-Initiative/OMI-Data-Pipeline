@@ -225,9 +225,9 @@ def delete_content_embedding(db: Session, content_embedding_id: int) -> bool:
 def query_content_embedding(
     db: Session, query: EmbeddingVectorQuery, skip: int = 0, limit: int = 100
 ) -> List[ContentEmbedding]:
-    if len(query.embedding) != settings.EMBEDDING_DIMENSION:
+    if len(query.embedding) != settings.CONTENT_EMBEDDING_DIMENSION:
         raise ValueError(
-            f"Invalid embedding length, expected {settings.EMBEDDING_DIMENSION} got {len(query.embedding)}"
+            f"Invalid embedding length, expected {settings.CONTENT_EMBEDDING_DIMENSION} got {len(query.embedding)}"
         )
 
     return (

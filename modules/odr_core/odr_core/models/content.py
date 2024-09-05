@@ -2,18 +2,17 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
-    Float,
     Enum,
     JSON,
-    Boolean,
     ForeignKey,
-    ARRAY,
     DateTime,
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
 from odr_core.enums import ContentType, ContentStatus, ContentSourceType, ReportStatus
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy import PickleType
 
 
 class Content(Base):
@@ -25,7 +24,7 @@ class Content(Base):
     type = Column(Enum(ContentType))
     hash = Column(String, index=True)
     phash = Column(String, index=True)
-    url = Column(String, nullable=True)
+    url = Column(MutableList.as_mutable(PickleType), nullable=True)
     width = Column(Integer, nullable=True)
     height = Column(Integer, nullable=True)
     format = Column(String)
