@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     # Models
     MODEL_CACHE_DIR: str
 
+    # Embedding
+    CONTENT_EMBEDDING_DIMENSION: int = 512
+    ANNOTATION_EMBEDDING_DIMENSION: int = 384
+
     class Config:
         env_file = ".env"
 

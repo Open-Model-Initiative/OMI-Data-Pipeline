@@ -56,7 +56,6 @@ def update_annotation_source(
     db: Session,
     annotation_source_id: int,
     annotation_source_update: AnnotationSourceUpdate,
-    current_user: User,
 ) -> Optional[AnnotationSource]:
     db_annotation_source = (
         db.query(AnnotationSource)

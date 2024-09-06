@@ -1,11 +1,30 @@
 # aidriver_stores Taskfile
-version: '3'
+version: "3"
 tasks:
+  default:
+    desc: List all the tasks
+    cmds:
+      - task --list
+
+  install:
+    desc: Install the package in editable mode
+    dir: modules/odr_core
+    cmds:
+      - pip install -e .
 
   test:
     desc: Run tests for the core module
+    deps: [install]
+    dir: modules/odr_core
     cmds:
-      - echo "Core module testing not implemented yet"
+      - python -m pytest tests
+
+  coverage:
+    desc: Run tests with coverage report
+    deps: [install]
+    dir: modules/odr_core
+    cmds:
+      - python -m pytest --cov=odr_core --cov-report=term-missing --cov-report=xml tests
 
   test-db:
     desc: Run tests for the database manager

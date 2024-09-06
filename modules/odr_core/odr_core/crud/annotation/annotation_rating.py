@@ -12,11 +12,7 @@ def create_annotation_rating(
 ) -> AnnotationRating:
     db_annotation_rating = AnnotationRating(
         annotation_id=annotation_rating.annotation_id,
-        rated_by_id=(
-            annotation_rating.rated_by_id
-            if annotation_rating.rated_by_id
-            else current_user.id
-        ),
+        rated_by_id=annotation_rating.rated_by_id,
         rating=annotation_rating.rating,
         reason=annotation_rating.reason,
         created_at=datetime.now(timezone.utc),
@@ -44,11 +40,16 @@ def get_annotation_ratings_by_annotation(
     )
 
 
+def get_annotation_ratings(
+    db: Session, skip: int = 0, limit: int = 100
+) -> List[AnnotationRating]:
+    return db.query(AnnotationRating).offset(skip).limit(limit).all()
+
+
 def update_annotation_rating(
     db: Session,
     rating_id: int,
     annotation_rating_update: AnnotationRatingUpdate,
-    current_user: User,
 ) -> Optional[AnnotationRating]:
     db_annotation_rating = (
         db.query(AnnotationRating).filter(AnnotationRating.id == rating_id).first()

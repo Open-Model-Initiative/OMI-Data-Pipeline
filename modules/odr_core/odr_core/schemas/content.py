@@ -1,28 +1,7 @@
 from pydantic import BaseModel, HttpUrl
 from typing import List, Optional
 from datetime import datetime
-from enum import Enum
-
-
-class ContentType(str, Enum):
-    IMAGE = "image"
-    VIDEO = "video"
-    VOICE = "voice"
-    MUSIC = "music"
-    TEXT = "text"
-
-
-class ContentStatus(str, Enum):
-    PENDING = "pending"
-    AVAILABLE = "available"
-    UNAVAILABLE = "unavailable"
-    DELISTED = "delisted"
-
-
-class ContentSourceType(str, Enum):
-    URL = "url"
-    PATH = "path"
-    HUGGING_FACE = "hugging_face"
+from odr_core.enums import ContentStatus, ContentType, ContentSourceType
 
 
 class ContentAuthorBase(BaseModel):
@@ -31,6 +10,10 @@ class ContentAuthorBase(BaseModel):
 
 
 class ContentAuthorCreate(ContentAuthorBase):
+    pass
+
+
+class ContentAuthorUpdate(ContentAuthorBase):
     pass
 
 
@@ -75,6 +58,7 @@ class ContentBase(BaseModel):
     phash: str
     width: Optional[int] = None
     height: Optional[int] = None
+    url: List[HttpUrl] = []
     format: str
     size: int
     status: ContentStatus = ContentStatus.PENDING
@@ -82,6 +66,8 @@ class ContentBase(BaseModel):
     license_url: Optional[HttpUrl] = None
     flags: int = 0
     meta: Optional[dict] = None
+    contentAuthors: List[ContentAuthor] = []
+    sources: List[ContentSource] = []
 
 
 class ContentCreate(ContentBase):
@@ -117,6 +103,30 @@ class Content(ContentBase):
 
     class Config:
         from_attribute = True
+
+
+class ContentEventBase(BaseModel):
+    content_id: int
+    status: ContentStatus
+    set_by: int
+    note: Optional[str] = None
+
+
+class ContentEventCreate(ContentEventBase):
+    pass
+
+
+class ContentEventUpdate(BaseModel):
+    status: Optional[ContentStatus] = None
+    note: Optional[str] = None
+
+
+class ContentEvent(ContentEventBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
 
 
 def httpurl_to_str(url: Optional[HttpUrl]) -> Optional[str]:
