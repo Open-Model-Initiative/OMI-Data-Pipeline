@@ -1,0 +1,21 @@
+{
+  "dataset_name": "zlicastro/zanya-custom-dataset-test",
+  "field_mapping": {
+    "id": null,
+    "name": null,
+    "width": null,
+    "height": null,
+    "format": null,
+    "size": null,
+    "license": null,
+    "licenseUrl": null,
+    "contentAuthor": null,
+    "url": null,
+    "image_column": "image",
+    "annotations": [
+      "vlm_annotation",
+      "hand_annotated_short",
+      "hand_annotated_long"
+    ]
+  }
+}

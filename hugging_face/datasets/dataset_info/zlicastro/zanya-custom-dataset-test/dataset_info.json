@@ -1,0 +1,357 @@
+{
+    "description": "",
+    "citation": "",
+    "homepage": "",
+    "license": "",
+    "features": {
+        "image": {
+            "_type": "Image"
+        },
+        "prompt": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "vlm_annotation": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "model_type": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "model_name": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "hand_annotated_short": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "hand_annotated_long": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "tags": {
+            "dtype": "string",
+            "_type": "Value"
+        }
+    },
+    "builder_name": "imagefolder",
+    "dataset_name": "zanya-custom-dataset-test",
+    "config_name": "default",
+    "version": {
+        "version_str": "0.0.0",
+        "major": 0,
+        "minor": 0,
+        "patch": 0
+    },
+    "splits": {
+        "train": {
+            "name": "train",
+            "num_bytes": 44538,
+            "num_examples": 69,
+            "dataset_name": "zanya-custom-dataset-test"
+        }
+    },
+    "download_checksums": {
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/indoor_gardening_1.jpg": {
+            "num_bytes": 2406700,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/indoor_gardening_10.jpg": {
+            "num_bytes": 3257884,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/indoor_gardening_2.jpg": {
+            "num_bytes": 1818584,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/indoor_gardening_3.jpg": {
+            "num_bytes": 2409333,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/indoor_gardening_4.jpg": {
+            "num_bytes": 5301898,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/indoor_gardening_5.jpg": {
+            "num_bytes": 3910947,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/indoor_gardening_6.jpg": {
+            "num_bytes": 3372602,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/indoor_gardening_7.jpg": {
+            "num_bytes": 3641795,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/indoor_gardening_8.jpg": {
+            "num_bytes": 3337127,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/indoor_gardening_9.jpg": {
+            "num_bytes": 3988079,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/misc/misc_1.jpg": {
+            "num_bytes": 3574847,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/misc/misc_2.jpg": {
+            "num_bytes": 1406516,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/misc/misc_3.jpg": {
+            "num_bytes": 2732334,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/misc/misc_4.jpg": {
+            "num_bytes": 1919671,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/misc/misc_5.jpg": {
+            "num_bytes": 5723614,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_1.jpg": {
+            "num_bytes": 2919485,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_10.jpg": {
+            "num_bytes": 4285499,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_11.jpg": {
+            "num_bytes": 4204392,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_12.jpg": {
+            "num_bytes": 4326880,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_13.jpg": {
+            "num_bytes": 4050052,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_14.jpg": {
+            "num_bytes": 3253580,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_15.jpg": {
+            "num_bytes": 4854996,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_16.jpg": {
+            "num_bytes": 4014275,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_17.jpg": {
+            "num_bytes": 3745415,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_18.jpg": {
+            "num_bytes": 3068656,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_19.jpg": {
+            "num_bytes": 3488520,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_2.jpg": {
+            "num_bytes": 2848649,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_20.jpg": {
+            "num_bytes": 3406202,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_21.jpg": {
+            "num_bytes": 1696422,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_22.jpg": {
+            "num_bytes": 4313759,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_23.jpg": {
+            "num_bytes": 1169205,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_24.jpg": {
+            "num_bytes": 1150604,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_25.jpg": {
+            "num_bytes": 1192032,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_26.jpg": {
+            "num_bytes": 2599229,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_27.jpg": {
+            "num_bytes": 2137222,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_28.jpg": {
+            "num_bytes": 4348025,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_29.jpg": {
+            "num_bytes": 3082111,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_3.jpg": {
+            "num_bytes": 2243641,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_30.jpg": {
+            "num_bytes": 2674151,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_31.jpg": {
+            "num_bytes": 3942129,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_32.jpg": {
+            "num_bytes": 4299439,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_33.jpg": {
+            "num_bytes": 2370957,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_34.jpg": {
+            "num_bytes": 3212259,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_35.jpg": {
+            "num_bytes": 3387431,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_36.jpg": {
+            "num_bytes": 3473188,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_37.jpg": {
+            "num_bytes": 2634044,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_38.jpg": {
+            "num_bytes": 3276566,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_39.jpg": {
+            "num_bytes": 1882788,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_4.jpg": {
+            "num_bytes": 2275642,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_5.jpg": {
+            "num_bytes": 4113691,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_6.jpg": {
+            "num_bytes": 4960881,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_7.jpg": {
+            "num_bytes": 3756726,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_8.jpg": {
+            "num_bytes": 4007256,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/outdoor_gardening_9.jpg": {
+            "num_bytes": 4131146,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wild_flora/wild_flora_1.jpg": {
+            "num_bytes": 2987871,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wild_flora/wild_flora_2.jpg": {
+            "num_bytes": 6448724,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wild_flora/wild_flora_3.jpg": {
+            "num_bytes": 2685221,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wild_flora/wild_flora_4.jpg": {
+            "num_bytes": 2674494,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_1.jpg": {
+            "num_bytes": 2454261,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_10.jpg": {
+            "num_bytes": 1535568,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_11.jpg": {
+            "num_bytes": 2797899,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_2.jpg": {
+            "num_bytes": 1611235,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_3.jpg": {
+            "num_bytes": 1695444,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_4.jpg": {
+            "num_bytes": 1643586,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_5.jpg": {
+            "num_bytes": 1950661,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_6.jpg": {
+            "num_bytes": 1986666,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_7.jpg": {
+            "num_bytes": 1384502,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_8.jpg": {
+            "num_bytes": 1738184,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/wildlife_9.jpg": {
+            "num_bytes": 1216855,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/indoor_gardening/metadata.csv": {
+            "num_bytes": 7821,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/misc/metadata.csv": {
+            "num_bytes": 5220,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/outdoor_gardening/metadata.csv": {
+            "num_bytes": 16070,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wild_flora/metadata.csv": {
+            "num_bytes": 3364,
+            "checksum": null
+        },
+        "hf://datasets/zlicastro/zanya-custom-dataset-test@3688d718808c76b84578dedf50895727532503cd/train/wildlife/metadata.csv": {
+            "num_bytes": 4605,
+            "checksum": null
+        }
+    },
+    "download_size": 210447327,
+    "dataset_size": 44538,
+    "size_in_bytes": 210491865
+}

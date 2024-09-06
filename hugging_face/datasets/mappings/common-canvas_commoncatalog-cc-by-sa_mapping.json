@@ -1,0 +1,19 @@
+{
+  "dataset_name": "common-canvas/commoncatalog-cc-by-sa",
+  "field_mapping": {
+    "id": null,
+    "name": "title",
+    "width": "width",
+    "height": "height",
+    "format": "ext",
+    "size": null,
+    "license": "licensename",
+    "licenseUrl": "licenseurl",
+    "contentAuthor": null,
+    "url": "url",
+    "image_column": null,
+    "annotations": [
+      "blip2_caption"
+    ]
+  }
+}
