@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-
+import { ENV } from '$lib/server/env';
 /** @type {import('./$types').Actions} */
 export const actions = {
 	default: async (event) => {
@@ -15,7 +15,7 @@ export const actions = {
 			};
 		}
 
-		const loginRequest = await fetch('http://localhost:31100/api/v1/auth/login', {
+		const loginRequest = await fetch(`${ENV.API_SERVICE_URL}/auth/login`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

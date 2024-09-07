@@ -6,6 +6,9 @@ tasks:
     desc: Migrate the database
     cmds:
       - alembic -c ./modules/odr_datamodel/alembic.ini upgrade head
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 35432
 
   revision:
     desc: Create a new revision, e.g. task data:revision -- "Add new column"

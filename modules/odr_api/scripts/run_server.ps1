@@ -1,4 +1,4 @@
+# Run the FastAPI server with uvicorn
 
-# Run the FastAPI server with multiple workers and log output to a file
-
-./venv/Scripts/python ./modules/odr_api/odr_api/main.py
+$env:PYTHONPATH = "."
+./venv/Scripts/uvicorn.exe odr_api.app:app --host 0.0.0.0 --port 31100

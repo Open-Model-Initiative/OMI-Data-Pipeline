@@ -1,4 +1,5 @@
 import { redirect, type Cookies } from '@sveltejs/kit';
+import { API_URL } from '$lib/server/env';
 
 interface User {
 	username: string;
@@ -11,8 +12,22 @@ interface User {
 	user_type: 'user' | 'bot';
 }
 
+async function checkApiHealth() {
+	try {
+		const response = await fetch(`${API_URL}/health`);
+		if (response.ok) {
+			console.log('API health check successful');
+		} else {
+			console.error('API health check failed:', response.status, await response.text());
+		}
+	} catch (error) {
+		console.error('API health check error:', error);
+	}
+}
+
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
+	await checkApiHealth();
 	const { route, cookies, locals } = event;
 	const sessionCookie = cookies.get('session');
 
@@ -50,7 +65,7 @@ export async function handle({ event, resolve }) {
 
 const validateTokenFunction = async (cookies: Cookies): Promise<User | false> => {
 	const currentToken = cookies.get('session');
-	const req = await fetch('http://localhost:31100/api/v1/users/me', {
+	const req = await fetch(`${API_URL}/users/me`, {
 		headers: {
 			Cookie: `session=${currentToken}`
 		}

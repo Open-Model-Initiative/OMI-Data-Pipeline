@@ -23,13 +23,6 @@ tasks:
     cmds:
       - task --list
 
-  echo-project-root:
-    desc: Echo the project root directory. Helps ensure environment is set up and tasks will run.
-    cmds:
-      - echo USER WD {{.USER_WORKING_DIR}}
-      - echo USER_WORKING_DIRECTORY ${ROOT_DIR}
-      - echo ROOT ${ROOT_DIR}
-
   setup:
     desc: Setup the project
     cmds:
@@ -109,3 +102,10 @@ tasks:
     desc: Stop all running containers
     cmds:
       - docker compose down
+  dev:
+    desc: Start development environment with odr-api in watch mode and databases headless
+    cmds:
+      - docker compose up -d postgres pgadmin
+      - |
+        docker compose up --watch odr-api --build &
+        docker compose up --watch odr-frontend --build

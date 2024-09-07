@@ -1,4 +1,6 @@
 /** @type {import('./$types').Actions} */
+import { ENV } from '$lib/server/env';
+
 export const actions = {
 	default: async (event) => {
 		console.log('Registering new user...');
@@ -33,7 +35,7 @@ export const actions = {
 		} else {
 			console.info('Creating new user...');
 			//Use the python endpoint to create a new user
-			const req = await fetch('http://localhost:31100/api/v1/users/', {
+			const req = await fetch(`${ENV.API_SERVICE_URL}/users/`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -47,7 +49,7 @@ export const actions = {
 			const res: Record<string, string | boolean | number> = await req.json();
 			if (req.status === 200 && res?.username === body.get('username')) {
 				console.log('User created successfully');
-				const tokenReq = await fetch('http://localhost:31100/api/v1/auth/login', {
+				const tokenReq = await fetch(`${ENV.API_SERVICE_URL}/auth/login`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'

@@ -20,6 +20,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY modules/odr_core /app/modules/odr_core
 RUN pip install --no-cache-dir -e /app/modules/odr_core
 
+COPY modules/odr_monitoring /app/modules/odr_monitoring
+RUN pip install --no-cache-dir -e /app/modules/odr_monitoring
+
 COPY modules/odr_api /app
 RUN pip install --no-cache-dir .
 
@@ -31,4 +34,4 @@ EXPOSE 31100
 # Set the entrypoint
 # CMD ["tail", "-f", "/dev/null"]
 ENTRYPOINT ["uvicorn"]
-CMD ["odr_api.app:app", "--host", "0.0.0.0", "--port", "31100"]
+CMD ["odr_api.app:app", "--host", "0.0.0.0", "--port", "31100", "--reload"]
