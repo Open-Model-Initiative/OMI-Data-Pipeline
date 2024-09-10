@@ -51,7 +51,9 @@ class Settings(BaseSettings):
 
     def get_db_url(self):
         db_name = self.TEST_POSTGRES_DB if self.TEST else self.POSTGRES_DB
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{db_name}"
+
+        conn_str = f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{db_name}"
+        return conn_str
 
 
 settings = Settings()

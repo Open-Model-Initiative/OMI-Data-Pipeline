@@ -9,5 +9,9 @@
             "username": "opendatarepository",
             "database": "opendatarepository"
         }
+    ],
+    "basedpyright.analysis.extraPaths": [
+        "./modules/odr_api/",
+        "./modules/odr_core/"
     ]
 }
