@@ -85,7 +85,7 @@ def ouath2_login_and_signup(
 
     session = user_crud.login_openid_user(db, user)
 
-    response = RedirectResponse(url=f"{request.base_url}{settings.API_V1_STR}/auth/login")
+    response = RedirectResponse(url=f"{request.base_url}{settings.OAITH_REDIRECT_PATH}")
     response.set_cookie(key="session", value=session.id, httponly=True)
 
     return response

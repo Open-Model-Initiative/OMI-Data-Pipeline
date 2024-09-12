@@ -45,6 +45,7 @@ def create_user_from_openid(db: Session, openid: OpenID) -> User:
     db_user = User(
         username=username,
         email=openid.email,
+        identity_provider=openid.provider,
         is_active=True,
         is_superuser=False,
         created_at=datetime.now(timezone.utc),
@@ -187,6 +188,9 @@ def verify_openid_user(db: Session, openid: OpenID) -> Optional[User]:
         return None
 
     if not user.is_active:
+        return None
+
+    if user.identity_provider != openid.provider:
         return None
 
     return user
