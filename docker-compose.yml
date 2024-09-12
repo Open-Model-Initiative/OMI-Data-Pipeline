@@ -1,0 +1,117 @@
+name: omi-postgres
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_PORT: 35432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 35432:5432
+    networks:
+      - omi-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_LISTEN_ADDRESS: 0.0.0.0
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    entrypoint: /bin/sh -c "chmod 600 /pgpass; /entrypoint.sh;"
+    user: root
+    configs:
+      - source: servers.json
+        target: /pgadmin4/servers.json
+      - source: pgpass
+        target: /pgpass
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-35050}:80"
+    networks:
+      - omi-network
+    depends_on:
+      - postgres
+
+  odr-api:
+    build:
+      context: .
+      dockerfile: modules/odr_api/docker/Dockerfile.api
+    env_file:
+      - .env
+    ports:
+      - "31100:31100"
+    networks:
+      - omi-network
+    depends_on:
+      - postgres
+    develop:
+      watch:
+        - action: sync
+          path: ./modules/odr_core
+          target: /app/modules/odr_core
+        - action: sync
+          path: ./modules/odr_api
+          target: /app/modules/odr_api
+        - action: sync
+          path: ./modules/odr_monitoring
+          target: /app/modules/odr_monitoring
+
+  odr-frontend:
+    build:
+      context: ./modules/odr_frontend
+      dockerfile: docker/Dockerfile.frontend.dev
+    volumes:
+      - ./modules/odr_frontend:/app
+      - odr_frontend_node_modules:/app/node_modules
+      - odr_frontend_pnpm_store:/app/.pnpm-store
+    ports:
+      - "5173:5173"
+    environment:
+      NODE_ENV: development
+      API_SERVICE_URL: http://odr-api:31100/api/v1
+    env_file:
+      - ./modules/odr_frontend/.env
+    networks:
+      - omi-network
+    develop:
+      watch:
+        - action: sync
+          path: ./modules/odr_frontend
+          target: /app
+          ignore:
+            - node_modules/
+            - .pnpm-store/
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  odr_frontend_node_modules:
+  odr_frontend_pnpm_store:
+
+networks:
+  omi-network:
+    external: true
+    driver: bridge
+
+configs:
+  pgpass:
+    content: postgres:35432:${POSTGRES_DB}:${POSTGRES_USER}:${POSTGRES_PASSWORD}
+  servers.json:
+    content: |
+      {"Servers": {"1": {
+        "Group": "Servers",
+        "Name": "Open Data Repository",
+        "Host": "postgres",
+        "Port": 35432,
+        "MaintenanceDB": "postgres",
+        "Username": "${POSTGRES_USER}",
+        "PassFile": "/pgpass",
+        "SSLMode": "prefer"
+      }}}

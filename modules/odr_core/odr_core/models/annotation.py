@@ -60,6 +60,7 @@ class AnnotationReport(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     annotation_id = Column(Integer, ForeignKey("annotations.id"), nullable=True)
+    description = Column(String, nullable=True)
     type = Column(
         String, nullable=False
     )  # e.g., 'illegal content', 'malicious annotations'
@@ -67,7 +68,7 @@ class AnnotationReport(Base):
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
     annotation = relationship("Annotation", back_populates="reports")
     reported_by = relationship("User", back_populates="annotation_reports")
 

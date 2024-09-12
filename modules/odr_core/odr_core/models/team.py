@@ -26,3 +26,6 @@ class UserTeam(Base):
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     team_id = Column(Integer, ForeignKey("teams.id"), primary_key=True)
     role = Column(String)  # e.g., 'admin', 'member'
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

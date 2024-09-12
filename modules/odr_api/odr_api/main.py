@@ -1,37 +1,18 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from odr_api.api.endpoints import user_router, team_router, content_router, annotation_router, auth_router, embedding_router
-from odr_core.config import settings
-import uvicorn
-
-app = FastAPI(title=settings.PROJECT_NAME)
-# Allow CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
-)
-
-
-@app.get("/")
-def read_root():
-    return {"message": "Hello, World!"}
-
-
-@app.get("/test")
-def test_communication():
-    return {"message": "Communication successful!"}
-
-
-app.include_router(team_router, prefix=settings.API_V1_STR)
-app.include_router(user_router, prefix=settings.API_V1_STR)
-app.include_router(content_router, prefix=settings.API_V1_STR)
-app.include_router(annotation_router, prefix=settings.API_V1_STR)
-app.include_router(auth_router, prefix=settings.API_V1_STR)
-app.include_router(embedding_router, prefix=settings.API_V1_STR)
-
+import argparse
+from loguru import logger
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=31100, reload=True)
+    import uvicorn
+
+    parser = argparse.ArgumentParser(description="Open Data Repository API")
+    parser.add_argument("--dev", action="store_true", help="Run in development mode with hot reloading")
+    args = parser.parse_args()
+
+    logger.info("Starting Open Data Repository API from main")
+
+    if args.dev:
+        logger.info("Running in development mode with hot reloading")
+        uvicorn.run("odr_api.api.app:app", host="0.0.0.0", port=31100, reload=True)
+    else:
+        logger.info("Running in production mode with 4 workers")
+        uvicorn.run("odr_api.api.app:app", host="0.0.0.0", port=31100, workers=8)

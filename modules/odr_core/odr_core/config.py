@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "OMI-DataModel"
 
     # Postgres
-    POSTGRES_HOST: str = "localhost"
+    POSTGRES_HOST: str
     POSTGRES_DB: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
@@ -52,12 +52,18 @@ class Settings(BaseSettings):
     DISCORD_CLIENT_ID: str
     DISCORD_CLIENT_SECRET: str
 
+    # Embedding
+    CONTENT_EMBEDDING_DIMENSION: int = 512
+    ANNOTATION_EMBEDDING_DIMENSION: int = 384
+
     class Config:
         env_file = ".env"
 
     def get_db_url(self):
         db_name = self.TEST_POSTGRES_DB if self.TEST else self.POSTGRES_DB
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{db_name}"
+
+        conn_str = f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{db_name}"
+        return conn_str
 
 
 settings = Settings()

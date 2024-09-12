@@ -1,0 +1,5 @@
+.git
+.gitignore
+npm-debug.log
+./docker/Dockerfile*
+.dockerignore

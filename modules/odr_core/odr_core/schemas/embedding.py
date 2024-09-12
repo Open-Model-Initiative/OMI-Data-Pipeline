@@ -1,15 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, Any, List
 from datetime import datetime
-from enum import Enum
-
-
-class EmbeddingEngineType(str, Enum):
-    IMAGE = "image"
-    VIDEO = "video"
-    VOICE = "voice"
-    MUSIC = "music"
-    TEXT = "text"
+from odr_core.enums import EmbeddingEngineType
 
 
 class EmbeddingEngineBase(BaseModel):

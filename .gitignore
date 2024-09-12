@@ -58,6 +58,7 @@ node_modules/
 .coverage
 .htmlcov/
 .tox/
+coverage.xml
 
 # Packaging
 *.tar.gz
@@ -78,3 +79,6 @@ server.pid
 
 # Huggingface
 models_cache/
+
+# Embedding models
+**/models--**

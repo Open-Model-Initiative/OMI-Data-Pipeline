@@ -1,0 +1,217 @@
+{
+    "description": "",
+    "citation": "",
+    "homepage": "",
+    "license": "",
+    "features": {
+        "id": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "type": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "hash": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "phash": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "urls": {
+            "feature": {
+                "dtype": "string",
+                "_type": "Value"
+            },
+            "_type": "Sequence"
+        },
+        "status": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "flags": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "meta": {
+            "hf-dataset-name": {
+                "dtype": "string",
+                "_type": "Value"
+            },
+            "hf-dataset-id": {
+                "dtype": "int64",
+                "_type": "Value"
+            },
+            "hf-dataset-split": {
+                "dtype": "string",
+                "_type": "Value"
+            }
+        },
+        "fromUser": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "fromTeam": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "embeddings": [
+            {
+                "model": {
+                    "dtype": "string",
+                    "_type": "Value"
+                },
+                "embedding": {
+                    "feature": {
+                        "dtype": "float64",
+                        "_type": "Value"
+                    },
+                    "_type": "Sequence"
+                }
+            }
+        ],
+        "createdAt": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "updatedAt": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "name": {
+            "dtype": "null",
+            "_type": "Value"
+        },
+        "width": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "height": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "format": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "license": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "licenseUrl": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "contentAuthor": {
+            "dtype": "null",
+            "_type": "Value"
+        },
+        "annotations": [
+            {
+                "id": {
+                    "dtype": "string",
+                    "_type": "Value"
+                },
+                "content": {
+                    "dtype": "string",
+                    "_type": "Value"
+                },
+                "annotation": {
+                    "type": {
+                        "dtype": "string",
+                        "_type": "Value"
+                    },
+                    "original_field": {
+                        "dtype": "string",
+                        "_type": "Value"
+                    },
+                    "text": {
+                        "dtype": "string",
+                        "_type": "Value"
+                    },
+                    "tokens": {
+                        "dtype": "int64",
+                        "_type": "Value"
+                    },
+                    "clean_text": {
+                        "dtype": "string",
+                        "_type": "Value"
+                    }
+                },
+                "manuallyAdjusted": {
+                    "dtype": "bool",
+                    "_type": "Value"
+                },
+                "embedding": {
+                    "dtype": "null",
+                    "_type": "Value"
+                },
+                "fromUser": {
+                    "dtype": "string",
+                    "_type": "Value"
+                },
+                "fromTeam": {
+                    "dtype": "string",
+                    "_type": "Value"
+                },
+                "createdAt": {
+                    "dtype": "string",
+                    "_type": "Value"
+                },
+                "updatedAt": {
+                    "dtype": "string",
+                    "_type": "Value"
+                },
+                "overallRating": {
+                    "dtype": "null",
+                    "_type": "Value"
+                }
+            }
+        ],
+        "image_column": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "original_width": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "original_height": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "image": {
+            "dtype": "string",
+            "_type": "Value"
+        },
+        "processed_size": {
+            "dtype": "int64",
+            "_type": "Value"
+        },
+        "is_unique": {
+            "dtype": "bool",
+            "_type": "Value"
+        }
+    },
+    "builder_name": "parquet",
+    "dataset_name": "initial-test-dataset-private",
+    "config_name": "default",
+    "version": {
+        "version_str": "0.0.0",
+        "major": 0,
+        "minor": 0,
+        "patch": 0
+    },
+    "splits": {
+        "train": {
+            "name": "train",
+            "num_bytes": 124707,
+            "num_examples": 4,
+            "dataset_name": null
+        }
+    },
+    "download_size": 86489,
+    "dataset_size": 124707
+}

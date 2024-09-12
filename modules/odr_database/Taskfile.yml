@@ -53,7 +53,7 @@ tasks:
   test-postgres:
     desc: Test the postgres database
     cmds:
-      - echo "Postgres testing not implemented yet"
+      - pytest -s --log-cli-level=INFO modules/odr_database/tests/test_db_connection.py
 
   teardown:
     desc: Teardown the database and remove the volumes

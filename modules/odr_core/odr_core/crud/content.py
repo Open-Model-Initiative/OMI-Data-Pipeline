@@ -5,16 +5,18 @@ from odr_core.models.content import (
     ContentType,
     ContentStatus,
     ContentSourceType,
+    ContentAuthor
 )
 from odr_core.schemas.content import (
     ContentCreate,
     ContentUpdate,
     ContentSourceCreate,
     ContentSourceUpdate,
+    ContentAuthorCreate,
+    ContentAuthorUpdate,
     httpurl_to_str,
 )
 from typing import List, Optional
-from sqlalchemy import Enum as SQLAlchemyEnum
 from loguru import logger
 from datetime import datetime, timezone
 from sqlalchemy.exc import IntegrityError
@@ -76,6 +78,7 @@ def create_content(db: Session, content: ContentCreate, from_user_id: int):
     db_content = Content(
         name=content.name,
         type=ContentType(content.type.value),
+        url=content.url,
         hash=content.hash,
         phash=content.phash,
         width=content.width,
@@ -168,6 +171,42 @@ def delete_content(db: Session, content_id: int) -> bool:
             delete_content_source(db, source.id)
 
         db.delete(db_content)
+        db.commit()
+        return True
+    return False
+
+
+def create_content_author(db: Session, content_author: ContentAuthorCreate) -> ContentAuthor:
+    db_content_author = ContentAuthor(**content_author.model_dump())
+    db.add(db_content_author)
+    db.commit()
+    db.refresh(db_content_author)
+    return db_content_author
+
+
+def get_content_author(db: Session, content_author_id: int) -> Optional[ContentAuthor]:
+    return db.query(ContentAuthor).filter(ContentAuthor.id == content_author_id).first()
+
+
+def get_content_authors(db: Session, content_id: int, skip: int = 0, limit: int = 100) -> List[ContentAuthor]:
+    return db.query(ContentAuthor).filter(ContentAuthor.content_id == content_id).offset(skip).limit(limit).all()
+
+
+def update_content_author(db: Session, content_author_id: int, content_author: ContentAuthorUpdate) -> Optional[ContentAuthor]:
+    db_content_author = get_content_author(db, content_author_id)
+    if db_content_author:
+        update_data = content_author.model_dump(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(db_content_author, key, value)
+        db.commit()
+        db.refresh(db_content_author)
+    return db_content_author
+
+
+def delete_content_author(db: Session, content_author_id: int) -> bool:
+    db_content_author = get_content_author(db, content_author_id)
+    if db_content_author:
+        db.delete(db_content_author)
         db.commit()
         return True
     return False
