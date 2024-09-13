@@ -23,7 +23,7 @@ def upgrade() -> None:
     op.add_column('users', sa.Column('identity_provider', sa.String(), nullable=True))
     # set default value for identity_provider
     op.execute("UPDATE users SET identity_provider = 'omi'")
-    op.create_index(op.f('ix_users_identity_provider'), 'users', ['identity_provider'], unique=True)
+    op.create_index(op.f('ix_users_identity_provider'), 'users', ['identity_provider'])
     # ### end Alembic commands ###
 
 
