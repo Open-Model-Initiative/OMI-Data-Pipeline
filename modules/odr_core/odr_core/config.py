@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     DISCORD_CLIENT_ID: str
     DISCORD_CLIENT_SECRET: str
 
-    OAITH_REDIRECT_PATH: str
+    OAUTH2_REDIRECT_PATH: str
 
     # Embedding
     CONTENT_EMBEDDING_DIMENSION: int = 512
