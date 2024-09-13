@@ -23,6 +23,8 @@ from fastapi_sso.sso.google import GoogleSSO
 from fastapi_sso.sso.github import GithubSSO
 from fastapi_sso.sso.generic import create_provider
 
+from sqlalchemy.orm import Session
+
 from odr_core.config import settings
 
 
@@ -31,7 +33,8 @@ router = APIRouter(tags=["auth"])
 
 @router.post("/auth/token", response_model=UserToken)
 def login_for_access_token(
-    db=Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
+    db: Session = Depends(get_db),
+    form_data: OAuth2PasswordRequestForm = Depends()
 ):
     user = user_crud.verify_user(db, form_data.username, form_data.password)
     if not user:
@@ -44,7 +47,7 @@ def login_for_access_token(
 
 
 @router.post("/auth/login", response_model=UserLoginSession)
-def login(response: Response, user: UserLogin, db=Depends(get_db)):
+def login(response: Response, user: UserLogin, db: Session = Depends(get_db)):
     session = user_crud.login_user(db, user.username, user.password)
 
     if not session:
@@ -56,7 +59,7 @@ def login(response: Response, user: UserLogin, db=Depends(get_db)):
 
 
 @router.post("/auth/logout")
-def logout(db=Depends(get_db), session_cookie: str = Depends(get_session_cookie)):
+def logout(session_cookie: str = Depends(get_session_cookie), db: Session = Depends(get_db)):
     succesful = user_crud.logout_user(db, session_cookie)
     if not succesful:
         raise HTTPException(status_code=400, detail="Logout failed")
@@ -65,7 +68,7 @@ def logout(db=Depends(get_db), session_cookie: str = Depends(get_session_cookie)
 
 
 @router.get("/auth/logout/all")
-def logout_all(db=Depends(get_db), current_user: User = Depends(AuthProvider())):
+def logout_all(current_user: User = Depends(AuthProvider()), db: Session = Depends(get_db)):
     user_crud.delete_user_sessions(db, current_user.id)
 
     return UserLogout()
@@ -73,17 +76,19 @@ def logout_all(db=Depends(get_db), current_user: User = Depends(AuthProvider()))
 
 def ouath2_login_and_signup(
     request: Request,
-    user: OpenID,
-    db=Depends(get_db),
+    openid_user: OpenID,
+    db: Session
 ):
-    if not user.email:
+    if not openid_user.email:
         raise HTTPException(status_code=400, detail="Unable to get user email")
 
-    user = user_crud.get_user_by_email(db, user.email)
-    if not user:
-        user = user_crud.create_user_from_openid(db, user)
+    existing_user = user_crud.get_user_by_email(db, openid_user.email)
+    if not existing_user:
+        existing_user = user_crud.create_user_from_openid(db, openid_user)
 
-    session = user_crud.login_openid_user(db, user)
+    session = user_crud.login_openid_user(db, openid_user)
+    if not session:
+        raise HTTPException(status_code=401, detail="Different provider already used")
 
     response = RedirectResponse(url=f"{request.base_url}{settings.OAUTH2_REDIRECT_PATH}")
     response.set_cookie(key="session", value=session.id, httponly=True)
@@ -108,10 +113,13 @@ async def google_login(request: Request):
 
 
 @router.get("/auth/google/callback")
-async def google_callback(request: Request):
+async def google_callback(request: Request, db: Session = Depends(get_db)):
     with google_sso:
-        user = await google_sso.verify_and_process(request)
-        return ouath2_login_and_signup(request, user)
+        try:
+            user = await google_sso.verify_and_process(request)
+        except Exception:
+            raise HTTPException(status_code=401, detail="Failed to login with Google")
+        return ouath2_login_and_signup(request, user, db)
 
 
 # Github SSO
@@ -130,10 +138,13 @@ async def github_login(request: Request):
 
 
 @router.get("/auth/github/callback")
-async def github_callback(request: Request):
+async def github_callback(request: Request, db: Session = Depends(get_db)):
     with github_sso:
-        user = await github_sso.verify_and_process(request)
-        return ouath2_login_and_signup(request, user)
+        try:
+            user = await github_sso.verify_and_process(request)
+        except Exception:
+            raise HTTPException(status_code=401, detail="Failed to login with Github")
+        return ouath2_login_and_signup(request, user, db)
 
 
 # Discord SSO
@@ -186,7 +197,10 @@ async def discord_login(request: Request):
 
 
 @router.get("/auth/discord/callback")
-async def discord_callback(request: Request):
+async def discord_callback(request: Request, db: Session = Depends(get_db)):
     with discord_sso:
-        user = await discord_sso.verify_and_process(request)
-        return ouath2_login_and_signup(request, user)
+        try:
+            user = await discord_sso.verify_and_process(request)
+        except Exception:
+            raise HTTPException(status_code=401, detail="Failed to login with Discord")
+        return ouath2_login_and_signup(request, user, db)
