@@ -13,6 +13,8 @@
 		// Docker
 		"ms-azuretools.vscode-docker",
 		// Prettier
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		// Svelte
+		"svelte.svelte-vscode"
 	]
 }

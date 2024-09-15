@@ -10,6 +10,7 @@ class UserBase(BaseModel):
     email: EmailStr
     is_active: bool = True
     is_superuser: bool = False
+    dco_accepted: bool = False
 
 
 class UserCreate(UserBase):

@@ -27,12 +27,13 @@ export const actions = {
 
 		if (loginRequest.status === 200) {
 			event.cookies.set('session', loginResponse.id, {
-				expires: new Date(loginResponse.expires_at),
-				path: '/'
+			  expires: new Date(loginResponse.expires_at),
+			  path: '/',
+			//   httpOnly: true
 			});
 			event.locals.isAuthenticated = true;
 			throw redirect(302, '/');
-		} else {
+		  } else {
 			return {
 				status: 400,
 				body: JSON.stringify({ message: 'Error logging in user' })

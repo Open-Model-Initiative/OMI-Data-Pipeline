@@ -60,3 +60,18 @@ def read_user_teams(user_id: int, db: Session = Depends(get_db)):
     if not teams:
         raise HTTPException(status_code=404, detail="User not found or is not in any teams")
     return teams
+
+
+# dco
+@router.post("/users/accept-dco")
+def accept_dco(current_user: User = Depends(AuthProvider())):
+    db = next(get_db())
+    user_crud.update_user_dco_acceptance(db, user_id=current_user.id, accepted=True)
+    return {"message": "DCO accepted successfully"}
+
+
+@router.get("/users/dco-status")
+def check_dco_status(current_user: User = Depends(AuthProvider())):
+    db = next(get_db())
+    dco_status = user_crud.get_user_dco_status(db, user_id=current_user.id)
+    return {"dco_accepted": dco_status}
