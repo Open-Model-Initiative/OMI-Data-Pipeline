@@ -42,6 +42,18 @@ class Settings(BaseSettings):
     # Models
     MODEL_CACHE_DIR: str
 
+    # OUATH
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
+
+    GITHUB_CLIENT_ID: str
+    GITHUB_CLIENT_SECRET: str
+
+    DISCORD_CLIENT_ID: str
+    DISCORD_CLIENT_SECRET: str
+
+    OAUTH2_REDIRECT_PATH: str
+
     # Embedding
     CONTENT_EMBEDDING_DIMENSION: int = 512
     ANNOTATION_EMBEDDING_DIMENSION: int = 384
