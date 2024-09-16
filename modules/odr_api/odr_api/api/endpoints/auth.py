@@ -53,7 +53,7 @@ def login(response: Response, user: UserLogin, db: Session = Depends(get_db)):
     if not session:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    response.set_cookie(key="session", value=session.id, httponly=True)
+    response.set_cookie(key="session", value=session.id, httponly=True, secure=True)
 
     return session
 
@@ -74,7 +74,7 @@ def logout_all(current_user: User = Depends(AuthProvider()), db: Session = Depen
     return UserLogout()
 
 
-def ouath2_login_and_signup(
+def oauth2_login_and_signup(
     request: Request,
     openid_user: OpenID,
     db: Session
@@ -91,7 +91,7 @@ def ouath2_login_and_signup(
         raise HTTPException(status_code=401, detail="Different provider already used")
 
     response = RedirectResponse(url=f"{request.base_url}{settings.OAUTH2_REDIRECT_PATH}")
-    response.set_cookie(key="session", value=session.id, httponly=True)
+    response.set_cookie(key="session", value=session.id, httponly=True, secure=True)
 
     return response
 
@@ -100,7 +100,6 @@ def ouath2_login_and_signup(
 google_sso = GoogleSSO(
     client_id=settings.GOOGLE_CLIENT_ID,
     client_secret=settings.GOOGLE_CLIENT_SECRET,
-    redirect_uri="http://localhost:31100/api/v1/auth/google/callback",
 )
 
 
@@ -119,7 +118,7 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
             user = await google_sso.verify_and_process(request)
         except Exception:
             raise HTTPException(status_code=401, detail="Failed to login with Google")
-        return ouath2_login_and_signup(request, user, db)
+        return oauth2_login_and_signup(request, user, db)
 
 
 # Github SSO
@@ -144,7 +143,7 @@ async def github_callback(request: Request, db: Session = Depends(get_db)):
             user = await github_sso.verify_and_process(request)
         except Exception:
             raise HTTPException(status_code=401, detail="Failed to login with Github")
-        return ouath2_login_and_signup(request, user, db)
+        return oauth2_login_and_signup(request, user, db)
 
 
 # Discord SSO
@@ -203,4 +202,4 @@ async def discord_callback(request: Request, db: Session = Depends(get_db)):
             user = await discord_sso.verify_and_process(request)
         except Exception:
             raise HTTPException(status_code=401, detail="Failed to login with Discord")
-        return ouath2_login_and_signup(request, user, db)
+        return oauth2_login_and_signup(request, user, db)
