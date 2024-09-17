@@ -1,4 +1,5 @@
 # odr_core/crud/user.py
+from fastapi_sso import OpenID
 from sqlalchemy.orm import Session
 from odr_core.models.user import User, UserSession
 from odr_core.models.team import Team
@@ -26,6 +27,31 @@ def create_user(db: Session, user: UserCreate) -> User:
         created_at=datetime.now(timezone.utc),
         updated_at=datetime.now(timezone.utc)
     )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def create_user_from_openid(db: Session, openid: OpenID) -> User:
+    desired_username = openid.display_name or openid.email.split("@")[0]
+
+    username = desired_username
+    i = 1
+    while get_user_by_username(db, username):
+        username = f"{desired_username}.{i}"
+        i += 1
+
+    db_user = User(
+        username=username,
+        email=openid.email,
+        identity_provider=openid.provider,
+        is_active=True,
+        is_superuser=False,
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
+    )
+
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -94,11 +120,7 @@ def get_user_session(db: Session, session_id: str) -> Optional[UserSession]:
     return db.query(UserSession).filter(UserSession.id == session_id).first()
 
 
-def login_user(db: Session, username: str, password: str) -> Optional[UserSession]:
-    user = verify_user(db, username, password)
-    if not user:
-        return None
-
+def create_user_session(db: Session, user: User) -> UserSession:
     session = UserSession(
         id=str(uuid.uuid4()),
         user_id=user.id,
@@ -111,6 +133,22 @@ def login_user(db: Session, username: str, password: str) -> Optional[UserSessio
     db.refresh(session)
 
     return session
+
+
+def login_user(db: Session, username: str, password: str) -> Optional[UserSession]:
+    user = verify_user(db, username, password)
+    if not user:
+        return None
+
+    return create_user_session(db, user)
+
+
+def login_openid_user(db: Session, openid: OpenID) -> Optional[UserSession]:
+    user = verify_openid_user(db, openid)
+    if not user:
+        return None
+
+    return create_user_session(db, user)
 
 
 def logout_user(db: Session, session_id: str) -> bool:
@@ -142,3 +180,17 @@ def verify_user(db: Session, username: str, password: str) -> Optional[User]:
         print(f"An unexpected error occurred during password verification: {e}")
 
     return None
+
+
+def verify_openid_user(db: Session, openid: OpenID) -> Optional[User]:
+    user = get_user_by_email(db, openid.email)
+    if not user:
+        return None
+
+    if not user.is_active:
+        return None
+
+    if user.identity_provider != openid.provider:
+        return None
+
+    return user
