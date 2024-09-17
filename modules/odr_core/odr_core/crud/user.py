@@ -217,7 +217,9 @@ def update_user_dco_acceptance(db: Session, user_id: int, accepted: bool) -> Opt
 
 
 def get_user_dco_status(db: Session, user_id: int) -> Optional[bool]:
-    user = db.query(User).filter(User.id == user_id).first()
+    user = get_user(db, user_id)
+
     if user:
         return user.dco_accepted
+
     return None

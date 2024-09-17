@@ -10,7 +10,6 @@ class UserBase(BaseModel):
     email: EmailStr
     is_active: bool = True
     is_superuser: bool = False
-    dco_accepted: bool = False
 
 
 class UserCreate(UserBase):
@@ -62,3 +61,7 @@ class UserLogout(BaseModel):
 class UserToken(BaseModel):
     access_token: str
     token_type: str
+
+
+class UserDCOStatus(BaseModel):
+    dco_accepted: bool = False

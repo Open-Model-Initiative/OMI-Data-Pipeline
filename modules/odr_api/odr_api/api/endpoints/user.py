@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy.orm import Session
 from odr_core.crud import user as user_crud
-from odr_core.schemas.user import User, UserCreate, UserUpdate
+from odr_core.schemas.user import User, UserCreate, UserUpdate, UserDCOStatus
 from odr_core.schemas.team import Team
 from odr_core.database import get_db
 from loguru import logger
@@ -19,6 +19,22 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return user_crud.create_user(db=db, user=user)
+
+
+# dco
+@router.post("/users/accept-dco")
+def accept_dco(current_user: User = Depends(AuthProvider())):
+    db = next(get_db())
+    user_crud.update_user_dco_acceptance(db, user_id=current_user.id, accepted=True)
+    return {"message": "DCO accepted successfully"}
+
+
+@router.get("/users/dco-status", response_model=UserDCOStatus)
+def check_dco_status(current_user: User = Depends(AuthProvider())):
+    db = next(get_db())
+    dco_status = user_crud.get_user_dco_status(db, user_id=current_user.id)
+    return UserDCOStatus(dco_accepted=dco_status)
+# end of dco
 
 
 @router.get("/users/me", response_model=User)
@@ -60,18 +76,3 @@ def read_user_teams(user_id: int, db: Session = Depends(get_db)):
     if not teams:
         raise HTTPException(status_code=404, detail="User not found or is not in any teams")
     return teams
-
-
-# dco
-@router.post("/users/accept-dco")
-def accept_dco(current_user: User = Depends(AuthProvider())):
-    db = next(get_db())
-    user_crud.update_user_dco_acceptance(db, user_id=current_user.id, accepted=True)
-    return {"message": "DCO accepted successfully"}
-
-
-@router.get("/users/dco-status")
-def check_dco_status(current_user: User = Depends(AuthProvider())):
-    db = next(get_db())
-    dco_status = user_crud.get_user_dco_status(db, user_id=current_user.id)
-    return {"dco_accepted": dco_status}

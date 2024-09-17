@@ -56,24 +56,36 @@ export async function handle({ event, resolve }) {
 	locals.isAuthenticated = true;
 	locals.isSuperUser = user.is_superuser;
 
-	if (locals.isAuthenticated) {
-		const dcoResponse = await fetch(`${API_URL}/users/dco-status`, {
-			headers: {
-				Cookie: `session=${sessionCookie}`
-			}
-		});
+	if (locals.isAuthenticated && !route.id?.startsWith('/dco')) {
+		try {
+			const dcoResponse = await fetch(`${API_URL}/users/dco-status`, {
+				headers: {
+					Cookie: `session=${sessionCookie}`
+				}
+			});
 
-		if (dcoResponse.ok) {
-			const dcoStatus = await dcoResponse.json();
+			console.log(`DCO response status: ${dcoResponse.status}`);
+    		console.log(`DCO response status text: ${dcoResponse.statusText}`);
 
-			if (!dcoStatus.dco_accepted && !route.id?.startsWith('/dco')) {
+			if (dcoResponse.ok) {
+				const dcoStatus = await dcoResponse.json();
+
+				console.log('DCO status:', dcoStatus);
+
+				if (!dcoStatus.dco_accepted) {
+					console.log('DCO not accepted, redirecting to /dco');
+					throw redirect(302, '/dco');
+				}
+			} else {
+				console.error('Error checking DCO status');
+				console.error('Response:', await dcoResponse.text());
 				throw redirect(302, '/dco');
 			}
-		} else {
-			console.error('Error checking DCO status');
+		} catch (error) {
+			console.error('Error during DCO status check:', error);
+			throw redirect(302, '/dco');
 		}
 	}
-
 
 	if (route.id?.startsWith('/auth')) {
 		throw redirect(302, '/');

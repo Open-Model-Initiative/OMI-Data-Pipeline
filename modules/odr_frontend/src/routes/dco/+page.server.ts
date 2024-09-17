@@ -1,3 +1,4 @@
+import { redirect, fail } from '@sveltejs/kit';
 import { ENV } from '$lib/server/env';
 import type { Actions } from './$types';
 
@@ -7,39 +8,29 @@ export const actions: Actions = {
     const acceptDCO = formData.get('acceptDCO');
 
     if (!acceptDCO) {
-      return {
-        status: 400,
-        body: JSON.stringify({ message: 'You must accept the DCO to continue' })
-      };
+      return fail(400, { message: 'You must accept the DCO to continue' });
     }
 
+    let response;
+
     try {
-      const response = await fetch(`${ENV.API_SERVICE_URL}/users/accept-dco`, {
+      response = await fetch(`${ENV.API_SERVICE_URL}/users/accept-dco`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Cookie: event.request.headers.get('cookie') || '' // Forward the session cookie
+          Cookie: event.request.headers.get('cookie') || ''
         }
       });
-
-      if (response.ok) {
-        return {
-          status: 200,
-          body: JSON.stringify({ message: 'DCO accepted successfully' })
-        };
-      } else {
-        const errorData = await response.json();
-        return {
-          status: response.status,
-          body: JSON.stringify({ message: errorData.message || 'Failed to accept DCO' })
-        };
-      }
     } catch (error) {
-      console.error('Error accepting DCO:', error);
-      return {
-        status: 500,
-        body: JSON.stringify({ message: 'An error occurred while processing your request' })
-      };
+      console.error('Network error accepting DCO:', error);
+      return fail(500, { message: 'A network error occurred while processing your request' });
+    }
+
+    if (response.ok) {
+      throw redirect(302, '/');
+    } else {
+      const errorData = await response.json();
+      return fail(response.status, { message: errorData.message || 'Failed to accept DCO' });
     }
   }
 };
