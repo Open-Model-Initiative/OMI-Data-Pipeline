@@ -5,11 +5,17 @@
 </script>
 
 <svelte:head>
-    <title>DCO | OMI Data Pipeline</title>
+    <title>DCO Agreement | OMI Data Pipeline</title>
 </svelte:head>
 
 <div class="flex flex-col overflow-y-auto">
     <main class="container mx-auto p-4">
+        <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-8 rounded-lg">
+            <p>
+                The following Developer Certificate of Origin agreement covers all contributions to Open Model Initiative Datasets. All OMI datasets will fall under the CDLA 2.0 license. See <a href="https://cdla.dev/permissive-2-0/" class="underline" target="_blank" rel="noopener noreferrer">https://cdla.dev/permissive-2-0/</a> for details.
+            </p>
+        </div>
+
         <h1 class="text-3xl font-bold mb-4">Developer Certificate of Origin</h1>
         <h2 class="text-xl mb-2">Version 1.1</h2>
 
@@ -52,9 +58,11 @@ By making a contribution to this project, I certify that:
 
         <form method="POST" use:enhance>
             <div class="mb-4">
-                <label class="flex items-center">
-                    <input type="checkbox" bind:checked={acceptedDCO} name="acceptDCO" class="mr-2">
-                    <span>I accept the terms of the Developer Certificate of Origin</span>
+                <label class="flex items-start">
+                    <input type="checkbox" bind:checked={acceptedDCO} name="acceptDCO" class="mr-3">
+                    <span class="text-sm">
+                        I accept the terms of the Developer Certificate of Origin and the CDLA 2.0 license
+                    </span>
                 </label>
             </div>
             <button
