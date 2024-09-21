@@ -82,8 +82,3 @@ class Settings(BaseSettings):
 
 # Create settings instance
 settings = Settings()
-
-# Print loaded environment variables for debugging
-print("Loaded environment variables:")
-for key, value in settings.dict().items():
-    print(f"{key}: {value}")
