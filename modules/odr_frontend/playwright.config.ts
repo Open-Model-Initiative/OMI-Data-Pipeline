@@ -10,7 +10,7 @@ const config: PlaywrightTestConfig = {
 	use: {
 		baseURL: 'http://localhost:4173'
 		// headless: false
-	},
+	}
 };
 
 export default config;

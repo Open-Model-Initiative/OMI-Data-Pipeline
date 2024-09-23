@@ -4,15 +4,15 @@
 
 	export let data;
 
-	onMount(() => {
-		console.log('isAuthenticated', data.isAuthenticated);
-	});
-
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { signIn, signOut } from '@auth/sveltekit/client';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+
+	import DiscordIcon from '$lib/icons/DiscordIcon.svelte';
 </script>
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
@@ -24,10 +24,21 @@
 		</svelte:fragment>
 		<svelte:fragment slot="trail">
 			<a href="/datasets" class="btn btn-sm">Request Dump</a>
-			{#if !data.isAuthenticated}
-				<a href="/auth/login" class="btn btn-sm">Login</a>
+			{#if !$page.data.session?.user}
+				<span class="btn btn-sm">Sign In:</span>
+				<button
+					class="btn btn-sm"
+					on:click={() => {
+						signIn('discord');
+					}}><DiscordIcon /></button
+				>
 			{:else}
-				<a href="/auth/logout" class="btn btn-sm">Logout</a>
+				<button
+					class="btn btn-sm"
+					on:click={() => {
+						signOut();
+					}}>Sign Out</button
+				>
 			{/if}
 		</svelte:fragment>
 	</AppBar>

@@ -1,5 +1,9 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+
 	export let data;
+
+	$: user = $page.data.session?.user;
 </script>
 
 <svelte:head>
@@ -14,6 +18,9 @@
 			</header>
 			<section class="p-4">List content pending approval here...</section>
 		</div>
+		<code>
+			{JSON.stringify(user, null, 2)}
+		</code>
 		<div class="card variant-filled-surface">
 			<header class="card-header text-lg font-bold text-primary-200">Datasets</header>
 			<section class="p-4">List datasets here</section>
