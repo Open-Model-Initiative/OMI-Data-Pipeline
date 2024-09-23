@@ -75,8 +75,9 @@ def upgrade() -> None:
         sa.Column("content_id", sa.Integer(), nullable=False),
         sa.Column(
             "status",
-            sa.Enum(
-                "PENDING", "AVAILABLE", "UNAVAILABLE", "DELISTED", name="contentstatus"
+            # contentstatus enum already exists in the database, thats why we are 'create_type=False'
+            postgresql.ENUM(
+                "PENDING", "AVAILABLE", "UNAVAILABLE", "DELISTED", name="contentstatus", create_type=False
             ),
             nullable=False,
         ),
@@ -186,15 +187,12 @@ def upgrade() -> None:
     op.add_column(
         "sessions", sa.Column("sessionToken", sa.String(length=255), nullable=False)
     )
-    op.alter_column(
+    op.drop_column("sessions", "id")
+    op.add_column(
         "sessions",
-        "id",
-        existing_type=sa.UUID(),
-        type_=sa.Integer(),
-        existing_nullable=False,
-        autoincrement=True,
+        sa.Column("id", sa.Integer(), primary_key=True, autoincrement=True, nullable=False)
     )
-    op.drop_index("ix_sessions_id", table_name="sessions")
+    op.execute("DROP INDEX IF EXISTS ix_sessions_id")
     op.drop_constraint("sessions_user_id_fkey", "sessions", type_="foreignkey")
     op.drop_column("sessions", "created_at")
     op.drop_column("sessions", "user_id")
@@ -269,13 +267,10 @@ def downgrade() -> None:
         "sessions_user_id_fkey", "sessions", "users", ["user_id"], ["id"]
     )
     op.create_index("ix_sessions_id", "sessions", ["id"], unique=False)
-    op.alter_column(
+    op.drop_column("sessions", "id")
+    op.add_column(
         "sessions",
-        "id",
-        existing_type=sa.Integer(),
-        type_=sa.UUID(),
-        existing_nullable=False,
-        autoincrement=True,
+        sa.Column("id", sa.UUID(), primary_key=True, nullable=False, server_default=sa.text("gen_random_uuid()"))
     )
     op.drop_column("sessions", "sessionToken")
     op.drop_column("sessions", "expires")
@@ -288,12 +283,14 @@ def downgrade() -> None:
         nullable=True,
     )
     op.drop_column("contents", "url")
+    # this line might fail if we don't have valid json data, but there is nothing we can do about it
     op.alter_column(
         "content_sources",
         "source_metadata",
         existing_type=sa.String(),
         type_=postgresql.JSONB(astext_type=sa.Text()),
         existing_nullable=True,
+        postgresql_using="source_metadata::jsonb"
     )
     op.drop_column("annotation_reports", "description")
     op.drop_table("content_set_items")
@@ -305,4 +302,6 @@ def downgrade() -> None:
     op.drop_table("content_sets")
     op.drop_table("verification_token")
     op.drop_table("accounts")
+    op.execute("DROP TYPE IF EXISTS reportstatus")
+
     # ### end Alembic commands ###
