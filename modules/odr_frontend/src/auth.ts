@@ -1,4 +1,4 @@
-import { SvelteKitAuth } from '@auth/sveltekit';
+import { SvelteKitAuth, type Session, type User } from '@auth/sveltekit';
 import GitHub from '@auth/sveltekit/providers/github';
 import discord from '@auth/sveltekit/providers/discord';
 import {
@@ -35,7 +35,13 @@ export const { handle, signIn, signOut } = SvelteKitAuth(async (event) => {
 		//@ts-expect-error
 		secret: event?.platform?.env.AUTH_SECRET,
 		trustHost: true,
-		adapter: PostgresAdapter(pool)
+		adapter: PostgresAdapter(pool),
+		callbacks: {
+			session({ session, user }: { session: Session; user: User }) {
+				session.user = user;
+				return session;
+			}
+		}
 	};
 	return authOptions;
 });

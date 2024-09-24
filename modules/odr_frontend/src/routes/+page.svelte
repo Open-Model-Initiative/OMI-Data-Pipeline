@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-
-	export let data;
+	import UploadIcon from '$lib/icons/UploadIcon.svelte';
+	import { FileDropzone } from '@skeletonlabs/skeleton';
 
 	$: user = $page.data.session?.user;
 </script>
@@ -12,15 +12,23 @@
 
 <main class="space-y-4">
 	<div class="container h-full mx-auto grid grid-cols-4 gap-4">
+		<FileDropzone name="files">
+			<svelte:fragment slot="lead">
+				<figure class="flex items-center justify-center">
+					<UploadIcon />
+				</figure>
+			</svelte:fragment>
+			<svelte:fragment slot="message">Upload Images</svelte:fragment>
+			<svelte:fragment slot="meta">Currently only accepting RAW images in .DNG</svelte:fragment>
+		</FileDropzone>
+
 		<div class="card variant-filled-surface">
 			<header class="card-header text-lg font-bold text-primary-200">
 				<a href="/queue">Queue</a>
 			</header>
 			<section class="p-4">List content pending approval here...</section>
 		</div>
-		<code>
-			{JSON.stringify(user, null, 2)}
-		</code>
+
 		<div class="card variant-filled-surface">
 			<header class="card-header text-lg font-bold text-primary-200">Datasets</header>
 			<section class="p-4">List datasets here</section>
@@ -46,33 +54,5 @@
 				</a>
 			</footer>
 		</div>
-		<div class="card variant-filled-surface">
-			<header class="card-header text-lg font-bold text-primary-200">Reports</header>
-			<section class="p-4">List reports here...</section>
-		</div>
-		<div class="card variant-filled-surface">
-			<header class="card-header text-lg font-bold text-primary-200">Dump Requests</header>
-			<section class="p-4">List dump requests here...</section>
-		</div>
-		{#if data.isSuperUser === true}
-			<div class="card variant-filled-surface">
-				<header class="card-header text-lg font-bold text-primary-200">Admin</header>
-				<section class="p-4">
-					<ul>
-						<li>
-							<a href="/admin/users" class="btn btn-sm">Users</a>
-						</li>
-						<li>
-							<a href="/admin/datasets" class="btn btn-sm">Datasets</a>
-						</li>
-						<li>
-							<a href="/admin/teams" class="btn btn-sm">Teams</a>
-						</li>
-					</ul>
-				</section>
-			</div>
-		{:else}
-			wtf
-		{/if}
 	</div>
 </main>

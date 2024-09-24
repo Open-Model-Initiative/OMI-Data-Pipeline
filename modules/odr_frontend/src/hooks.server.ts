@@ -8,8 +8,11 @@ async function authorizationHandle({ event, resolve }) {
 	if (event.url.pathname.startsWith('/admin')) {
 		const session = await event.locals.auth();
 		if (!session) {
-			// Redirect to the signin page
 			throw redirect(303, '/auth');
+		} else if (!session.user) {
+			throw redirect(303, '/');
+		} else if (!session.user.is_superuser) {
+			throw redirect(303, '/');
 		}
 	}
 
