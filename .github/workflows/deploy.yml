@@ -18,6 +18,4 @@ jobs:
           workflow_file_name: deploy.yaml
           github_token: ${{ secrets.GHA_WORKFLOW_TRIGGER }}
           ref: main
-          client_payload: |
-            { "environment": "${{ github.ref_name == 'release' &&  'prod' || 'dev' }}", "branch": "${{ github.ref_name }}" }
           wait_workflow: false
