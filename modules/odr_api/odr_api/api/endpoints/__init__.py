@@ -5,3 +5,5 @@ from odr_api.api.endpoints.team import router as team_router
 from odr_api.api.endpoints.user import router as user_router
 from odr_api.api.endpoints.auth import router as auth_router
 from odr_api.api.endpoints.health import router as health_router
+from odr_api.api.endpoints.image import router as image_router
+from odr_api.api.endpoints.hugging_face import router as hugging_face_router

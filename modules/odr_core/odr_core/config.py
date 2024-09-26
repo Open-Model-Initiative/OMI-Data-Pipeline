@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     # Models
     MODEL_CACHE_DIR: str
 
-    # OUATH
+    # OAUTH
     GOOGLE_CLIENT_ID: str
     GOOGLE_CLIENT_SECRET: str
 
@@ -67,6 +67,10 @@ class Settings(BaseSettings):
     # Embedding
     CONTENT_EMBEDDING_DIMENSION: int = 512
     ANNOTATION_EMBEDDING_DIMENSION: int = 384
+
+    # Hugging Face
+    HF_TOKEN: str
+    HF_HDR_DATASET_NAME: str
 
     class Config:
         env_file = ".env"

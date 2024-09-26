@@ -8,3 +8,12 @@ psycopg2-binary==2.9.9
 python-multipart==0.0.9
 httpx==0.27.0
 fastapi-sso==0.15.0
+
+# hdr statistics
+torch==2.4.0
+torchvision
+
+# dng conversions and metadata
+exif==1.6.0
+imageio==2.35.1
+rawpy==0.22.0
