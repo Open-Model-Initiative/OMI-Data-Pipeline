@@ -1,13 +1,13 @@
 import torch
 import numpy as np
 import torchvision.transforms as transforms
-from PIL import Image
 import rawpy
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from typing import Dict
 from io import BytesIO
+from PIL import Image, UnidentifiedImageError
 from PIL.ExifTags import TAGS
-from PIL import UnidentifiedImageError
+from PIL.TiffImagePlugin import IFDRational
 import imageio
 from typing import Any
 import base64
@@ -62,7 +62,7 @@ def calculate_entropy(tensor: torch.Tensor):
     # Calculate entropy using the Shannon entropy formula
     entropy = -torch.sum(probabilities * torch.log2(probabilities))
 
-    return entropy.item()
+    return entropy
 
 
 # Helper functions for HDR metadata and preview conversion
@@ -81,9 +81,17 @@ def extract_metadata(image_bytes: bytes, is_dng: bool) -> Dict:
     return metadata
 
 
+def convert_ifd_rational(value):
+    if isinstance(value, IFDRational):
+        return float(value)
+    elif isinstance(value, tuple) and all(isinstance(v, IFDRational) for v in value):
+        return tuple(float(v) for v in value)
+    return value
+
+
 def check_metadata(metadata: Dict) -> Dict[str, Any]:
     important_keys = ['Make', 'Model', 'BitsPerSample', 'BaselineExposure', 'LinearResponseLimit', 'ImageWidth', 'ImageLength', 'DateTime']
-    result = {key: metadata.get(key) for key in important_keys if key in metadata}
+    result = {key: convert_ifd_rational(metadata.get(key)) for key in important_keys if key in metadata}
 
     gps_keys = [key for key in metadata.keys() if isinstance(key, str) and 'GPS' in key.upper()]
     gps_keys += [key for key in metadata.keys() if isinstance(key, int) and key == 34853]  # GPSInfo tag number
@@ -168,6 +176,7 @@ async def get_image_metadata(file: UploadFile = File(...)):
             metadata.update(jpg_metadata)
 
         important_metadata = check_metadata(metadata)
+
         return important_metadata
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

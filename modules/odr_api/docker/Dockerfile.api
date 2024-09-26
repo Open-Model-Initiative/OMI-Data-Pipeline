@@ -15,7 +15,7 @@ WORKDIR /app
 COPY modules/odr_api/requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu124
 
 COPY modules/odr_core /app/modules/odr_core
 RUN pip install --no-cache-dir -e /app/modules/odr_core
