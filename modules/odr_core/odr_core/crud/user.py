@@ -1,6 +1,8 @@
 # odr_core/crud/user.py
 from fastapi_sso import OpenID
 from sqlalchemy.orm import Session
+from sqlalchemy import update
+from sqlalchemy.exc import SQLAlchemyError
 from odr_core.models.user import User, UserSession
 from odr_core.models.team import Team
 from odr_core.schemas.user import UserCreate, UserUpdate
@@ -194,3 +196,30 @@ def verify_openid_user(db: Session, openid: OpenID) -> Optional[User]:
         return None
 
     return user
+
+
+# DCO
+def update_user_dco_acceptance(db: Session, user_id: int, accepted: bool) -> Optional[User]:
+    try:
+        stmt = (
+            update(User)
+            .where(User.id == user_id)
+            .values(dco_accepted=accepted, updated_at=datetime.now(timezone.utc))
+            .returning(User)
+        )
+        result = db.execute(stmt)
+        db.commit()
+        return result.scalar_one_or_none()
+    except SQLAlchemyError as e:
+        db.rollback()
+        print(f"Error updating user DCO acceptance: {e}")
+        return None
+
+
+def get_user_dco_status(db: Session, user_id: int) -> Optional[bool]:
+    user = get_user(db, user_id)
+
+    if user:
+        return user.dco_accepted
+
+    return None

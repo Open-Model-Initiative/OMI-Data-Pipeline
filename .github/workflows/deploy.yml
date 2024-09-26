@@ -1,0 +1,21 @@
+name: Run Deploy Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: convictional/trigger-workflow-and-wait@v1.6.1
+        with:
+          owner: Open-Model-Initiative
+          repo: data-pipeline-ansible
+          workflow_file_name: deploy.yaml
+          github_token: ${{ secrets.GHA_WORKFLOW_TRIGGER }}
+          ref: main
+          wait_workflow: false

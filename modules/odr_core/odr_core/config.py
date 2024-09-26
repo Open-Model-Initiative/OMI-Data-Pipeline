@@ -1,4 +1,14 @@
 from pydantic_settings import BaseSettings
+from dotenv import find_dotenv, load_dotenv
+import os
+
+# Load .env file, but don't override existing environment variables
+if os.getenv("ENVIRONMENT") == "DOCKER":
+    print("Docker environment detected")
+    load_dotenv(dotenv_path=find_dotenv(".env"), override=False)
+else:
+    print("Local environment detected")
+    load_dotenv(dotenv_path=find_dotenv(".env"), override=True)
 
 
 class Settings(BaseSettings):
@@ -42,7 +52,7 @@ class Settings(BaseSettings):
     # Models
     MODEL_CACHE_DIR: str
 
-    # OUATH
+    # OAUTH
     GOOGLE_CLIENT_ID: str
     GOOGLE_CLIENT_SECRET: str
 
@@ -58,14 +68,21 @@ class Settings(BaseSettings):
     CONTENT_EMBEDDING_DIMENSION: int = 512
     ANNOTATION_EMBEDDING_DIMENSION: int = 384
 
+    # Hugging Face
+    HF_TOKEN: str
+    HF_HDR_DATASET_NAME: str
+
     class Config:
         env_file = ".env"
+        env_file_encoding = "utf-8"
+        extra = "ignore"
 
     def get_db_url(self):
+        print(f"{self}")
         db_name = self.TEST_POSTGRES_DB if self.TEST else self.POSTGRES_DB
 
         conn_str = f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{db_name}"
         return conn_str
 
-
+# Create settings instance
 settings = Settings()

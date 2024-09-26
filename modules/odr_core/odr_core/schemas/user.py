@@ -61,3 +61,7 @@ class UserLogout(BaseModel):
 class UserToken(BaseModel):
     access_token: str
     token_type: str
+
+
+class UserDCOStatus(BaseModel):
+    dco_accepted: bool = False
