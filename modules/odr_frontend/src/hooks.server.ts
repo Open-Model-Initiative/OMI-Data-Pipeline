@@ -2,8 +2,7 @@ import { redirect, type Handle } from '@sveltejs/kit';
 import { handle as authenticationHandle } from './auth';
 import { sequence } from '@sveltejs/kit/hooks';
 
-//@ts-expect-error
-async function authorizationHandle({ event, resolve }) {
+const authorizationHandle:Handle = async ({ event, resolve }) => {
 	// Protect any routes under /admin
 	if (event.url.pathname.startsWith('/admin')) {
 		const session = await event.locals.auth();
