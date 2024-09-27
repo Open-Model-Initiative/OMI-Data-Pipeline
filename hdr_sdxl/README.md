@@ -71,7 +71,7 @@ Based on [streamlit](https://streamlit.io/) framework which is not installed by 
 > streamlit run hdr.py  
 
 > [!TIP]
-> you can pass standard args to hdr.py by using additiona `--` separator  
+> you can pass standard args to hdr.py by using additional `--` separator  
 > *example*: `streamlit run hdr.py -- --model sdxl/model.safetensors  `
 
 ![Screenshot](assets/screenshot.jpg)
