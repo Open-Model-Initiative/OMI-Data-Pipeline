@@ -16,6 +16,7 @@ console = Console(log_time=True, log_time_format='%H:%M:%S-%f', theme=Theme({
     "inspect.value.border": "black",
 }))
 
+
 def trace():
     traceback_install()
 
@@ -25,7 +26,7 @@ def setup_logging():
     logging.getLogger("httpx").setLevel(logging.ERROR)
     logging.getLogger("diffusers").setLevel(logging.ERROR)
     logging.getLogger("torch").setLevel(logging.ERROR)
-    logging.basicConfig(level=logging.ERROR, format='%(asctime)s | %(name)s | %(levelname)s | %(module)s | %(message)s', handlers=[logging.NullHandler()]) # redirect default logger to null
+    logging.basicConfig(level=logging.ERROR, format='%(asctime)s | %(name)s | %(levelname)s | %(module)s | %(message)s', handlers=[logging.NullHandler()])  # redirect default logger to null
     warnings.filterwarnings(action="ignore")
 
     def excepthook(exc_type, exc_value, exc_traceback):

@@ -17,7 +17,7 @@ def init(_args):
                 st_log.text(f'{record.asctime} {record.levelname} {record.msg}')
 
     st.set_page_config(page_title="SDXL HDR", page_icon="🧊", layout="wide", initial_sidebar_state="expanded")
-    global args # pylint: disable=global-statement
+    global args  # pylint: disable=global-statement
     args = _args
     st_log_handler = STLogHandler()
     log.addHandler(st_log_handler)
@@ -49,7 +49,7 @@ def start(_args):
         args.image = Image.open(io.BytesIO(st.session_state.image.getvalue())) if st.session_state.image is not None else None
         log.info(f'UI Run: {args} prompt="{args.prompt}" negative="{args.negative}" image={args.image}')
         i = 0
-        for img in app.pipeline.run(args, args.prompt, args.negative, args.image): # run-as-generator
+        for img in app.pipeline.run(args, args.prompt, args.negative, args.image):  # run-as-generator
             caption = f'{st.session_state.prompt}' if i == 3 else f'exposure: {i * args.exp - args.exp}'
             images[i].image(img, channels='BGR', caption=caption)
             i += 1
@@ -92,6 +92,6 @@ def start(_args):
             images[1] = st.empty()
         with col[2]:
             images[2] = st.empty()
-    global st_log # pylint: disable=global-statement
+    global st_log  # pylint: disable=global-statement
     st_log = st.container()
     st_log.header('log')

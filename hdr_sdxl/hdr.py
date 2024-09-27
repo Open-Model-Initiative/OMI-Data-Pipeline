@@ -19,11 +19,11 @@ def load_list(f):
         with open(f, 'r', encoding='utf8') as f:
             return [line.strip() for line in f.readlines()]
     else:
-        return [f] # use as string
+        return [f]  # use as string
 
 
 def init():
-    global args # pylint: disable=global-statement
+    global args  # pylint: disable=global-statement
     if args is not None:
         return args
     parser = argparse.ArgumentParser(description='HDR')
@@ -57,13 +57,13 @@ def init():
     log.info(f'Env: python={platform.python_version()} platform={platform.system()} bin="{sys.executable}" venv="{sys.prefix}"')
     log.info(f'Args: {args}')
     os.makedirs(args.output, exist_ok=True)
-    os.environ["OPENCV_IO_ENABLE_OPENEXR"]="1"
+    os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
 
 
 if __name__ == '__main__':
-    try: # optional streamlit ui
-        import streamlit as st # pylint: disable=import-error
-        if st.runtime.exists(): # started with `streamlit run`
+    try:  # optional streamlit ui
+        import streamlit as st  # pylint: disable=import-error
+        if st.runtime.exists():  # started with `streamlit run`
             if 'args' not in st.session_state:
                 init()
                 st.session_state['args'] = args
@@ -76,7 +76,7 @@ if __name__ == '__main__':
             else:
                 args = st.session_state.args
             exit(0)
-    except Exception as e:
+    except Exception:
         pass
 
     init()
@@ -91,7 +91,7 @@ if __name__ == '__main__':
             continue
         negative = negatives[i % len(negatives)] if len(negatives) > 0 else ""
         image = images[i % len(images)] if len(images) > 0 else None
-        log.info(f'Sequence: count={i+1}/{len(prompts)}')
-        for _ in app.pipeline.run(args, prompt, negative, image): # force generator
+        log.info(f'Sequence: count={i + 1}/{len(prompts)}')
+        for _ in app.pipeline.run(args, prompt, negative, image):  # force generator
             pass
     log.info('HDR end')

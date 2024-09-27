@@ -47,7 +47,7 @@ def save(args, hdr, ldr, dct, ts):
         fn = os.path.join(args.output, f'{ts}.hdr')
         try:
             log.info(f'Save: type=hdr format=hdr file="{fn}"')
-            adjusted = adjust_gamma(hdr, 1.0/args.gamma)
+            adjusted = adjust_gamma(hdr, 1.0 / args.gamma)
             adjusted = adjusted.astype(np.float32) / 65535.0
             cv2.imwrite(fn, adjusted)
         except Exception as e:
@@ -67,7 +67,7 @@ def save(args, hdr, ldr, dct, ts):
             write_dng(fn, adjusted, dct)
         except Exception as e:
             log.error(f'Save: type=hdr format=dng file="{fn}" {e}')
-    if args.format == 'exr': # or args.format == 'all': # dont include in all
+    if args.format == 'exr':  # or args.format == 'all': # dont include in all
         fn = os.path.join(args.output, f'{ts}.exr')
         try:
             log.warning(f'Save: type=hdr format=exr file="{fn}" exr is broken in current cv2')
@@ -81,7 +81,7 @@ def save(args, hdr, ldr, dct, ts):
             f.write(json.dumps(dct, indent=4))
 
 
-def write_dng(name_dng: str, hdr, dct = {}): # noqa: B006
+def write_dng(name_dng: str, hdr, dct = {}):  # noqa: B006
     """
     lib: https://github.com/schoolpost/PiDNG
     specs: https://helpx.adobe.com/content/dam/help/en/photoshop/pdf/DNG_Spec_1_7_1_0.pdf
@@ -89,23 +89,23 @@ def write_dng(name_dng: str, hdr, dct = {}): # noqa: B006
     """
     from pidng.core import DNGBASE, DNGTags, Tag
     from pidng.defs import Orientation, PreviewColorSpace, PhotometricInterpretation
-    ccm1 = [[ 3240454, 1000000], [ -1537138, 1000000], [ -498531, 1000000],
-            [ -969266, 1000000], [  1876010, 1000000], [   41556, 1000000],
-            [   55643, 1000000], [  -204025, 1000000], [ 1057225, 1000000]]
+    ccm1 = [[3240454, 1000000], [-1537138, 1000000], [-498531, 1000000],
+            [-969266, 1000000], [1876010, 1000000], [41556, 1000000],
+            [55643, 1000000], [-204025, 1000000], [1057225, 1000000]]
     h, w, _c = hdr.shape
-    tags = DNGTags() # tags must be in exact order
-    tags.set(Tag.ImageWidth, w) # 256
-    tags.set(Tag.ImageLength, h) # 257
-    tags.set(Tag.BitsPerSample, [16,16,16]) # 258
-    tags.set(Tag.PhotometricInterpretation, PhotometricInterpretation.Linear_Raw) # 262
-    tags.set(Tag.ImageDescription, json.dumps(dct)) # 270
-    tags.set(Tag.Orientation, Orientation.Horizontal) # 274
-    tags.set(Tag.SamplesPerPixel, 3) # 277
+    tags = DNGTags()  # tags must be in exact order
+    tags.set(Tag.ImageWidth, w)  # 256
+    tags.set(Tag.ImageLength, h)  # 257
+    tags.set(Tag.BitsPerSample, [16, 16, 16])  # 258
+    tags.set(Tag.PhotometricInterpretation, PhotometricInterpretation.Linear_Raw)  # 262
+    tags.set(Tag.ImageDescription, json.dumps(dct))  # 270
+    tags.set(Tag.Orientation, Orientation.Horizontal)  # 274
+    tags.set(Tag.SamplesPerPixel, 3)  # 277
     # tags.set(Tag.DateTime, datetime.datetime.now().isoformat()) # 306 # ISO-8601
-    tags.set(Tag.UniqueCameraModel, "sdxl-hdr") # 50708
-    tags.set(Tag.ColorMatrix1 , ccm1) # 50721
-    tags.set(Tag.AsShotNeutral, [[1,1],[1,1],[1,1]]) # 50728
-    tags.set(Tag.PreviewColorSpace, PreviewColorSpace.sRGB) # 50970
+    tags.set(Tag.UniqueCameraModel, "sdxl-hdr")  # 50708
+    tags.set(Tag.ColorMatrix1, ccm1)  # 50721
+    tags.set(Tag.AsShotNeutral, [[1, 1], [1, 1], [1, 1]])  # 50728
+    tags.set(Tag.PreviewColorSpace, PreviewColorSpace.sRGB)  # 50970
     raw = DNGBASE()
     raw.options(tags, path="", compress=False)
     raw.convert(hdr, filename=name_dng)

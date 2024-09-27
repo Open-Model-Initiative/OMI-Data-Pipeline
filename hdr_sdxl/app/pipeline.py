@@ -16,14 +16,14 @@ from app.image import save
 pipe: diffusers.StableDiffusionXLPipeline = None
 dtype = None
 device = None
-generator = None # torch generator
-iterations = 3 # run dark/normal/light
-iteration = 0 # counter
-latent = None # saved latent
-custom_timesteps = None # custom timesteps
-total_steps = 0 # counter for total steps
-exp = 1.0 # exposure correction
-timestep = 200 # correction timestep
+generator = None         # torch generator
+iterations = 3           # run dark/normal/light
+iteration = 0            # counter
+latent = None            # saved latent
+custom_timesteps = None  # custom timesteps
+total_steps = 0          # counter for total steps
+exp = 1.0                # exposure correction
+timestep = 200           # correction timestep
 trace()
 
 
@@ -40,7 +40,7 @@ def set_sampler(args):
             if k in keys and not k.startswith('_'):
                 config[k] = v
         pipe.scheduler = sampler.from_config(config)
-        config = [{ k: v } for k, v in pipe.scheduler.config.items() if not k.startswith('_')]
+        config = [{k: v} for k, v in pipe.scheduler.config.items() if not k.startswith('_')]
         log.info(f'Scheduler: sampler={pipe.scheduler.__class__.__name__} config={config}')
     except Exception as e:
         log.error(f'Scheduler: {e}')
@@ -48,19 +48,19 @@ def set_sampler(args):
 
 
 def patch():
-    def retrieve_timesteps(scheduler, num_inference_steps, device, timesteps, sigmas, **kwargs): # pylint: disable=redefined-outer-name
+    def retrieve_timesteps(scheduler, num_inference_steps, device, timesteps, sigmas, **kwargs):  # pylint: disable=redefined-outer-name
         if custom_timesteps is None:
             return orig_retrieve_timesteps(scheduler, num_inference_steps, device, timesteps, sigmas, **kwargs)
         else:
-            orig_retrieve_timesteps(scheduler, num_inference_steps, device, timesteps, sigmas, **kwargs) # run original
-            return custom_timesteps, len(custom_timesteps) # but return reduced timesteps
+            orig_retrieve_timesteps(scheduler, num_inference_steps, device, timesteps, sigmas, **kwargs)  # run original
+            return custom_timesteps, len(custom_timesteps)  # but return reduced timesteps
 
     orig_retrieve_timesteps = diffusers.pipelines.stable_diffusion_xl.pipeline_stable_diffusion_xl.retrieve_timesteps
     diffusers.pipelines.stable_diffusion_xl.pipeline_stable_diffusion_xl.retrieve_timesteps = retrieve_timesteps
 
 
 def load(args):
-    global pipe, dtype, device, generator # pylint: disable=global-statement
+    global pipe, dtype, device, generator  # pylint: disable=global-statement
     if args.dtype == 'fp16' or args.dtype == 'float16':
         dtype = torch.float16
     elif args.dtype == 'bf16' or args.dtype == 'bfloat16':
@@ -111,7 +111,7 @@ def load(args):
     if args.offload:
         pipe.enable_model_cpu_offload(device=device)
     t1 = time.time()
-    log.info(f'Loaded: model="{args.model}" time={t1-t0:.2f}')
+    log.info(f'Loaded: model="{args.model}" time={t1 - t0:.2f}')
     log.debug(f'Memory: allocated={torch.cuda.memory_allocated() / 1e9:.2f} cached={torch.cuda.memory_reserved() / 1e9:.2f}')
     log.debug(f'Model: unet="{pipe.unet.dtype}/{pipe.unet.device}" vae="{pipe.vae.dtype}/{pipe.vae.device}" te1="{pipe.text_encoder.dtype}/{pipe.text_encoder.device}" te2="{pipe.text_encoder_2.device}/{pipe.text_encoder_2.device}"')
     set_sampler(args)
@@ -135,24 +135,24 @@ def encode_prompt(prompt, negative_prompt=None, do_classifier_free_guidance=Fals
     return tokens, prompt_embeds, negative_prompt_embeds, pooled_prompt_embeds, negative_pooled_prompt_embeds
 
 
-def callback(p, step: int, ts: int, kwargs: dict): # pylint: disable=unused-argument
+def callback(p, step: int, ts: int, kwargs: dict):  # pylint: disable=unused-argument
     def center_tensor(tensor, channel_shift=0.0, full_shift=0.0, offset=0.0):
         tensor -= tensor.mean(dim=(-1, -2), keepdim=True) * channel_shift
         tensor -= tensor.mean() * full_shift - offset
         return tensor
 
     def exp_correction(channel):
-        channel[0:1] = center_tensor(channel[0:1], channel_shift=0.0, full_shift=1.0, offset=exp * (iteration -1) / 2)
+        channel[0:1] = center_tensor(channel[0:1], channel_shift=0.0, full_shift=1.0, offset=exp * (iteration - 1) / 2)
         return channel
 
-    global latent, total_steps # pylint: disable=global-statement
+    global latent, total_steps  # pylint: disable=global-statement
     total_steps += 1
-    latents = kwargs.get('latents', None) # if we have latent stored, just use it and ignore what model returns
-    if custom_timesteps is not None and latent is not None and ts == custom_timesteps[0]: # replace latent with stored one
+    latents = kwargs.get('latents', None)  # if we have latent stored, just use it and ignore what model returns
+    if custom_timesteps is not None and latent is not None and ts == custom_timesteps[0]:  # replace latent with stored one
         latents = latent.clone()
     if ts < timestep:
         if latent is None:
-            latent = latents.clone() # store latent first time we get here
+            latent = latents.clone()  # store latent first time we get here
         for i in range(latents.shape[0]):
             latents[i] = exp_correction(latents[i])
     kwargs['latents'] = latents
@@ -238,7 +238,7 @@ def run(args, prompt, negative, init):
             generator.manual_seed(seed)
             latents = pipe(**kwargs)[0]
             custom_timesteps = pipe.scheduler.timesteps.clone()
-            custom_timesteps = custom_timesteps[custom_timesteps < timestep] # only use timesteps below ts threshold for future runs
+            custom_timesteps = custom_timesteps[custom_timesteps < timestep]  # only use timesteps below ts threshold for future runs
             image = decode(latents)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             yield image
@@ -247,16 +247,16 @@ def run(args, prompt, negative, init):
             if args.save:
                 name = os.path.join(args.output, f'{ts}-{i}.png')
                 cv2.imwrite(name, image)
-                log.debug(f'Image: i={iteration+1}/{iterations} seed={seed} shape={image.shape} name="{name}" time={t2-t1:.2f} stats={calculate_statistics(image)}')
+                log.debug(f'Image: i={iteration + 1}/{iterations} seed={seed} shape={image.shape} name="{name}" time={t2 - t1:.2f} stats={calculate_statistics(image)}')
 
         try:
             align = cv2.createAlignMTB()
             align.process(images, images)
             merge = cv2.createMergeMertens()
-            raw = merge.process(images) # fp32 0..1
-            ldr = np.clip(raw * 255, 0, 255).astype(np.uint8) # uint8 0..255
+            raw = merge.process(images)  # fp32 0..1
+            ldr = np.clip(raw * 255, 0, 255).astype(np.uint8)  # uint8 0..255
             yield ldr
-            hdr = np.clip(raw * 65535, 0, 65535).astype(np.uint16) # uint16 0..65535
+            hdr = np.clip(raw * 65535, 0, 65535).astype(np.uint16)  # uint16 0..65535
             its = len(images) * total_steps / (t2 - t0)
             dct = args.__dict__.copy()
             dct.update({
@@ -272,7 +272,7 @@ def run(args, prompt, negative, init):
                 'hdr': calculate_statistics(hdr),
             })
             save(args, hdr, ldr, dct, ts)
-            log.info(f'Merge: seed={seed} format="{args.format}" time={t2-t0:.2f} total-steps={total_steps} its={its:.2f}')
+            log.info(f'Merge: seed={seed} format="{args.format}" time={t2 - t0:.2f} total-steps={total_steps} its={its:.2f}')
             log.debug(f'Stats: hdr={dct["hdr"]} ldr={dct["ldr"]}')
         except cv2.error as e:
             log.error(f'OpenCV: shapes={[img.shape for img in images]} dtypes={[img.dtype for img in images]} {e}')
