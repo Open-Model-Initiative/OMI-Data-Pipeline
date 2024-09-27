@@ -1,0 +1,6 @@
+__pycache__/
+.ruff_cache/
+*.log
+venv
+tmp
+output
