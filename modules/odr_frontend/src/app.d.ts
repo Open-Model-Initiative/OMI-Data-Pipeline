@@ -10,3 +10,11 @@ declare namespace App {
 	// interface Error {}
 	// interface Platform {}
 }
+
+import type { DefaultSession, User } from '@auth/core/types';
+declare module '@auth/core/types' {
+	interface User extends User {
+		is_superuser: boolean;
+		dco_accepted: boolean;
+	}
+}

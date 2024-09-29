@@ -1,8 +1,8 @@
+import type { LayoutServerLoad } from './$types';
+
 // +layout.ts
-export async function load({ locals }) {
-	console.log('Loading layout...on the server we got isAuthenticated as:', locals.isAuthenticated);
+export const load: LayoutServerLoad = async ({ locals }) => {
 	return {
-		isAuthenticated: locals.isAuthenticated,
-		isSuperUser: locals.isSuperUser
+		session: await locals.auth()
 	};
-}
+};

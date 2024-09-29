@@ -2,18 +2,20 @@
 	import '../app.postcss';
 	import { AppBar } from '@skeletonlabs/skeleton';
 
-	export let data;
-
-	onMount(() => {
-		console.log('isAuthenticated', data.isAuthenticated);
-	});
-
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-	import { storePopup } from '@skeletonlabs/skeleton';
+	import { storePopup, initializeStores, Modal } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { signIn, signOut } from '@auth/sveltekit/client';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+
+	initializeStores();
+	import GithubIcon from '$lib/icons/GithubIcon.svelte';
+	import DiscordIcon from '$lib/icons/DiscordIcon.svelte';
 </script>
+
+<Modal />
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
 	<!-- Header -->
@@ -23,11 +25,31 @@
 			<strong class="text-xl uppercase"><a href="/">OMI DATA PIPELINE</a></strong>
 		</svelte:fragment>
 		<svelte:fragment slot="trail">
-			<a href="/datasets" class="btn btn-sm">Request Dump</a>
-			{#if !data.isAuthenticated}
-				<a href="/auth/login" class="btn btn-sm">Login</a>
+			{#if !$page.data.session?.user}
+				<span class="btn btn-sm">Sign In:</span>
+				<button
+					class="btn btn-sm"
+					on:click={() => {
+						signIn('github');
+					}}><GithubIcon color="currentColor"/></button
+				>
+				<button
+					class="btn btn-sm"
+					on:click={() => {
+						signIn('discord');
+					}}><DiscordIcon /></button
+				>
 			{:else}
-				<a href="/auth/logout" class="btn btn-sm">Logout</a>
+				{#if $page.data.session.user.is_superuser}
+					<!-- TODO: Extend user type -->
+					<a href="/admin" class="btn btn-sm variant-outline-primary" data-sveltekit-reload>Admin</a>
+				{/if}
+				<button
+					class="btn btn-sm"
+					on:click={() => {
+						signOut();
+					}}>Sign Out</button
+				>
 			{/if}
 		</svelte:fragment>
 	</AppBar>
