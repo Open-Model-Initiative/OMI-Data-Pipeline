@@ -3,16 +3,18 @@ import { handle as authenticationHandle } from './auth';
 import { sequence } from '@sveltejs/kit/hooks';
 
 const authorizationHandle:Handle = async ({ event, resolve }) => {
-	// Protect any routes under /admin
-	if (event.url.pathname.startsWith('/admin')) {
-		const session = await event.locals.auth();
-		if (!session) {
-			throw redirect(303, '/auth');
-		} else if (!session.user) {
-			throw redirect(303, '/');
-		} else if (!session.user.is_superuser) {
-			throw redirect(303, '/');
-		}
+	const session = await event.locals.auth();
+
+	if (event.url.pathname.startsWith('/auth')) {
+		return resolve(event);
+	} else if (!session) {
+		throw redirect(303, '/auth');
+	} else if (!session.user) {
+		throw redirect(303, '/auth');
+	} else if (!event.url.pathname.startsWith('/dco') && (!session.user.dco_accepted)) {
+		throw redirect(303, '/dco');
+	} else if (event.url.pathname.startsWith('/admin') && (!session.user.is_superuser)) {
+		throw redirect(303, '/');
 	}
 
 	// If the request is still here, just proceed as normally
