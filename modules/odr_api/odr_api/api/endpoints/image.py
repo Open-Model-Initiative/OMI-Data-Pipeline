@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import torchvision.transforms as transforms
 import rawpy
+from exif import Image as ExifImage
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from typing import Dict
 from io import BytesIO
@@ -12,7 +13,7 @@ import imageio
 from typing import Any
 import base64
 
-# TAG_IDS = {name: id for id, name in TAGS.items()}
+TAG_IDS = {name: id for id, name in TAGS.items()}
 
 router = APIRouter(tags=["image"])
 
@@ -102,6 +103,57 @@ def get_desired_metadata(metadata: Dict) -> Dict[str, Any]:
 
     return result
 
+# Using exif library
+# def rewrite_metadata_with_exif(image_bytes: bytes, important_metadata: Dict[str, Any]) -> bytes:
+#     # Create an exif.Image object from the image bytes
+#     img = ExifImage(image_bytes)
+
+#     # Remove all existing metadata
+#     img.delete_all()
+
+#     exif_dict = {}
+
+#     # Map metadata to EXIF tags
+#     for key, value in important_metadata.items():
+#         tag_id = TAG_IDS.get(key.lower())
+#         if tag_id is not None:
+#             exif_dict[tag_id] = value
+
+#     # Remove existing EXIF data and add new data
+#     img.info['exif'] = Image.Exif()
+#     for tag_id, value in exif_dict.items():
+#         img.set(tag_id, value)
+
+#     # Convert the image back to bytes
+#     output = BytesIO()
+#     output.write(img.get_file())
+
+#     return output.getvalue()
+
+
+def rewrite_metadata(image_bytes: bytes, important_metadata: Dict[str, Any]) -> bytes:
+    # Open the image
+    img = Image.open(BytesIO(image_bytes))
+
+    # Create a new exif dictionary
+    exif_dict = {}
+
+    # Map metadata to EXIF tags
+    for key, value in important_metadata.items():
+        tag_id = TAG_IDS.get(key.lower())
+        if tag_id is not None:
+            exif_dict[tag_id] = value
+
+    # Remove existing EXIF data and add new data
+    img.info['exif'] = Image.Exif()
+    for tag_id, value in exif_dict.items():
+        img.info['exif'][tag_id] = value
+
+    # Save the image to a BytesIO object
+    output = BytesIO()
+    img.save(output, format=img.format, exif=img.info['exif'])
+    return output.getvalue()
+
 
 def convert_dng_to_jpg(dng_bytes: bytes) -> bytes:
     with rawpy.imread(BytesIO(dng_bytes)) as raw:
@@ -174,6 +226,12 @@ async def get_image_metadata(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# docker cp {containerID}:./app/cleaned_image_b.dng ./cleaned_image_b.dng
+def save_image_locally(image_bytes: bytes, filename: str):
+    with open(filename, 'wb') as f:
+        f.write(image_bytes)
+
+
 @router.post("/image/clean-metadata")
 async def clean_image_metadata(file: UploadFile = File(...)):
     try:
@@ -181,8 +239,15 @@ async def clean_image_metadata(file: UploadFile = File(...)):
 
         metadata = extract_metadata(contents)
         important_metadata = get_desired_metadata(metadata)
-        # cleaned_image_bytes = remove_unnecessary_metadata(contents, important_metadata)
+
         cleaned_image_bytes = contents
+
+        # cleaned_image_bytes_a = rewrite_metadata_with_exif(contents, important_metadata)
+        # save_image_locally(cleaned_image_bytes_a, 'cleaned_image_a.jpg')
+
+        cleaned_image_bytes_b = rewrite_metadata(contents, important_metadata)
+        save_image_locally(cleaned_image_bytes_b, 'cleaned_image_b.dng')
+
         encoded_image = base64.b64encode(cleaned_image_bytes).decode('utf-8')
 
         return {
