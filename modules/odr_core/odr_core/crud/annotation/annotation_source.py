@@ -11,11 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 def create_annotation_source(
-    db: Session, annotation_source: AnnotationSourceCreate, current_user: User
+    db: Session, annotation_source: AnnotationSourceCreate
 ) -> AnnotationSource:
-    logger.info(
-        f"Creating annotation source: {annotation_source} for user: {current_user}"
-    )
     db_annotation_source = AnnotationSource(
         name=annotation_source.name,
         ecosystem=annotation_source.ecosystem,
@@ -23,11 +20,7 @@ def create_annotation_source(
         annotation_schema=annotation_source.annotation_schema,
         license=annotation_source.license,
         license_url=annotation_source.license_url,
-        added_by_id=(
-            annotation_source.added_by_id
-            if annotation_source.added_by_id
-            else current_user.id
-        ),
+        added_by_id=annotation_source.added_by_id,
         updated_at=datetime.now(timezone.utc),
     )
     db.add(db_annotation_source)

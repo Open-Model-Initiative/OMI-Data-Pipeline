@@ -14,7 +14,6 @@ from odr_core.schemas.content import (
 from odr_core.schemas.user import User
 from odr_core.database import get_db
 
-from odr_api.api.auth.auth_provider import AuthProvider
 
 router = APIRouter(tags=["content"])
 
@@ -22,12 +21,11 @@ router = APIRouter(tags=["content"])
 @router.post("/content/", response_model=Content)
 def create_content(
     content: ContentCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     try:
         return content_crud.create_content(
-            db=db, content=content, from_user_id=current_user.id
+            db=db, content=content
         )
     except IntegrityError as e:
         if "content_sources_value_key" in str(e):
@@ -56,8 +54,7 @@ def read_contents(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 def update_content(
     content_id: int,
     content: ContentUpdate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     db_content = content_crud.update_content(db, content_id=content_id, content=content)
     if db_content is None:
@@ -68,8 +65,7 @@ def update_content(
 @router.delete("/content/{content_id}")
 def delete_content(
     content_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     success = content_crud.delete_content(db, content_id=content_id)
     if not success:
@@ -116,8 +112,7 @@ def get_contents_by_team(
 def create_content_source(
     content_id: int,
     source: ContentSourceCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     db_content = content_crud.get_content(db, content_id=content_id)
     if db_content is None:
@@ -147,8 +142,7 @@ def read_content_source(source_id: int, db: Session = Depends(get_db)):
 def update_content_source(
     source_id: int,
     source: ContentSourceUpdate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     db_source = content_crud.update_content_source(
         db, source_id=source_id, source=source
@@ -161,8 +155,7 @@ def update_content_source(
 @router.delete("/content/sources/{source_id}")
 def delete_content_source(
     source_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     success = content_crud.delete_content_source(db, source_id=source_id)
     if not success:
