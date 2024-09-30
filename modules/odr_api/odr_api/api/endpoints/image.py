@@ -12,6 +12,8 @@ import imageio
 from typing import Any
 import base64
 
+# TAG_IDS = {name: id for id, name in TAGS.items()}
+
 router = APIRouter(tags=["image"])
 
 
@@ -66,7 +68,7 @@ def calculate_entropy(tensor: torch.Tensor):
 
 
 # Helper functions for HDR metadata and preview conversion
-def extract_metadata(image_bytes: bytes, is_dng: bool) -> Dict:
+def extract_metadata(image_bytes: bytes) -> Dict:
     metadata = {}
     try:
         with Image.open(BytesIO(image_bytes)) as img:
@@ -75,9 +77,9 @@ def extract_metadata(image_bytes: bytes, is_dng: bool) -> Dict:
                 for tag_id, value in exif_data.items():
                     tag = TAGS.get(tag_id, tag_id)
                     metadata[tag] = value
-        print(f"Metadata extracted from {'DNG' if is_dng else 'JPG'} file")
+        print('Metadata extracted from image file')
     except UnidentifiedImageError:
-        print(f"Could not extract metadata from {'DNG' if is_dng else 'JPG'}")
+        print('Could not extract metadata from image')
     return metadata
 
 
@@ -89,15 +91,9 @@ def convert_ifd_rational(value):
     return value
 
 
-def check_metadata(metadata: Dict) -> Dict[str, Any]:
+def get_desired_metadata(metadata: Dict) -> Dict[str, Any]:
     important_keys = ['Make', 'Model', 'BitsPerSample', 'BaselineExposure', 'LinearResponseLimit', 'ImageWidth', 'ImageLength', 'DateTime']
     result = {key: convert_ifd_rational(metadata.get(key)) for key in important_keys if key in metadata}
-
-    gps_keys = [key for key in metadata.keys() if isinstance(key, str) and 'GPS' in key.upper()]
-    gps_keys += [key for key in metadata.keys() if isinstance(key, int) and key == 34853]  # GPSInfo tag number
-
-    if gps_keys:
-        raise ValueError(f"GPS data found in metadata: {gps_keys}")
 
     if 'DNGVersion' in metadata:
         dng_version = metadata['DNGVersion']
@@ -167,17 +163,34 @@ async def create_jpg_preview(file: UploadFile = File(...)):
 async def get_image_metadata(file: UploadFile = File(...)):
     try:
         contents = await file.read()
-        is_dng = file.filename.lower().endswith('.dng')
-        metadata = extract_metadata(contents, is_dng)
+        metadata = extract_metadata(contents)
 
-        if is_dng:
-            jpg_bytes = convert_dng_to_jpg(contents)
-            jpg_metadata = extract_metadata(jpg_bytes, False)
-            metadata.update(jpg_metadata)
-
-        important_metadata = check_metadata(metadata)
+        important_metadata = get_desired_metadata(metadata)
 
         return important_metadata
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/image/clean-metadata")
+async def clean_image_metadata(file: UploadFile = File(...)):
+    try:
+        contents = await file.read()
+
+        metadata = extract_metadata(contents)
+        important_metadata = get_desired_metadata(metadata)
+        # cleaned_image_bytes = remove_unnecessary_metadata(contents, important_metadata)
+        cleaned_image_bytes = contents
+        encoded_image = base64.b64encode(cleaned_image_bytes).decode('utf-8')
+
+        return {
+            "cleaned_image": encoded_image,
+            "content_type": file.content_type,
+            "filename": f"{file.filename.rsplit('.', 1)[0]}_cleaned.{file.filename.split('.')[-1]}",
+            "metadata": important_metadata
+        }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
