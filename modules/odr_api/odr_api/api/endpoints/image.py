@@ -12,8 +12,10 @@ from PIL.TiffImagePlugin import IFDRational
 import imageio
 from typing import Any
 import base64
-
-TAG_IDS = {name: id for id, name in TAGS.items()}
+import traceback
+import subprocess
+import tempfile
+import os
 
 router = APIRouter(tags=["image"])
 
@@ -103,57 +105,6 @@ def get_desired_metadata(metadata: Dict) -> Dict[str, Any]:
 
     return result
 
-# Using exif library
-# def rewrite_metadata_with_exif(image_bytes: bytes, important_metadata: Dict[str, Any]) -> bytes:
-#     # Create an exif.Image object from the image bytes
-#     img = ExifImage(image_bytes)
-
-#     # Remove all existing metadata
-#     img.delete_all()
-
-#     exif_dict = {}
-
-#     # Map metadata to EXIF tags
-#     for key, value in important_metadata.items():
-#         tag_id = TAG_IDS.get(key.lower())
-#         if tag_id is not None:
-#             exif_dict[tag_id] = value
-
-#     # Remove existing EXIF data and add new data
-#     img.info['exif'] = Image.Exif()
-#     for tag_id, value in exif_dict.items():
-#         img.set(tag_id, value)
-
-#     # Convert the image back to bytes
-#     output = BytesIO()
-#     output.write(img.get_file())
-
-#     return output.getvalue()
-
-
-def rewrite_metadata(image_bytes: bytes, important_metadata: Dict[str, Any]) -> bytes:
-    # Open the image
-    img = Image.open(BytesIO(image_bytes))
-
-    # Create a new exif dictionary
-    exif_dict = {}
-
-    # Map metadata to EXIF tags
-    for key, value in important_metadata.items():
-        tag_id = TAG_IDS.get(key.lower())
-        if tag_id is not None:
-            exif_dict[tag_id] = value
-
-    # Remove existing EXIF data and add new data
-    img.info['exif'] = Image.Exif()
-    for tag_id, value in exif_dict.items():
-        img.info['exif'][tag_id] = value
-
-    # Save the image to a BytesIO object
-    output = BytesIO()
-    img.save(output, format=img.format, exif=img.info['exif'])
-    return output.getvalue()
-
 
 def convert_dng_to_jpg(dng_bytes: bytes) -> bytes:
     with rawpy.imread(BytesIO(dng_bytes)) as raw:
@@ -226,10 +177,68 @@ async def get_image_metadata(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# docker cp {containerID}:./app/cleaned_image_b.dng ./cleaned_image_b.dng
-def save_image_locally(image_bytes: bytes, filename: str):
-    with open(filename, 'wb') as f:
-        f.write(image_bytes)
+# For debugging
+# docker cp $(docker ps --filter name=omi-postgres-odr-api -q):./app/cleaned_image_exiftool.dng ./cleaned_image_exiftool.dng
+# def save_image_locally(image_bytes: bytes, filename: str):
+#     with open(filename, 'wb') as f:
+#         f.write(image_bytes)
+
+
+def remove_metadata_with_exiftool(input_bytes):
+    # Create a temporary file to hold the input DNG
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.dng') as temp_input_file:
+        temp_input_file.write(input_bytes)
+        temp_input_filename = temp_input_file.name
+
+    # Create a temporary file for the output DNG
+    temp_output_filename = f"{temp_input_filename}_cleaned.dng"
+
+    try:
+        # References:
+        # https://exiftool.org/faq.html#Q8
+        # https://exiftool.org/exiftool_pod.html#WRITING-EXAMPLES
+        # https://web.mit.edu/Graphics/src/Image-ExifTool-6.99/html/TagNames/EXIF.html
+        # Remove all metadata except for a whitelist
+        # Note, IDF0 data and multiple other properties are needed to keep RAW files valid, so more data is kept than originally expected.
+        whitelist_tags = ['-all:all=',
+                          '-all=',
+                          '-tagsFromFile', '@',
+                          '-ImageWidth',
+                          '-ImageLength',
+                          '-BitsPerSample',
+                          '-PhotometricInterpretation',
+                          '-ImageDescription',
+                          '-Orientation',
+                          '-SamplesPerPixel',
+                          '-UniqueCameraModel',
+                          '-MakerNotes',
+                          '-Make',
+                          '-Model',
+                          '-ColorMatrix1',
+                          '-AsShotNeutral',
+                          '-PreviewColorSpace',
+                          '-IFD0',
+                          temp_input_filename,
+                          '-o', temp_output_filename
+                          ]
+
+        subprocess.run(['exiftool'] + whitelist_tags, check=True)
+
+        # Read the cleaned DNG file
+        with open(temp_output_filename, 'rb') as f:
+            cleaned_bytes = f.read()
+
+    finally:
+        # Clean up temporary files
+        os.remove(temp_input_filename)
+        if os.path.exists(temp_output_filename):
+            os.remove(temp_output_filename)
+        # exiftool may create a backup file with '_original' suffix
+        backup_filename = f"{temp_input_filename}_original"
+        if os.path.exists(backup_filename):
+            os.remove(backup_filename)
+
+    return cleaned_bytes
 
 
 @router.post("/image/clean-metadata")
@@ -237,26 +246,23 @@ async def clean_image_metadata(file: UploadFile = File(...)):
     try:
         contents = await file.read()
 
-        metadata = extract_metadata(contents)
-        important_metadata = get_desired_metadata(metadata)
+        # Clean metadata using exiftool
+        cleaned_image_bytes = remove_metadata_with_exiftool(contents)
+        # For debugging
+        # save_image_locally(cleaned_image_bytes, 'cleaned_image_exiftool.dng')
 
-        cleaned_image_bytes = contents
-
-        # cleaned_image_bytes_a = rewrite_metadata_with_exif(contents, important_metadata)
-        # save_image_locally(cleaned_image_bytes_a, 'cleaned_image_a.jpg')
-
-        cleaned_image_bytes_b = rewrite_metadata(contents, important_metadata)
-        save_image_locally(cleaned_image_bytes_b, 'cleaned_image_b.dng')
-
+        # Encode the image for the response
         encoded_image = base64.b64encode(cleaned_image_bytes).decode('utf-8')
 
         return {
             "cleaned_image": encoded_image,
             "content_type": file.content_type,
-            "filename": f"{file.filename.rsplit('.', 1)[0]}_cleaned.{file.filename.split('.')[-1]}",
-            "metadata": important_metadata
+            "filename": f"{file.filename.rsplit('.', 1)[0]}_cleaned.dng"
         }
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except subprocess.CalledProcessError as e:
+        print(f"ExifTool error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error processing image metadata.")
     except Exception as e:
+        print(f"Error: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=str(e))
