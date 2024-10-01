@@ -197,34 +197,38 @@ def remove_metadata_with_exiftool(input_bytes):
         # References:
         # https://exiftool.org/faq.html#Q8
         # https://exiftool.org/exiftool_pod.html#WRITING-EXAMPLES
+        # https://exiftool.org/exiftool_pod.html#GEOTAGGING-EXAMPLES
         # https://web.mit.edu/Graphics/src/Image-ExifTool-6.99/html/TagNames/EXIF.html
-        # Remove all metadata except for a whitelist
+        # Remove all metadata except for a whitelist, explicitly remove all gps data as an addiitional safeguard.
         # Note, IDF0 data and multiple other properties are needed to keep RAW files valid, so more data is kept than originally expected.
-        whitelist_tags = ['-all:all=',
-                          '-all=',
-                          '-tagsFromFile', '@',
-                          '-ImageWidth',
-                          '-ImageLength',
-                          '-BitsPerSample',
-                          '-PhotometricInterpretation',
-                          '-ImageDescription',
-                          '-Orientation',
-                          '-SamplesPerPixel',
-                          '-UniqueCameraModel',
-                          '-MakerNotes',
-                          '-Make',
-                          '-Model',
-                          '-ColorMatrix1',
-                          '-AsShotNeutral',
-                          '-PreviewColorSpace',
-                          '-IFD0',
-                          temp_input_filename,
-                          '-o', temp_output_filename
-                          ]
+        tag_arguments = [
+            '-ignoreMinorErrors',
+            '-all:all=',  # Start of removal list
+            '-all=',
+            '-gps:all=',
+            '-tagsFromFile', '@',
+            '-ImageWidth',  # Start of whitelist
+            '-ImageLength',
+            '-BitsPerSample',
+            '-PhotometricInterpretation',
+            '-ImageDescription',
+            '-Orientation',
+            '-SamplesPerPixel',
+            '-UniqueCameraModel',
+            '-MakerNotes',
+            '-Make',
+            '-Model',
+            '-ColorMatrix1',
+            '-AsShotNeutral',
+            '-PreviewColorSpace',
+            '-IFD0',
+            temp_input_filename,
+            '-o', temp_output_filename
+        ]
 
-        subprocess.run(['exiftool'] + whitelist_tags, check=True)
+        subprocess.run(['exiftool'] + tag_arguments, check=True)
 
-        # Read the cleaned DNG file
+        # Read the cleaned DNG file into our cleaned_bytes
         with open(temp_output_filename, 'rb') as f:
             cleaned_bytes = f.read()
 
@@ -246,12 +250,10 @@ async def clean_image_metadata(file: UploadFile = File(...)):
     try:
         contents = await file.read()
 
-        # Clean metadata using exiftool
         cleaned_image_bytes = remove_metadata_with_exiftool(contents)
         # For debugging
         # save_image_locally(cleaned_image_bytes, 'cleaned_image_exiftool.dng')
 
-        # Encode the image for the response
         encoded_image = base64.b64encode(cleaned_image_bytes).decode('utf-8')
 
         return {
