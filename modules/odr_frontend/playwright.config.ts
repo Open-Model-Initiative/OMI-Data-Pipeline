@@ -5,7 +5,7 @@ const config: PlaywrightTestConfig = {
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
 	use: {
 		baseURL: 'http://localhost:5173',
-		headless: false
+		headless: true
 	}
 };
 
