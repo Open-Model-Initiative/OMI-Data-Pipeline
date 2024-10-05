@@ -23,6 +23,7 @@ jobs:
       # - name: Run Playwright tests
       #   run: pnpm exec playwright test
       - name: Run Playwright tests
+        working-directory: .
         run: |
           chmod +x run-playwright.sh
           ./run-playwright.sh
@@ -30,5 +31,5 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: modules/odr_frontend/playwright-report/
+          path: playwright-report/
           retention-days: 7
