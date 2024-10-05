@@ -37,6 +37,18 @@ jobs:
           POSTGRES_PORT=35432
           PGADMIN_DEFAULT_EMAIL=pipeline@example.com
           PGADMIN_DEFAULT_PASSWORD=pipeline
+          POSTGRES_HOST=localhost
+          TEST_POSTGRES_DB=test_opendatarepository
+          JWT_SECRET=pipelinesecret
+          JWT_ALGORITHM=HS256
+          JWT_EXPIRATION_SECONDS=3600
+          SESSION_MAX_AGE_SECONDS=4233600
+          DEFAULT_SUPERUSER_EMAIL=pipeline@opendatarepository.com
+          DEFAULT_SUPERUSER_PASSWORD=pipeline
+          DEFAULT_SUPERUSER_USERNAME=pipeline
+          OAUTH2_REDIRECT_PATH=docs
+          HF_TOKEN=pipeline_token
+          HF_HDR_DATASET_NAME=openmodelinitiative/pipeline-hdr-submissions
           EOF
       - name: Create temp frontend .env file
         run: |
@@ -48,6 +60,14 @@ jobs:
           POSTGRES_PORT=35432
           PGADMIN_DEFAULT_EMAIL=pipeline@example.com
           PGADMIN_DEFAULT_PASSWORD=pipeline
+          PUBLIC_API_BASE_URL=http://localhost:31100
+          API_SERVICE_URL=http://odr-api:31100
+          GOOGLE_CLIENT_ID=google_client_id
+          GOOGLE_CLIENT_SECRET=google_client_secret
+          GITHUB_CLIENT_ID=github_client_id
+          GITHUB_CLIENT_SECRET=github_client_secret
+          DISCORD_CLIENT_ID=discord_client_id
+          DISCORD_CLIENT_SECRET=discord_client_secret
           EOF
       - name: Create Docker network
         run: docker network inspect omi-network >/dev/null 2>&1 || docker network create omi-network
