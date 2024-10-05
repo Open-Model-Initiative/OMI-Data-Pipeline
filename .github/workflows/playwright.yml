@@ -1,13 +1,16 @@
 name: Playwright Tests
 on:
   push:
-    branches: [main, master]
+    branches: [ main, 80-update-playwright-setup ]
   pull_request:
-    branches: [main, master]
+    branches: [ main ]
 jobs:
   test:
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: modules/odr_frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -17,11 +20,15 @@ jobs:
         run: npm install -g pnpm && pnpm install
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
+      # - name: Run Playwright tests
+      #   run: pnpm exec playwright test
       - name: Run Playwright tests
-        run: pnpm exec playwright test
+        run: |
+          chmod +x run-playwright.sh
+          ./run-playwright.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
-          path: playwright-report/
+          path: modules/odr_frontend/playwright-report/
           retention-days: 7
