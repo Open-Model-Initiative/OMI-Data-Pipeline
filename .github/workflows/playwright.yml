@@ -31,6 +31,9 @@ jobs:
         working-directory: .
         run: |
           cat << EOF > .env
+          ROOT_DIR=.
+          MODEL_CACHE_DIR=
+
           POSTGRES_HOST=localhost
           POSTGRES_DB=odr_pipeline
           POSTGRES_USER=odr_pipeline
