@@ -49,6 +49,8 @@ jobs:
           PGADMIN_DEFAULT_EMAIL=pipeline@example.com
           PGADMIN_DEFAULT_PASSWORD=pipeline
           EOF
+      - name: Create Docker network
+        run: docker network inspect omi-network >/dev/null 2>&1 || docker network create omi-network
       - name: Run Playwright tests
         working-directory: .
         run: |
