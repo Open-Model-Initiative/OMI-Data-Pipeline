@@ -27,8 +27,28 @@ jobs:
         with:
           version: 3.x
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-      # - name: Run Playwright tests
-      #   run: pnpm exec playwright test
+      - name: Create temp root .env file
+        working-directory: .
+        run: |
+          cat << EOF > .env
+          POSTGRES_DB=odr_pipeline
+          POSTGRES_USER=odr_pipeline
+          POSTGRES_PASSWORD=odr_pipeline
+          POSTGRES_PORT=35432
+          PGADMIN_DEFAULT_EMAIL=pipeline@example.com
+          PGADMIN_DEFAULT_PASSWORD=pipeline
+          EOF
+      - name: Create temp frontend .env file
+        run: |
+          cat << EOF > .env
+          AUTH_SECRET=authpipeline
+          POSTGRES_DB=odr_pipeline
+          POSTGRES_USER=odr_pipeline
+          POSTGRES_PASSWORD=odr_pipeline
+          POSTGRES_PORT=35432
+          PGADMIN_DEFAULT_EMAIL=pipeline@example.com
+          PGADMIN_DEFAULT_PASSWORD=pipeline
+          EOF
       - name: Run Playwright tests
         working-directory: .
         run: |
