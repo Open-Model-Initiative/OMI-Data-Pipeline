@@ -17,9 +17,16 @@ jobs:
         with:
           node-version: lts/*
       - name: Install dependencies
-        run: npm install -g pnpm && pnpm install
+        run: |
+          npm install -g pnpm
+          pnpm install
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       # - name: Run Playwright tests
       #   run: pnpm exec playwright test
       - name: Run Playwright tests
