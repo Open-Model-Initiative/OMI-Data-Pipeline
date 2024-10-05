@@ -4,7 +4,7 @@ import pg from 'pg';
 export interface IDBUser {
 	id: number;
 	email: string;
-	is_active: boolean | null;
+	is_active: boolean;
 	is_superuser: boolean;
 	created_at: Date;
 	updated_at: Date | null;

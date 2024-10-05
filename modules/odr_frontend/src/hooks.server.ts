@@ -11,6 +11,8 @@ const authorizationHandle:Handle = async ({ event, resolve }) => {
 		throw redirect(303, '/auth');
 	} else if (!session.user) {
 		throw redirect(303, '/auth');
+	} else if (!event.url.pathname.startsWith('/inactive') && (!session.user.is_active)) {
+		throw redirect(303, '/inactive');
 	} else if (!event.url.pathname.startsWith('/dco') && (!session.user.dco_accepted)) {
 		throw redirect(303, '/dco');
 	} else if (event.url.pathname.startsWith('/admin') && (!session.user.is_superuser)) {

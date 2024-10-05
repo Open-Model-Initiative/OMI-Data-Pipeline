@@ -15,6 +15,7 @@
 				<th>id</th>
 				<th>name</th>
 				<th>isSuperUser?</th>
+				<th>isActive?</th>
 				<th>email</th>
 			</tr>
 		</thead>
