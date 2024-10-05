@@ -104,5 +104,5 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: playwright-report/
+          path: modules/odr_frontend/playwright-report/
           retention-days: 7
