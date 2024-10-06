@@ -88,25 +88,7 @@ export const PG_API = {
         getAll: async (): Promise<IFeatureToggle[]> => {
             const { rows } = await pgClient.query('SELECT * FROM feature_toggles');
             return rows;
-        },
-        // getByName: async (feature_name: string): Promise<IFeatureToggle | null> => {
-        //     const { rows } = await pgClient.query('SELECT * FROM feature_toggles WHERE feature_name = $1', [feature_name]);
-        //     return rows[0] || null;
-        // },
-        // update: async (id: number, is_enabled: boolean): Promise<IFeatureToggle | null> => {
-        //     const { rows } = await pgClient.query(
-        //         'UPDATE feature_toggles SET is_enabled = $1 WHERE id = $2 RETURNING *',
-        //         [is_enabled, id]
-        //     );
-        //     return rows[0] || null;
-        // },
-        // create: async (feature_name: string, is_enabled: boolean, default_state: boolean): Promise<IFeatureToggle> => {
-        //     const { rows } = await pgClient.query(
-        //         'INSERT INTO feature_toggles (feature_name, is_enabled, default_state) VALUES ($1, $2, $3) RETURNING *',
-        //         [feature_name, is_enabled, default_state]
-        //     );
-        //     return rows[0];
-        // }
+        }
     }
 };
 
