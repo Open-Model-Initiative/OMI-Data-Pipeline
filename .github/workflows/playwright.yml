@@ -1,0 +1,106 @@
+name: Playwright Tests
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  test:
+    timeout-minutes: 10
+    continue-on-error: true # For now, until things are more stable.
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: modules/odr_frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create temp root .env file
+        working-directory: .
+        run: |
+          cat << EOF > .env
+          ROOT_DIR=.
+          MODEL_CACHE_DIR=
+
+          POSTGRES_HOST=localhost
+          POSTGRES_DB=odr_pipeline
+          POSTGRES_USER=odr_pipeline
+          POSTGRES_PASSWORD=odr_pipeline
+          POSTGRES_PORT=35432
+          TEST_POSTGRES_DB=test_odr_pipeline
+
+          PGADMIN_DEFAULT_EMAIL=pipeline@example.com
+          PGADMIN_DEFAULT_PASSWORD=pipeline
+
+          JWT_SECRET=pipelinesecret
+          JWT_ALGORITHM=HS256
+          JWT_EXPIRATION_SECONDS=3600
+
+          SESSION_MAX_AGE_SECONDS=4233600
+
+          DEFAULT_SUPERUSER_EMAIL=pipeline@opendatarepository.com
+          DEFAULT_SUPERUSER_PASSWORD=pipeline
+          DEFAULT_SUPERUSER_USERNAME=pipeline
+
+          GOOGLE_CLIENT_ID=google_client_id
+          GOOGLE_CLIENT_SECRET=google_client_secret
+
+          GITHUB_CLIENT_ID=github_client_id
+          GITHUB_CLIENT_SECRET=github_client_secret
+
+          DISCORD_CLIENT_ID=discord_client_id
+          DISCORD_CLIENT_SECRET=discord_client_secret
+
+          OAUTH2_REDIRECT_PATH=docs
+
+          HF_TOKEN=pipeline_token
+          HF_HDR_DATASET_NAME=openmodelinitiative/pipeline-hdr-submissions
+          EOF
+      - name: Create temp frontend .env file
+        run: |
+          cat << EOF > .env
+          PUBLIC_API_BASE_URL=http://localhost:31100
+          API_SERVICE_URL=http://odr-api:31100
+
+          AUTH_SECRET=authpipeline
+
+          GOOGLE_CLIENT_ID=google_client_id
+          GOOGLE_CLIENT_SECRET=google_client_secret
+
+          GITHUB_CLIENT_ID=github_client_id
+          GITHUB_CLIENT_SECRET=github_client_secret
+
+          DISCORD_CLIENT_ID=discord_client_id
+          DISCORD_CLIENT_SECRET=discord_client_secret
+
+          POSTGRES_HOST=postgres
+          POSTGRES_DB=odr_pipeline
+          POSTGRES_USER=odr_pipeline
+          POSTGRES_PASSWORD=odr_pipeline
+          POSTGRES_PORT=5432
+          TEST_POSTGRES_DB=test_odr_pipeline
+          EOF
+      - name: Create Docker network
+        run: docker network inspect omi-network >/dev/null 2>&1 || docker network create omi-network
+      - name: Run Playwright tests
+        working-directory: .
+        run: |
+          chmod +x run-playwright.sh
+          ./run-playwright.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: modules/odr_frontend/playwright-report/
+          retention-days: 7
