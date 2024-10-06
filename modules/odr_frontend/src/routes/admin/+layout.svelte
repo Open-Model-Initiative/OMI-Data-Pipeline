@@ -11,6 +11,11 @@
 					<span class="flex-auto">Teams</span>
 				</a>
 			</li>
+			<li>
+				<a href="/admin/feature-toggles">
+					<span class="flex-auto">Feature Toggles</span>
+				</a>
+			</li>
 		</ul>
 	</nav>
 	<main class="w-full p-8">
