@@ -1,0 +1,14 @@
+version: '3'
+
+tasks:
+  qwen-7b:
+    cmds:
+      - python -m vllm.entrypoints.openai.api_server --model Qwen/Qwen2-VL-7B-Instruct  --host 0.0.0.0 --port 32000
+
+  transformers:
+    cmds:
+      - pip install git+https://github.com/huggingface/transformers.git --upgrade
+
+  qwen:
+    cmds:
+      -  vllm serve Qwen/Qwen2-VL-7B-Instruct-GPTQ-Int8

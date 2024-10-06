@@ -1,0 +1,12 @@
+vllm
+transformers
+qwen-vl-utils[decord]
+fastapi
+click
+openai
+pydantic
+termcolor
+pillow
+flash-attn
+python-dotenv
+vllm>=0.6.2
