@@ -1,0 +1,9 @@
+# Docker configuration
+docker:
+  port: 12345:8000
+  options: --ipc=host
+  image: vllm/vllm-openai:latest
+
+# vLLM configuration
+vllm:
+  model: unsloth/Qwen2.5-14B-Instruct

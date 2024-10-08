@@ -9,4 +9,4 @@ termcolor
 pillow
 flash-attn
 python-dotenv
-vllm>=0.6.2
+vllm==0.6.1.post2

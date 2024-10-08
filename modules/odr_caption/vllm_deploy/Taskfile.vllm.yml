@@ -1,0 +1,45 @@
+version: '3'
+
+env:
+  CWD: '{{.TASKFILE_DIR}}'
+  PYTHON: '{{.CWD}}/vllm_venv/bin/python'
+
+tasks:
+  print-cwd:
+    cmds:
+      - echo {{.CWD}}
+
+  create-venv:
+    cmds:
+      - python3 -m venv {{.CWD}}/vllm_venv
+      - task: install-requirements
+
+  chmodels:
+    cmds:
+      - echo "Making all scripts in {{.MODELS_DIR}} executable..."
+      - find {{.MODELS_DIR}} -type f -name "*.sh" -exec chmod +x {} +
+      - echo "Done."
+
+  install-requirements:
+    cmds:
+      - '{{.PYTHON}} -m pip install -r {{.CWD}}/requirements.txt'
+
+  pixtral:
+    cmds:
+      - '{{.CWD}}/models/run_vllm.sh -c {{.CWD}}/models/vit/pixtral_default.yaml'
+
+  llama_3_2_11b:
+    cmds:
+      - '{{.CWD}}/models/run_vllm.sh -c {{.CWD}}/models/vit/llama_3_2_11b.yaml'
+
+  qwen_2_5_14b:
+    cmds:
+      - '{{.CWD}}/models/run_vllm.sh -c {{.CWD}}/models/llm/qwen_2_5_14b.yaml'
+
+  qwen_2_5_72b_awq:
+    cmds:
+      - '{{.CWD}}/models/run_vllm.sh -c {{.CWD}}/models/llm/qwen_2_5_72b_awq.yaml'
+
+  qwen_2_5_32b:
+    cmds:
+      - '{{.CWD}}/models/run_vllm.sh -c {{.CWD}}/models/llm/qwen_2_5_32b_bnb_4bit.yaml'

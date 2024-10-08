@@ -1,5 +1,7 @@
 version: '3'
 
+dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
+
 tasks:
   qwen-7b:
     cmds:
@@ -8,7 +10,3 @@ tasks:
   transformers:
     cmds:
       - pip install git+https://github.com/huggingface/transformers.git --upgrade
-
-  qwen:
-    cmds:
-      -  vllm serve Qwen/Qwen2-VL-7B-Instruct-GPTQ-Int8
