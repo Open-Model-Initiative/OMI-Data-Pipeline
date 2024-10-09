@@ -43,3 +43,13 @@ tasks:
   qwen_2_5_32b:
     cmds:
       - '{{.CWD}}/models/run_vllm.sh -c {{.CWD}}/models/llm/qwen_2_5_32b_bnb_4bit.yaml'
+
+  qwen2_vl_7b:
+    cmds:
+      - docker rm -f Qwen2-VL-7B-Instruct || true
+      - '{{.CWD}}/models/run_vllm.sh -c {{.CWD}}/models/vit/qwen2_vl_7b.yaml'
+
+  qwen2_vl_7b_caption:
+    cmds:
+      - docker rm -f qwen2_vl_7b_caption || true
+      - '{{.CWD}}/models/run_vllm.sh -c {{.CWD}}/models/vit/qwen2_vl_7b_caption.yaml'

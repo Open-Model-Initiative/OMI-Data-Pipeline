@@ -1,6 +1,6 @@
 # Docker configuration
 docker:
-  port: 12345:8000
+  port: 12434:8000
   options: --ipc=host
   image: vllm/vllm-openai:latest
 

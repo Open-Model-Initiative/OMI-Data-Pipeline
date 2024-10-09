@@ -1,0 +1,14 @@
+# Docker configuration
+docker:
+  port: 12434:8000
+  options: --ipc=host
+  image: vllm-qwen:latest
+  build:
+    dockerfile: ../docker/Dockerfile.qwen
+    context: .
+
+# vLLM configuration
+vllm:
+  limit_mm_per_prompt: 'image=4'
+  max_model_len: 16384
+  model: Qwen/Qwen2-VL-7B-Instruct
