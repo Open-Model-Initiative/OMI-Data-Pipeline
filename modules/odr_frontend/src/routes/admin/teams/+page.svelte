@@ -4,9 +4,11 @@
 	import UserRow from '../users/UserRow.svelte';
 
 	export let data;
-	const teams = data.teams;
-	const users = data.users;
-	const teams_users = data.teams_users;
+
+	$: teams = data.teams;
+	$: users = data.users;
+	$: teams_users = data.teams_users;
+
 	let newTeamName = '';
 	let userSearch = '';
 	let selected_team: null | number = null;
@@ -19,8 +21,18 @@
 			},
 			body: JSON.stringify({ newTeamName })
 		});
+
 		const res = await req.json();
-		if (!res.success) {
+
+		if (res.success) {
+			const newTeam = {
+				...res.team,
+				created_at: new Date(res.team.created_at),
+				updated_at: new Date(res.team.created_at),
+			};
+			teams = [...teams, newTeam];
+			newTeamName = '';
+		} else {
 			console.error(res.error);
 		}
 	}
@@ -33,9 +45,12 @@
 			body: JSON.stringify({ userId, teamId })
 		});
 		const res = await req.json();
-		if (!res.success) {
-			console.error(res.error);
-		}
+		if (res.success) {
+            teams_users = [...teams_users, res.team_user];
+            userSearch = '';
+        } else {
+            console.error(res.error);
+        }
 	}
 
 	let modal: ModalSettings = {
@@ -43,9 +58,9 @@
 		title: 'Please Confirm',
 		body: `Are you sure you wish to create a team named ${newTeamName}?`,
 		// TRUE if confirm pressed, FALSE if cancel pressed
-		response: (r: boolean) => {
+		response: async (r: boolean) => {
 			if (r) {
-				createTeam();
+				await createTeam();
 			}
 		}
 	};
@@ -70,12 +85,12 @@
 			title: 'Please Confirm',
 			body: `Are you sure you wish to add <span class="text-primary-400">${event.detail.label}</span> to the <span class="text-secondary-400">${teams.find((t) => t.id === selected_team)?.name}</span> team?`,
 			// TRUE if confirm pressed, FALSE if cancel pressed
-			response: (r: boolean) => {
-				if (r) {
-					console.log(`Adding user ${event.detail.label} to team ${selected_team}`);
-					addUserToTeam(parseInt(event.detail.value), selected_team as number);
-				}
-			}
+			response: async (r: boolean) => {
+                if (r) {
+                    console.log(`Adding user ${event.detail.label} to team ${selected_team}`);
+                    await addUserToTeam(parseInt(event.detail.value), selected_team as number);
+                }
+            }
 		};
 		modalStore.trigger(add_user_to_team_modal);
 	}
