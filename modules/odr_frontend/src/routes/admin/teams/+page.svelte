@@ -33,6 +33,7 @@
 			teams = [...teams, newTeam];
 			newTeamName = '';
 		} else {
+			alert(res.error); // TODO: Use Toast notification later
 			console.error(res.error);
 		}
 	}
