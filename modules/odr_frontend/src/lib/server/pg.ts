@@ -28,6 +28,13 @@ export interface IDBUserTeam {
 	name: string;
 }
 
+export interface IFeatureToggle {
+    id: number;
+    feature_name: string;
+    is_enabled: boolean;
+    default_state: boolean;
+}
+
 export const pg_client_config = {
 	host: process.env.POSTGRES_HOST,
 	user: process.env.POSTGRES_USER,
@@ -76,7 +83,13 @@ export const PG_API = {
 			);
 			return rows;
 		}
-	}
+	},
+	featureToggles: {
+        getAll: async (): Promise<IFeatureToggle[]> => {
+            const { rows } = await pgClient.query('SELECT * FROM feature_toggles');
+            return rows;
+        }
+    }
 };
 
 process.on('exit', () => {
