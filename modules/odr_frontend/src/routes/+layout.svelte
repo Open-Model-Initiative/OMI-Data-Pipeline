@@ -1,11 +1,8 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppBar } from '@skeletonlabs/skeleton';
 
-	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-	import { storePopup, initializeStores, Modal } from '@skeletonlabs/skeleton';
-	import { onMount } from 'svelte';
+	import { AppBar, storePopup, initializeStores, Modal, Toast } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 	import { signIn, signOut } from '@auth/sveltekit/client';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
@@ -15,6 +12,7 @@
 	import DiscordIcon from '$lib/icons/DiscordIcon.svelte';
 </script>
 
+<Toast />
 <Modal />
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
@@ -31,7 +29,7 @@
 					class="btn btn-sm"
 					on:click={() => {
 						signIn('github');
-					}}><GithubIcon color="currentColor"/></button
+					}}><GithubIcon color="currentColor" /></button
 				>
 				<button
 					class="btn btn-sm"
@@ -42,7 +40,8 @@
 			{:else}
 				{#if $page.data.session.user.is_superuser}
 					<!-- TODO: Extend user type -->
-					<a href="/admin" class="btn btn-sm variant-outline-primary" data-sveltekit-reload>Admin</a>
+					<a href="/admin" class="btn btn-sm variant-outline-primary" data-sveltekit-reload>Admin</a
+					>
 				{/if}
 				<button
 					class="btn btn-sm"
