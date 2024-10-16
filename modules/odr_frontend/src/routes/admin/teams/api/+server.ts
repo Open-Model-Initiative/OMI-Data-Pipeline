@@ -40,3 +40,36 @@ export const POST: RequestHandler = async ({ request }) => {
         });
     }
 };
+
+export const DELETE: RequestHandler = async ({ request }) => {
+    const body = await request.json();
+    const teamId = body.teamId;
+
+    if (!teamId) {
+        return new Response(JSON.stringify({ success: false, error: 'No team ID provided' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    try {
+        //Delete all user_teams entries for this team
+        const deleted_users = await pgClient.query('DELETE FROM user_teams WHERE team_id = $1', [teamId]);
+        console.info(`Deleted ${deleted_users.rowCount} user_teams entries for team ${teamId}`);
+
+        //Delete the team
+        const result = await pgClient.query('DELETE FROM teams WHERE id = $1 RETURNING id', [teamId]);
+        const deletedTeamId = result.rows[0]?.id;
+        console.info(`Deleted team ${deletedTeamId}`);
+        return new Response(JSON.stringify({ success: true }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    } catch (e) {
+        console.error(`Failed to delete team ${teamId}:`, e);
+        return new Response(JSON.stringify({ success: false, error: 'An unexpected error occurred' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+};
