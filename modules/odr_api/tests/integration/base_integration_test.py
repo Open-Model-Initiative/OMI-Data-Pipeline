@@ -1,12 +1,7 @@
 import httpx
-from odr_core.crud.user import create_user
-from odr_core.schemas.user import UserCreate, UserType
-from odr_api.api.auth.auth_jwt import create_access_token
-from odr_api.logger import log_api_request, log_api_error
-from fastapi.security import HTTPAuthorizationCredentials, OAuth2PasswordBearer
+from odr_api.logger import log_api_error
 import random
 import string
-import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -22,46 +17,11 @@ class BaseIntegrationTest:
         cls.db = db
         cls.logger = logger
         cls.client = httpx.Client(base_url=base_url, timeout=30)
-        cls.oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{base_url}/auth/token")
-
-        # Create a regular user for session/basic auth tests
-        cls.test_user = create_user(
-            db,
-            UserCreate(
-                username=f"test_user_{random_string()}",
-                email=f"test_user_{random_string()}@example.com",
-                password="test_password",
-                is_active=True,
-                is_superuser=False,
-                user_type=UserType.user,
-            ),
-        )
-
-        # Create a bot user for JWT auth tests
-        cls.bot_user = create_user(
-            db,
-            UserCreate(
-                username=f"test_bot_{random_string()}",
-                email=f"test_bot_{random_string()}@example.com",
-                password="test_bot_password",
-                is_active=True,
-                is_superuser=False,
-                user_type=UserType.bot,
-            ),
-        )
-
-        # Ensure the bot_user is correctly set as a bot
-        cls.bot_user.user_type = UserType.bot
-        db.commit()
-        db.refresh(cls.bot_user)
 
     @classmethod
     def teardown_class(cls):
         # Clean up created users
-        cls.db.delete(cls.test_user)
-        cls.db.delete(cls.bot_user)
-        cls.db.commit()
-        cls.client.close()
+        pass
 
     def log_error(self, response):
         log_api_error(

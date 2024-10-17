@@ -10,7 +10,6 @@ The integration tests are organized as follows:
 - `base_integration_test.py`: Contains the BaseIntegrationTest class with common setup and utility methods.
 - `test_result.py`: Contains the TestResult class and utility functions for running tests and logging results.
 - `models/`: Directory containing test files for different models:
-  - `test_users.py`: Tests for user-related operations and authentication methods.
   - (Add other test files as they are created)
 
 ## Running the Tests
@@ -37,14 +36,6 @@ The `TestResult` class in `test_result.py` captures the outcome of each test, in
 - Error location (file and line number)
 
 The `run_single_test` function executes individual test methods and captures detailed error information, including the location in our code where an error occurred.
-
-## Authentication Methods
-
-The tests cover different authentication methods:
-
-- Session Authentication: Used for regular user operations.
-- Basic Authentication: Tested as an alternative method for user authentication.
-- JWT Authentication: Used specifically for bot users.
 
 ## Logging
 

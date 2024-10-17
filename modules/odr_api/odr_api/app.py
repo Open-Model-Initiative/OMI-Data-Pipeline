@@ -1,11 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from odr_api.api.endpoints import (
-    user_router,
-    team_router,
     content_router,
     annotation_router,
-    auth_router,
     embedding_router,
     health_router,
     image_router,
@@ -35,11 +32,8 @@ def test_communication():
     return {"message": "Communication successful!"}
 
 
-app.include_router(team_router, prefix=settings.API_V1_STR)
-app.include_router(user_router, prefix=settings.API_V1_STR)
 app.include_router(content_router, prefix=settings.API_V1_STR)
 app.include_router(annotation_router, prefix=settings.API_V1_STR)
-app.include_router(auth_router, prefix=settings.API_V1_STR)
 app.include_router(embedding_router, prefix=settings.API_V1_STR)
 app.include_router(health_router, prefix=settings.API_V1_STR)
 app.include_router(image_router, prefix=settings.API_V1_STR)

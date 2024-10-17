@@ -15,7 +15,6 @@ from odr_core.schemas.annotation import (
     AnnotationRating,
 )
 from odr_core.database import get_db
-from odr_core.schemas.user import User
 
 
 router = APIRouter(tags=["annotation_rating"])
