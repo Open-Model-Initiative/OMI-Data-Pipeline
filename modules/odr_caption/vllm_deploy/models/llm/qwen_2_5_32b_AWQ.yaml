@@ -1,0 +1,10 @@
+# Docker configuration
+docker:
+  port: 12434:8000
+  options: --ipc=host
+  image: vllm/vllm-openai:latest
+
+# vLLM configuration
+vllm:
+  model: Qwen/Qwen2.5-32B-Instruct-AWQ
+  quantization: awq
