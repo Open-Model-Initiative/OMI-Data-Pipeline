@@ -4,8 +4,10 @@ version: 3
 tasks:
   install:
     desc: Install npm dependencies
+    dir: '{{.ROOT_DIR}}/modules/odr_frontend'
     cmds:
-      - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend install
+      - pnpm install
+      - pnpm exec playwright install
   test:
     desc: Run unit and integration tests
     cmds:

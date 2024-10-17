@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>OMI Data Pipeline| Admin</title>
+	<title>Admin | OMI Data Pipeline</title>
 </svelte:head>
 
 <code>

@@ -4,7 +4,7 @@ import pg from 'pg';
 export interface IDBUser {
 	id: number;
 	email: string;
-	is_active: boolean | null;
+	is_active: boolean;
 	is_superuser: boolean;
 	created_at: Date;
 	updated_at: Date | null;
@@ -26,6 +26,13 @@ export interface IDBUserTeam {
 	user_id: number;
 	role: 'member' | 'admin';
 	name: string;
+}
+
+export interface IFeatureToggle {
+    id: number;
+    feature_name: string;
+    is_enabled: boolean;
+    default_state: boolean;
 }
 
 export const pg_client_config = {
@@ -76,7 +83,13 @@ export const PG_API = {
 			);
 			return rows;
 		}
-	}
+	},
+	featureToggles: {
+        getAll: async (): Promise<IFeatureToggle[]> => {
+            const { rows } = await pgClient.query('SELECT * FROM feature_toggles');
+            return rows;
+        }
+    }
 };
 
 process.on('exit', () => {
