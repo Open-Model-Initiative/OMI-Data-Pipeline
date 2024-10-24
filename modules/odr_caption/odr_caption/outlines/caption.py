@@ -73,5 +73,6 @@ pixtral_instruction = """
 </Examples>
 </TagCategories>
 <ShortCaption note="The short caption is a concise single sentence caption of the image content with a maximum length of 100 characters.">
-<DenseCaption note="The dense caption is a descriptive but grounded narrative paragraph of the image content. It uses straightforward confident and clear language without overt flowery prose. It incorporates elements from each of the tag categories to provide a broad dense caption">\n[IMG][/INST]
+<Verification note="The verification identifies issues with the extracted tags and simple caption where the tags do not match the visual content you can actually see. Be a critic.">
+<DenseCaption note="The dense caption is a descriptive but grounded narrative paragraph of the image content. Only reference items you are confident you can see in the image.It uses straightforward confident and clear language without overt flowery prose. It incorporates elements from each of the tag categories to provide a broad dense caption">\n[IMG][/INST]
 """.strip()

@@ -36,6 +36,7 @@ class ImageTag(BaseModel):
 class ImageData(BaseModel):
     tags_list: List[ImageTag] = Field(..., min_items=8, max_items=20)
     short_caption: Annotated[str, StringConstraints(min_length=10, max_length=150)]
+    verification: Annotated[str, StringConstraints(min_length=10, max_length=100)]
     dense_caption: Annotated[str, StringConstraints(min_length=100, max_length=2048)]
 
     class Config:
