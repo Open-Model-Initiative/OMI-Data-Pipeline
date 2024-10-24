@@ -7,6 +7,11 @@ openai
 pydantic
 termcolor
 pillow
-flash-attn
 python-dotenv
-vllm==0.6.1.post2
+outlines
+torch
+torchvision
+httpx
+accelerate
+termcolor
+python-multipart
