@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 
 from odr_core.models.annotation import AnnotationRating
 from odr_core.schemas.annotation import AnnotationRatingCreate, AnnotationRatingUpdate
-from odr_core.schemas.user import User
 
 
 def create_annotation_rating(

@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 
 from odr_core.models.annotation import AnnotationSource
 from odr_core.schemas.annotation import AnnotationSourceCreate, AnnotationSourceUpdate
-from odr_core.schemas.user import User
 import logging
 
 logger = logging.getLogger(__name__)

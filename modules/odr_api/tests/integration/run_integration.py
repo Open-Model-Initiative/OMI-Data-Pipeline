@@ -1,6 +1,6 @@
 import argparse
 import sys
-from models import TestUserLifecycle, TestContentLifecycle, TestAnnotationLifecycle, TestAnnotationSourceLifecycle, TestAnnotationRatingLifecycle
+from models import TestContentLifecycle, TestAnnotationLifecycle, TestAnnotationSourceLifecycle, TestAnnotationRatingLifecycle
 
 
 # Import other test classes here
@@ -45,7 +45,6 @@ def main():
     db = SessionLocal()
 
     test_classes = {
-        "user": TestUserLifecycle,
         "content": TestContentLifecycle,
         "annotation": TestAnnotationLifecycle,
         "annotationsource": TestAnnotationSourceLifecycle,

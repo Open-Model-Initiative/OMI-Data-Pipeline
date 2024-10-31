@@ -51,7 +51,7 @@ class User(Base):
     content_sets = relationship("ContentSet", back_populates="created_by")
 
     def __repr__(self):
-        return f"<User(id={self.id}, username={self.username}, email={self.email})>"
+        return f"<User(id={self.id}, username={self.name}, email={self.email})>"
 
 
 class VerificationToken(Base):
@@ -66,7 +66,7 @@ class Account(Base):
     __tablename__ = 'accounts'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    userId = Column(Integer, nullable=False)
+    userId = Column(Integer, ForeignKey("users.id"), nullable=False)
     type = Column(String(255), nullable=False)
     provider = Column(String(255), nullable=False)
     providerAccountId = Column(String(255), nullable=False)
@@ -83,7 +83,7 @@ class UserSession(Base):
     __tablename__ = 'sessions'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    userId = Column(Integer, nullable=False)
+    userId = Column(Integer, ForeignKey("users.id"), nullable=False)
     expires = Column(DateTime(timezone=True), nullable=False)
     sessionToken = Column(String(255), nullable=False)
 

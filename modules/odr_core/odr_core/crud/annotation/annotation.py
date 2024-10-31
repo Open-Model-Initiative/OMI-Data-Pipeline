@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 
 from odr_core.models.annotation import Annotation, AnnotationSource
 from odr_core.schemas.annotation import AnnotationCreate, AnnotationUpdate
-from odr_core.schemas.user import User
 
 
 def create_annotation(
@@ -45,7 +44,6 @@ def update_annotation(
     db: Session,
     annotation_id: int,
     annotation_update: AnnotationUpdate,
-    current_user: User,
 ) -> Optional[Annotation]:
     db_annotation = db.query(Annotation).filter(Annotation.id == annotation_id).first()
     if db_annotation is None:
@@ -67,7 +65,7 @@ def update_annotation(
     return db_annotation
 
 
-def delete_annotation(db: Session, annotation_id: int, current_user: User) -> bool:
+def delete_annotation(db: Session, annotation_id: int) -> bool:
     db_annotation = db.query(Annotation).filter(Annotation.id == annotation_id).first()
     if db_annotation is None:
         return False

@@ -10,6 +10,11 @@ def random_string(length: int = 10) -> str:
     return "".join(random.choices(string.ascii_letters + string.digits, k=length))
 
 
+class TestUser:
+    def __init__(self) -> None:
+        self.id = 1
+
+
 class BaseIntegrationTest:
     @classmethod
     def setup_class(cls, base_url, db, logger):
@@ -17,6 +22,7 @@ class BaseIntegrationTest:
         cls.db = db
         cls.logger = logger
         cls.client = httpx.Client(base_url=base_url, timeout=30)
+        cls.test_user = TestUser()
 
     @classmethod
     def teardown_class(cls):

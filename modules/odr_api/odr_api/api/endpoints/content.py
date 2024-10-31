@@ -20,11 +20,12 @@ router = APIRouter(tags=["content"])
 @router.post("/content/", response_model=Content)
 def create_content(
     content: ContentCreate,
+    from_user_id: int,
     db: Session = Depends(get_db)
 ):
     try:
         return content_crud.create_content(
-            db=db, content=content
+            db=db, content=content, from_user_id=from_user_id
         )
     except IntegrityError as e:
         if "content_sources_value_key" in str(e):
