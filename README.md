@@ -1,4 +1,8 @@
 # Open Model Initiative - Data Pipeline
+
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9549/badge)](https://www.bestpractices.dev/projects/9549)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
 Welcome to the Open Model Initiative Data Pipeline repository!
 
 This project aims to provide open-source, community-driven training pipelines and code for developing baseline AI models for image generation. Other modalities may be released in future updates, whether in this repo or others.
