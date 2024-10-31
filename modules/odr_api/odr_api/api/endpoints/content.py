@@ -11,7 +11,6 @@ from odr_core.schemas.content import (
     ContentSourceCreate,
     ContentSourceUpdate,
 )
-from odr_core.schemas.user import User
 from odr_core.database import get_db
 
 

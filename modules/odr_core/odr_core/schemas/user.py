@@ -1,7 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
-from odr_core.enums import UserType
 import uuid
 
 
@@ -30,7 +29,7 @@ class UserInDBBase(UserBase):
 
 
 class User(UserInDBBase):
-    user_type: UserType = UserType.user
+    pass
 
 
 class UserTeam(BaseModel):

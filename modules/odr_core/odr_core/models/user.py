@@ -12,7 +12,6 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
-from odr_core.schemas.user import UserType
 
 
 class User(Base):
@@ -46,7 +45,6 @@ class User(Base):
         "AnnotationSource", back_populates="added_by"
     )
     sessions = relationship("UserSession", back_populates="user")
-    user_type = Column(Enum(UserType), default=UserType.user)
 
     content_events = relationship("ContentEvents", back_populates="user")
     content_reports = relationship("ContentReport", back_populates="reporter")

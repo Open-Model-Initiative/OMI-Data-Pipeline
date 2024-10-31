@@ -27,7 +27,6 @@ def main():
         default=["all"],
         help="Specific tests to run. Available options:\n"
              "  all: Run all tests\n"
-             "  user: Run user lifecycle tests\n"
              "  content: Run content lifecycle tests\n"
              "  annotation: Run annotation lifecycle tests\n"
              "  annotationsource: Run annotation source lifecycle tests\n"

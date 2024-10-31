@@ -12,13 +12,18 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 from sqlalchemy import Enum, text
-from odr_core.schemas.user import UserType
+
 
 # revision identifiers, used by Alembic.
 revision: str = "703075477888"
 down_revision: Union[str, None] = "37d01b99209f"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
+
+
+class UserType(str, Enum):
+    USER = "user"
+    BOT = "bot"
 
 
 def upgrade() -> None:
