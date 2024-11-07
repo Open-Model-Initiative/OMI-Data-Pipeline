@@ -2,11 +2,10 @@ from sqlalchemy.orm import Session
 from odr_core.crud import content_event as content_event_crud
 from odr_core.schemas.content import ContentEventCreate, ContentEventUpdate
 from odr_core.models.content import ContentEvents, ContentStatus
-from odr_core.schemas.user import UserCreate, User
-from odr_core.crud.user import create_user
 from time import sleep
 import random
 import string
+from odr_core.models.user import User
 
 
 def random_string(length: int = 10) -> str:
@@ -14,12 +13,15 @@ def random_string(length: int = 10) -> str:
 
 
 def create_test_user(db: Session):
-    user_data = UserCreate(
-        username=f"test_user_{random_string()}",
-        email=f"test_user_{random_string()}@example.com",
-        password="test_password"
+    user = User(
+        name=random_string(),
+        email=f"{random_string()}@example.com",
+        hashed_password=random_string()
     )
-    return create_user(db, user_data)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
 
 
 def test_create_content_event(db: Session):

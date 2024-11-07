@@ -25,9 +25,9 @@ def create_test_annotation_rating_data(annotation_id, user_id):
     }
 
 
-def create_annotation_rating(client, rating_data, auth_headers):
+def create_annotation_rating(client, rating_data):
     response = client.post(
-        "/annotation_ratings/", json=rating_data, headers=auth_headers
+        "/annotation_ratings/", json=rating_data
     )
     log_api_request(
         logger,
@@ -45,8 +45,8 @@ def create_annotation_rating(client, rating_data, auth_headers):
     return created_rating
 
 
-def get_annotation_rating(client, rating_id, auth_headers):
-    response = client.get(f"/annotation_ratings/{rating_id}", headers=auth_headers)
+def get_annotation_rating(client, rating_id):
+    response = client.get(f"/annotation_ratings/{rating_id}")
     log_api_request(
         logger,
         "GET",
@@ -64,19 +64,17 @@ def get_annotation_rating(client, rating_id, auth_headers):
     return fetched_rating
 
 
-def update_annotation_rating(client, rating_id, update_data, auth_headers):
+def update_annotation_rating(client, rating_id, update_data):
     response = client.put(
         f"/annotation_ratings/{rating_id}",
-        json=update_data,
-        headers=auth_headers,
+        json=update_data
     )
     log_api_request(
         logger,
         "PUT",
         f"/annotation_ratings/{rating_id}",
         response.status_code,
-        update_data,
-        response.json(),
+        update_data
     )
     assert (
         response.status_code == 200
@@ -86,15 +84,14 @@ def update_annotation_rating(client, rating_id, update_data, auth_headers):
     return updated_rating
 
 
-def delete_annotation_rating(client, rating_id, auth_headers):
-    response = client.delete(f"/annotation_ratings/{rating_id}", headers=auth_headers)
+def delete_annotation_rating(client, rating_id):
+    response = client.delete(f"/annotation_ratings/{rating_id}")
     log_api_request(
         logger,
         "DELETE",
         f"/annotation_ratings/{rating_id}",
         response.status_code,
-        None,
-        response.json(),
+        None
     )
     assert (
         response.status_code == 200
@@ -102,15 +99,15 @@ def delete_annotation_rating(client, rating_id, auth_headers):
     logger.info(f"Deleted annotation rating: {rating_id}")
 
     # Verify deletion
-    response = client.get(f"/annotation_ratings/{rating_id}", headers=auth_headers)
+    response = client.get(f"/annotation_ratings/{rating_id}")
     assert (
         response.status_code == 404
     ), f"Failed to verify deletion of annotation rating: {response.status_code}"
     logger.info(f"Verified deletion of annotation rating: {rating_id}")
 
 
-def get_annotation_ratings(client, annotation_id, auth_headers):
-    response = client.get(f"/annotations/{annotation_id}/ratings", headers=auth_headers)
+def get_annotation_ratings(client, annotation_id):
+    response = client.get(f"/annotations/{annotation_id}/ratings")
     log_api_request(
         logger,
         "GET",
@@ -145,7 +142,7 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
         for rating_id in self.created_rating_ids:
             try:
                 delete_annotation_rating(
-                    self.client, rating_id, self.get_session_auth_headers()
+                    self.client, rating_id
                 )
             except Exception as e:
                 self.logger.warning(f"Failed to delete rating {rating_id}: {str(e)}")
@@ -154,8 +151,7 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
         for annotation_id in self.created_annotation_ids:
             try:
                 self.client.delete(
-                    f"/annotations/{annotation_id}",
-                    headers=self.get_session_auth_headers(),
+                    f"/annotations/{annotation_id}"
                 )
             except Exception as e:
                 self.logger.warning(
@@ -166,7 +162,7 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
         for content_id in self.created_content_ids:
             try:
                 self.client.delete(
-                    f"/contents/{content_id}", headers=self.get_session_auth_headers()
+                    f"/contents/{content_id}"
                 )
             except Exception as e:
                 self.logger.warning(f"Failed to delete content {content_id}: {str(e)}")
@@ -174,7 +170,7 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
     def create_test_content(self):
         content_data = create_test_content_data()
         content = create_content(
-            self.client, content_data, self.get_session_auth_headers()
+            self.client, content_data, self.test_user.id
         )
         self.created_content_ids.append(content["id"])
         return content
@@ -183,7 +179,7 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
         content_id = self.create_test_content()["id"]
         annotation_data = create_test_annotation_data(content_id, self.test_user.id)
         annotation = create_annotation(
-            self.client, annotation_data, self.get_session_auth_headers()
+            self.client, annotation_data, self.test_user.id
         )
         self.created_annotation_ids.append(annotation["id"])
         return annotation
@@ -194,7 +190,7 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
             annotation_id, self.test_user.id
         )
         created_rating = create_annotation_rating(
-            self.client, rating_data, self.get_session_auth_headers()
+            self.client, rating_data
         )
         self.created_rating_ids.append(created_rating["id"])
         return created_rating
@@ -202,7 +198,7 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
     def test_get_annotation_rating(self):
         created_rating = self.test_create_annotation_rating()
         return get_annotation_rating(
-            self.client, created_rating["id"], self.get_session_auth_headers()
+            self.client, created_rating["id"]
         )
 
     def test_update_annotation_rating(self):
@@ -210,7 +206,7 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
         rating_id = created_rating["id"]
         update_data = {"rating": 9, "reason": "Updated: Very good annotation"}
         updated_rating = update_annotation_rating(
-            self.client, rating_id, update_data, self.get_session_auth_headers()
+            self.client, rating_id, update_data
         )
         assert updated_rating["rating"] == update_data["rating"]
         assert updated_rating["reason"] == update_data["reason"]
@@ -218,7 +214,7 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
     def test_delete_annotation_rating(self):
         created_rating = self.test_create_annotation_rating()
         delete_annotation_rating(
-            self.client, created_rating["id"], self.get_session_auth_headers()
+            self.client, created_rating["id"]
         )
         self.created_rating_ids.remove(created_rating["id"])
 
@@ -230,12 +226,12 @@ class TestAnnotationRatingLifecycle(BaseIntegrationTest):
                 annotation_id, self.test_user.id
             )
             created_rating = create_annotation_rating(
-                self.client, rating_data, self.get_session_auth_headers()
+                self.client, rating_data
             )
             self.created_rating_ids.append(created_rating["id"])
 
         ratings = get_annotation_ratings(
-            self.client, annotation_id, self.get_session_auth_headers()
+            self.client, annotation_id
         )
         assert len(ratings) >= 3, "Expected at least 3 annotation ratings"
         self.logger.info(

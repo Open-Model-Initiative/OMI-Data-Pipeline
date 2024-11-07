@@ -4,7 +4,6 @@ from typing import List
 from odr_core.crud import content_event as content_event_crud
 from odr_core.schemas.content import ContentEvent, ContentEventCreate, ContentEventUpdate
 from odr_core.database import get_db
-from odr_api.api.auth.auth_provider import AuthProvider
 from odr_core.models.content import ContentStatus
 
 router = APIRouter(tags=["content_events"])
@@ -14,11 +13,9 @@ router = APIRouter(tags=["content_events"])
 def create_content_event(
     content_id: int,
     event: ContentEventCreate,
-    db: Session = Depends(get_db),
-    current_user=Depends(AuthProvider())
+    db: Session = Depends(get_db)
 ):
     event.content_id = content_id
-    event.set_by = current_user.id
     return content_event_crud.create_content_event(db=db, event=event)
 
 
@@ -50,8 +47,7 @@ def update_content_event(
     content_id: int,
     event_id: int,
     event: ContentEventUpdate,
-    db: Session = Depends(get_db),
-    current_user=Depends(AuthProvider())
+    db: Session = Depends(get_db)
 ):
     db_event = content_event_crud.update_content_event(db, event_id=event_id, event=event)
     if db_event is None or db_event.content_id != content_id:
@@ -63,8 +59,7 @@ def update_content_event(
 def delete_content_event(
     content_id: int,
     event_id: int,
-    db: Session = Depends(get_db),
-    current_user=Depends(AuthProvider())
+    db: Session = Depends(get_db)
 ):
     success = content_event_crud.delete_content_event(db, event_id=event_id)
     if not success:

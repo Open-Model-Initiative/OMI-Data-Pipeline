@@ -48,8 +48,6 @@ from odr_core.crud.annotation import get_annotation
 
 from odr_core.database import get_db
 
-from odr_api.api.auth.auth_provider import AuthProvider
-
 
 router = APIRouter(tags=["embedding"])
 
@@ -57,8 +55,7 @@ router = APIRouter(tags=["embedding"])
 @router.post("/embedding/engines/", response_model=EmbeddingEngine)
 def create_embedding_engine_endpoint(
     embedding_engine: EmbeddingEngineCreate,
-    db: Session = Depends(get_db),
-    _=Depends(AuthProvider(superuser=True)),
+    db: Session = Depends(get_db)
 ):
     return create_embedding_engine(db=db, embedding_engine=embedding_engine)
 
@@ -87,8 +84,7 @@ def read_embedding_engines_endpoint(
 def update_embedding_engine_endpoint(
     embedding_engine_id: int,
     embedding_engine: EmbeddingEngineUpdate,
-    db: Session = Depends(get_db),
-    _=Depends(AuthProvider(superuser=True)),
+    db: Session = Depends(get_db)
 ):
     db_embedding_engine = update_embedding_engine(
         db,
@@ -103,8 +99,7 @@ def update_embedding_engine_endpoint(
 @router.delete("/embedding/engines/{embedding_engine_id}", response_model=bool)
 def delete_embedding_engine_endpoint(
     embedding_engine_id: int,
-    db: Session = Depends(get_db),
-    _=Depends(AuthProvider(superuser=True)),
+    db: Session = Depends(get_db)
 ):
     success = delete_embedding_engine(db, embedding_engine_id=embedding_engine_id)
     if not success:
@@ -115,8 +110,7 @@ def delete_embedding_engine_endpoint(
 @router.post("/embedding/generate/image", response_model=List[float])
 def generate_image_embedding_endpoint(
     embedding: ImageEmbeddingGenerate,
-    db: Session = Depends(get_db),
-    _=Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     try:
         image = pil_image_from_base64(embedding.base64_image)
@@ -130,8 +124,7 @@ def generate_image_embedding_endpoint(
 @router.post("/embedding/generate/text", response_model=List[float])
 def generate_text_embedding_endpoint(
     embedding: TextEmbeddingGenerate,
-    db: Session = Depends(get_db),
-    _=Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     return generate_text_embedding(
         db=db, embedding_engine_id=embedding.embedding_engine_id, text=embedding.text
@@ -144,8 +137,9 @@ def generate_text_embedding_endpoint(
 def generate_embedding_for_annotation_endpoint(
     annotation_id: int,
     engine_id: int,
-    db: Session = Depends(get_db),
-    current_user=Depends(AuthProvider()),
+    user_id: int,
+    team_id: int,
+    db: Session = Depends(get_db)
 ):
     annotation = get_annotation(db, annotation_id=annotation_id)
     if annotation is None:
@@ -162,7 +156,8 @@ def generate_embedding_for_annotation_endpoint(
         annotation_id=annotation_id,
         embedding=annotation_embedding,
         embedding_engine_id=engine_id,
-        from_user_id=current_user.id,
+        from_user_id=user_id,
+        from_team_id=team_id,
     )
 
     return create_annotation_embedding(db=db, annotation_embedding=annotation)
@@ -174,8 +169,9 @@ def generate_embedding_for_annotation_endpoint(
 def generate_embedding_for_content_endpoint(
     content_id: int,
     engine_id: int,
-    db: Session = Depends(get_db),
-    current_user=Depends(AuthProvider()),
+    user_id: int,
+    team_id: int,
+    db: Session = Depends(get_db)
 ):
     content = get_content(db, content_id=content_id)
     if content is None:
@@ -209,7 +205,8 @@ def generate_embedding_for_content_endpoint(
         content_id=content_id,
         embedding=embedding,
         embedding_engine_id=engine_id,
-        from_user_id=current_user.id,
+        from_user_id=user_id,
+        from_team_id=team_id,
     )
 
     return create_content_embedding(db=db, content_embedding=content_embedding)
@@ -218,8 +215,7 @@ def generate_embedding_for_content_endpoint(
 @router.post("/embedding/annotation/", response_model=AnnotationEmbedding)
 def create_annotation_embedding_endpoint(
     annotation_embedding: AnnotationEmbeddingCreate,
-    db: Session = Depends(get_db),
-    _=Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     return create_annotation_embedding(db=db, annotation_embedding=annotation_embedding)
 
@@ -303,8 +299,7 @@ def query_annotation_embedding_text_endpoint(
 def update_annotation_embedding_endpoint(
     annotation_embedding_id: int,
     annotation_embedding: AnnotationEmbeddingUpdate,
-    db: Session = Depends(get_db),
-    _=Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     db_annotation_embedding = update_annotation_embedding(
         db,
@@ -319,8 +314,7 @@ def update_annotation_embedding_endpoint(
 @router.delete("/embedding/annotation/{annotation_embedding_id}", response_model=bool)
 def delete_annotation_embedding_endpoint(
     annotation_embedding_id: int,
-    db: Session = Depends(get_db),
-    _=Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     success = delete_annotation_embedding(
         db, annotation_embedding_id=annotation_embedding_id
@@ -333,8 +327,7 @@ def delete_annotation_embedding_endpoint(
 @router.post("/embedding/content/", response_model=ContentEmbedding)
 def create_content_embedding_endpoint(
     content_embedding: ContentEmbeddingCreate,
-    db: Session = Depends(get_db),
-    _=Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     return create_content_embedding(db=db, content_embedding=content_embedding)
 
@@ -379,8 +372,7 @@ def query_content_embedding_endpoint(
 def update_content_embedding_endpoint(
     content_embedding_id: int,
     content_embedding: ContentEmbeddingUpdate,
-    db: Session = Depends(get_db),
-    _=Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     db_content_embedding = update_content_embedding(
         db,
@@ -394,7 +386,7 @@ def update_content_embedding_endpoint(
 
 @router.delete("/embedding/content/{content_embedding_id}", response_model=bool)
 def delete_content_embedding_endpoint(
-    content_embedding_id: int, db: Session = Depends(get_db), _=Depends(AuthProvider())
+    content_embedding_id: int, db: Session = Depends(get_db)
 ):
     success = delete_content_embedding(db, content_embedding_id=content_embedding_id)
     if not success:

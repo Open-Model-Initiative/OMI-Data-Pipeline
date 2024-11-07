@@ -10,8 +10,7 @@ from odr_core.schemas.annotation import (
     AnnotationReportCreate, AnnotationReportUpdate,
     ReportType, ReportStatus, AnnotationSourceType
 )
-from odr_core.schemas.user import UserCreate, UserType
-from odr_core.crud.user import create_user
+
 import random
 import string
 
@@ -20,23 +19,10 @@ def random_string(length: int = 10) -> str:
     return "".join(random.choices(string.ascii_letters + string.digits, k=length))
 
 
-def get_random_user(db: Session):
-    return create_user(
-        db,
-        UserCreate(
-            username=f"test_user_{random_string()}",
-            email=f"test_user_{random_string()}@example.com",
-            password="test_password",
-            is_active=True,
-            is_superuser=False,
-        ),
-    )
-
-
 def test_annotation_rating_crud(db: Session):
     # Create
     rating_data = AnnotationRatingCreate(annotation_id=1, rated_by_id=1, rating=5)
-    rating = create_annotation_rating(db, rating_data, get_random_user(db))
+    rating = create_annotation_rating(db, rating_data)
     assert rating.id is not None
     assert rating.rating == 5
 
@@ -66,7 +52,7 @@ def test_annotation_source_crud(db: Session):
         license="CC-BY",
         added_by_id=1
     )
-    source = create_annotation_source(db, source_data, get_random_user(db))
+    source = create_annotation_source(db, source_data)
     assert source.id is not None
     assert source.name == "Test Source"
     assert source.type == AnnotationSourceType.SPATIAL_ANALYSIS
@@ -137,7 +123,7 @@ def test_get_annotation_ratings(db: Session):
             rating=i + 3,
             reason=f"Rating {i + 1}"
         )
-        create_annotation_rating(db, rating_data, get_random_user(db))
+        create_annotation_rating(db, rating_data)
 
     # Retrieve ratings
     ratings = get_annotation_ratings(db)
@@ -173,7 +159,7 @@ def test_get_annotation_sources(db: Session):
             license="CC-BY",
             added_by_id=1
         )
-        create_annotation_source(db, source_data, get_random_user(db))
+        create_annotation_source(db, source_data)
 
     # Retrieve sources
     sources = get_annotation_sources(db)

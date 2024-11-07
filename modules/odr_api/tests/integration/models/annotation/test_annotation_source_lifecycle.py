@@ -23,8 +23,7 @@ class TestAnnotationSourceLifecycle(BaseIntegrationTest):
         for source_id in self.created_source_ids:
             try:
                 self.client.delete(
-                    f"/annotation_sources/{source_id}",
-                    headers=self.get_session_auth_headers(),
+                    f"/annotation_sources/{source_id}"
                 )
             except Exception as e:
                 self.logger.warning(
@@ -43,8 +42,7 @@ class TestAnnotationSourceLifecycle(BaseIntegrationTest):
         }
         response = self.client.post(
             "/annotation_sources/",
-            json=annotation_source_data,
-            headers=self.get_session_auth_headers(),
+            json=annotation_source_data
         )
         log_api_request(
             self.logger,
@@ -66,7 +64,7 @@ class TestAnnotationSourceLifecycle(BaseIntegrationTest):
         created_source = self.test_create_annotation_source()
         source_id = created_source["id"]
         response = self.client.get(
-            f"/annotation_sources/{source_id}", headers=self.get_session_auth_headers()
+            f"/annotation_sources/{source_id}"
         )
         log_api_request(
             self.logger,
@@ -96,8 +94,7 @@ class TestAnnotationSourceLifecycle(BaseIntegrationTest):
         }
         response = self.client.put(
             f"/annotation_sources/{source_id}",
-            json=update_data,
-            headers=self.get_session_auth_headers(),
+            json=update_data
         )
         log_api_request(
             self.logger,
@@ -123,7 +120,7 @@ class TestAnnotationSourceLifecycle(BaseIntegrationTest):
         created_source = self.test_create_annotation_source()
         source_id = created_source["id"]
         response = self.client.delete(
-            f"/annotation_sources/{source_id}", headers=self.get_session_auth_headers()
+            f"/annotation_sources/{source_id}"
         )
         log_api_request(
             self.logger,
@@ -141,7 +138,7 @@ class TestAnnotationSourceLifecycle(BaseIntegrationTest):
 
         # Verify deletion
         response = self.client.get(
-            f"/annotation_sources/{source_id}", headers=self.get_session_auth_headers()
+            f"/annotation_sources/{source_id}"
         )
         assert (
             response.status_code == 404
@@ -154,7 +151,7 @@ class TestAnnotationSourceLifecycle(BaseIntegrationTest):
             self.test_create_annotation_source()
 
         response = self.client.get(
-            "/annotation_sources/", headers=self.get_session_auth_headers()
+            "/annotation_sources/"
         )
         log_api_request(
             self.logger,

@@ -1,18 +1,18 @@
 import httpx
-from odr_core.crud.user import create_user
-from odr_core.schemas.user import UserCreate, UserType
-from odr_api.api.auth.auth_jwt import create_access_token
-from odr_api.logger import log_api_request, log_api_error
-from fastapi.security import HTTPAuthorizationCredentials, OAuth2PasswordBearer
+from odr_api.logger import log_api_error
 import random
 import string
-import os
 from dotenv import load_dotenv
 load_dotenv()
 
 
 def random_string(length: int = 10) -> str:
     return "".join(random.choices(string.ascii_letters + string.digits, k=length))
+
+
+class TestUser:
+    def __init__(self) -> None:
+        self.id = 1
 
 
 class BaseIntegrationTest:
@@ -22,121 +22,12 @@ class BaseIntegrationTest:
         cls.db = db
         cls.logger = logger
         cls.client = httpx.Client(base_url=base_url, timeout=30)
-        cls.oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{base_url}/auth/token")
-
-        # Create a regular user for session/basic auth tests
-        cls.test_user = create_user(
-            db,
-            UserCreate(
-                username=f"test_user_{random_string()}",
-                email=f"test_user_{random_string()}@example.com",
-                password="test_password",
-                is_active=True,
-                is_superuser=False,
-                user_type=UserType.user,
-            ),
-        )
-
-        # Create a bot user for JWT auth tests
-        cls.bot_user = create_user(
-            db,
-            UserCreate(
-                username=f"test_bot_{random_string()}",
-                email=f"test_bot_{random_string()}@example.com",
-                password="test_bot_password",
-                is_active=True,
-                is_superuser=False,
-                user_type=UserType.bot,
-            ),
-        )
-
-        # Ensure the bot_user is correctly set as a bot
-        cls.bot_user.user_type = UserType.bot
-        db.commit()
-        db.refresh(cls.bot_user)
-
-        try:
-            cls.jwt_token = create_access_token(cls.bot_user)
-        except Exception as e:
-            cls.logger.error(f"Failed to create JWT token: {str(e)}")
-            raise
-
-    def get_session_auth_headers(self):
-        try:
-            response = self.client.post(
-                "/auth/login",
-                json={"username": self.test_user.username, "password": "test_password"},
-            )
-            log_api_request(
-                self.logger,
-                "POST",
-                "/auth/login",
-                response.status_code,
-                None,
-                response.text,
-            )
-            if response.status_code != 200:
-                self.logger.error(
-                    f"Login failed. Status: {response.status_code}, Response: {response.text}"
-                )
-                raise Exception(f"Failed to login: {response.status_code}")
-
-            session_cookie = response.cookies.get('session')
-            if session_cookie:
-                return {"Cookie": f"session={session_cookie}"}
-            else:
-                return {"Authorization": response.text}
-        except httpx.RequestError as e:
-            self.logger.error(f"Request error during login: {str(e)}")
-            raise
-
-    def get_basic_auth_headers(self):
-        return httpx.BasicAuth(self.test_user.username, "test_password")
-
-    def get_jwt_auth_headers(self):
-        return HTTPAuthorizationCredentials(scheme="Bearer", credentials=self.jwt_token)
-
-    def get_superuser_auth_headers(self):
-        load_dotenv()
-        username = os.getenv('DEFAULT_SUPERUSER_USERNAME')
-        password = os.getenv('DEFAULT_SUPERUSER_PASSWORD')
-
-        try:
-            response = self.client.post(
-                "/auth/login",
-                json={"username": username, "password": password},
-            )
-            log_api_request(
-                self.logger,
-                "POST",
-                "/auth/login",
-                response.status_code,
-                None,
-                response.text,
-            )
-            if response.status_code != 200:
-                self.logger.error(
-                    f"Superuser login failed. Status: {response.status_code}, Response: {response.text}"
-                )
-                raise Exception(f"Failed to login as superuser: {response.status_code}")
-
-            session_cookie = response.cookies.get('session')
-            if session_cookie:
-                return {"Cookie": f"session={session_cookie}"}
-            else:
-                # If no session cookie, return the entire response content as Authorization header
-                return {"Authorization": response.text}
-        except httpx.RequestError as e:
-            self.logger.error(f"Request error during superuser login: {str(e)}")
-            raise
+        cls.test_user = TestUser()
 
     @classmethod
     def teardown_class(cls):
         # Clean up created users
-        cls.db.delete(cls.test_user)
-        cls.db.delete(cls.bot_user)
-        cls.db.commit()
-        cls.client.close()
+        pass
 
     def log_error(self, response):
         log_api_error(

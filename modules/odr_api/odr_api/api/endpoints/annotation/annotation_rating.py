@@ -15,8 +15,7 @@ from odr_core.schemas.annotation import (
     AnnotationRating,
 )
 from odr_core.database import get_db
-from odr_core.schemas.user import User
-from odr_api.api.auth import AuthProvider
+
 
 router = APIRouter(tags=["annotation_rating"])
 
@@ -24,11 +23,10 @@ router = APIRouter(tags=["annotation_rating"])
 @router.post("/annotation_ratings/", response_model=AnnotationRating)
 def create_annotation_rating_endpoint(
     annotation_rating: AnnotationRatingCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     return create_annotation_rating(
-        db=db, annotation_rating=annotation_rating, current_user=current_user
+        db=db, annotation_rating=annotation_rating
     )
 
 
@@ -56,14 +54,12 @@ def read_annotation_ratings_by_annotation_endpoint(
 def update_annotation_rating_endpoint(
     rating_id: int,
     annotation_rating: AnnotationRatingUpdate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     db_annotation_rating = update_annotation_rating(
         db,
         rating_id=rating_id,
-        annotation_rating_update=annotation_rating,
-        current_user=current_user,
+        annotation_rating_update=annotation_rating
     )
     if db_annotation_rating is None:
         raise HTTPException(status_code=404, detail="Annotation rating not found")
@@ -73,8 +69,7 @@ def update_annotation_rating_endpoint(
 @router.delete("/annotation_ratings/{rating_id}", response_model=bool)
 def delete_annotation_rating_endpoint(
     rating_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(AuthProvider()),
+    db: Session = Depends(get_db)
 ):
     success = delete_annotation_rating(db, rating_id=rating_id)
     if not success:

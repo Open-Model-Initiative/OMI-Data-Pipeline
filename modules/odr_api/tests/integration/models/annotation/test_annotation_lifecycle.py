@@ -19,12 +19,12 @@ def create_test_annotation_data(content_id, user_id):
     }
 
 
-def create_annotation(client, annotation_data, auth_headers):
-    response = client.post("/annotations/", json=annotation_data, headers=auth_headers)
+def create_annotation(client, annotation_data, user_id):
+    response = client.post("/annotations/", json=annotation_data)
     log_api_request(
         logger,
         "POST",
-        "/annotations/",
+        f"/annotations/?from_user_id={user_id}",
         response.status_code,
         annotation_data,
         response.json(),
@@ -37,8 +37,8 @@ def create_annotation(client, annotation_data, auth_headers):
     return created_annotation
 
 
-def get_annotation(client, annotation_id, auth_headers):
-    response = client.get(f"/annotations/{annotation_id}", headers=auth_headers)
+def get_annotation(client, annotation_id):
+    response = client.get(f"/annotations/{annotation_id}")
     log_api_request(
         logger,
         "GET",
@@ -56,11 +56,10 @@ def get_annotation(client, annotation_id, auth_headers):
     return fetched_annotation
 
 
-def update_annotation(client, annotation_id, update_data, auth_headers):
+def update_annotation(client, annotation_id, update_data):
     response = client.put(
         f"/annotations/{annotation_id}",
-        json=update_data,
-        headers=auth_headers,
+        json=update_data
     )
     log_api_request(
         logger,
@@ -78,8 +77,8 @@ def update_annotation(client, annotation_id, update_data, auth_headers):
     return updated_annotation
 
 
-def delete_annotation(client, annotation_id, auth_headers):
-    response = client.delete(f"/annotations/{annotation_id}", headers=auth_headers)
+def delete_annotation(client, annotation_id):
+    response = client.delete(f"/annotations/{annotation_id}")
     log_api_request(
         logger,
         "DELETE",
@@ -94,15 +93,15 @@ def delete_annotation(client, annotation_id, auth_headers):
     logger.info(f"Deleted annotation: {annotation_id}")
 
     # Verify deletion
-    response = client.get(f"/annotations/{annotation_id}", headers=auth_headers)
+    response = client.get(f"/annotations/{annotation_id}")
     assert (
         response.status_code == 404
     ), f"Failed to verify deletion of annotation: {response.status_code}"
     logger.info(f"Verified deletion of annotation: {annotation_id}")
 
 
-def get_annotations_by_content(client, content_id, auth_headers):
-    response = client.get(f"/contents/{content_id}/annotations/", headers=auth_headers)
+def get_annotations_by_content(client, content_id):
+    response = client.get(f"/contents/{content_id}/annotations/")
     log_api_request(
         logger,
         "GET",
@@ -134,7 +133,7 @@ class TestAnnotationLifecycle(BaseIntegrationTest):
         for annotation_id in self.created_annotation_ids:
             try:
                 delete_annotation(
-                    self.client, annotation_id, self.get_session_auth_headers()
+                    self.client, annotation_id
                 )
             except Exception as e:
                 self.logger.warning(
@@ -145,7 +144,7 @@ class TestAnnotationLifecycle(BaseIntegrationTest):
         for content_id in self.created_content_ids:
             try:
                 self.client.delete(
-                    f"/contents/{content_id}", headers=self.get_session_auth_headers()
+                    f"/contents/{content_id}"
                 )
             except Exception as e:
                 self.logger.warning(f"Failed to delete content {content_id}: {str(e)}")
@@ -153,7 +152,7 @@ class TestAnnotationLifecycle(BaseIntegrationTest):
     def create_test_content(self):
         content_data = create_test_content_data()
         content = create_content(
-            self.client, content_data, self.get_session_auth_headers()
+            self.client, content_data, self.test_user.id
         )
         self.created_content_ids.append(content["id"])
         return content
@@ -162,7 +161,7 @@ class TestAnnotationLifecycle(BaseIntegrationTest):
         content_id = self.create_test_content()["id"]
         annotation_data = create_test_annotation_data(content_id, self.test_user.id)
         created_annotation = create_annotation(
-            self.client, annotation_data, self.get_session_auth_headers()
+            self.client, annotation_data, self.test_user.id
         )
         self.created_annotation_ids.append(created_annotation["id"])
         return created_annotation
@@ -170,7 +169,7 @@ class TestAnnotationLifecycle(BaseIntegrationTest):
     def test_get_annotation(self):
         created_annotation = self.test_create_annotation()
         return get_annotation(
-            self.client, created_annotation["id"], self.get_session_auth_headers()
+            self.client, created_annotation["id"]
         )
 
     def test_update_annotation(self):
@@ -182,7 +181,7 @@ class TestAnnotationLifecycle(BaseIntegrationTest):
             "overall_rating": 8.5,
         }
         updated_annotation = update_annotation(
-            self.client, annotation_id, update_data, self.get_session_auth_headers()
+            self.client, annotation_id, update_data
         )
         assert updated_annotation["annotation"] == update_data["annotation"]
         assert (
@@ -193,7 +192,7 @@ class TestAnnotationLifecycle(BaseIntegrationTest):
     def test_delete_annotation(self):
         created_annotation = self.test_create_annotation()
         delete_annotation(
-            self.client, created_annotation["id"], self.get_session_auth_headers()
+            self.client, created_annotation["id"]
         )
         self.created_annotation_ids.remove(created_annotation["id"])
 
@@ -201,7 +200,7 @@ class TestAnnotationLifecycle(BaseIntegrationTest):
         created_annotation = self.test_create_annotation()
         content_id = created_annotation["content_id"]
         annotations = get_annotations_by_content(
-            self.client, content_id, self.get_session_auth_headers()
+            self.client, content_id
         )
         assert len(annotations) > 0
 

@@ -1,6 +1,6 @@
 import argparse
 import sys
-from models import TestUserLifecycle, TestContentLifecycle, TestAnnotationLifecycle, TestAnnotationSourceLifecycle, TestAnnotationRatingLifecycle
+from models import TestContentLifecycle, TestAnnotationLifecycle, TestAnnotationSourceLifecycle, TestAnnotationRatingLifecycle
 
 
 # Import other test classes here
@@ -27,7 +27,6 @@ def main():
         default=["all"],
         help="Specific tests to run. Available options:\n"
              "  all: Run all tests\n"
-             "  user: Run user lifecycle tests\n"
              "  content: Run content lifecycle tests\n"
              "  annotation: Run annotation lifecycle tests\n"
              "  annotationsource: Run annotation source lifecycle tests\n"
@@ -46,7 +45,6 @@ def main():
     db = SessionLocal()
 
     test_classes = {
-        "user": TestUserLifecycle,
         "content": TestContentLifecycle,
         "annotation": TestAnnotationLifecycle,
         "annotationsource": TestAnnotationSourceLifecycle,

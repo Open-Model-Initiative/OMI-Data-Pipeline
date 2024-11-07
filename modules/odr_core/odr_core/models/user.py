@@ -12,7 +12,6 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from odr_core.models.base import Base
-from odr_core.schemas.user import UserType
 
 
 class User(Base):
@@ -46,14 +45,13 @@ class User(Base):
         "AnnotationSource", back_populates="added_by"
     )
     sessions = relationship("UserSession", back_populates="user")
-    user_type = Column(Enum(UserType), default=UserType.user)
 
     content_events = relationship("ContentEvents", back_populates="user")
     content_reports = relationship("ContentReport", back_populates="reporter")
     content_sets = relationship("ContentSet", back_populates="created_by")
 
     def __repr__(self):
-        return f"<User(id={self.id}, username={self.username}, email={self.email})>"
+        return f"<User(id={self.id}, username={self.name}, email={self.email})>"
 
 
 class VerificationToken(Base):
@@ -68,7 +66,7 @@ class Account(Base):
     __tablename__ = 'accounts'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    userId = Column(Integer, nullable=False)
+    userId = Column(Integer, ForeignKey("users.id"), nullable=False)
     type = Column(String(255), nullable=False)
     provider = Column(String(255), nullable=False)
     providerAccountId = Column(String(255), nullable=False)
@@ -85,7 +83,7 @@ class UserSession(Base):
     __tablename__ = 'sessions'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    userId = Column(Integer, nullable=False)
+    userId = Column(Integer, ForeignKey("users.id"), nullable=False)
     expires = Column(DateTime(timezone=True), nullable=False)
     sessionToken = Column(String(255), nullable=False)
 

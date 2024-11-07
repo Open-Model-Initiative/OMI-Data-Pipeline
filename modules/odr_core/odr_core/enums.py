@@ -47,8 +47,3 @@ class EmbeddingEngineType(str, Enum):
     VOICE = "voice"
     MUSIC = "music"
     TEXT = "text"
-
-
-class UserType(str, Enum):
-    user = "user"
-    bot = "bot"

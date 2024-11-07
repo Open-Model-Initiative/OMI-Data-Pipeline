@@ -11,7 +11,6 @@ from alembic import op
 import sqlalchemy as sa
 
 from odr_core.config import settings
-from odr_core.crud.user import password_hasher
 
 
 # revision identifiers, used by Alembic.
@@ -25,7 +24,7 @@ def upgrade() -> None:
 
     username = settings.DEFAULT_SUPERUSER_USERNAME
     email = settings.DEFAULT_SUPERUSER_EMAIL
-    password = password_hasher.hash(settings.DEFAULT_SUPERUSER_PASSWORD)
+    password = "password"
     is_active = True
     is_superuser = True
     created_at = sa.func.now()
