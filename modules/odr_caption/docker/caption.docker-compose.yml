@@ -1,0 +1,17 @@
+name: odr-caption
+services:
+  caption:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.caption
+    ports:
+      - 32100:32100
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - HF_HOME=/data/local/hf_cache

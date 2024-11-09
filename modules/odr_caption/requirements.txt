@@ -8,7 +8,6 @@ pydantic
 termcolor
 pillow
 python-dotenv
-outlines
 torch
 torchvision
 httpx

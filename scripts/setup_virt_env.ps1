@@ -24,5 +24,6 @@ python -m pip install --upgrade pip
 pip install -e ./modules/odr_core
 pip install -e ./modules/odr_api
 pip install -e ./modules/odr_monitoring
+pip install -e ./modules/odr_caption
 pip install -r ./requirements-dev.txt
 pre-commit install

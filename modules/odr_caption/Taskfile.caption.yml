@@ -1,28 +1,9 @@
 version: '3'
 
-# dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
-
 tasks:
-  qwen-7b:
-    cmds:
-      - python -m vllm.entrypoints.openai.api_server --model Qwen/Qwen2-VL-7B-Instruct  --host 0.0.0.0 --port 32000
-
-  transformers:
-    cmds:
-      - pip install git+https://github.com/huggingface/transformers.git --upgrade
-
   outlines:
     cmds:
       - pip install git+https://github.com/dottxt-ai/outlines --upgrade
-
-  start:
-    cmds:
-      - uvicorn odr_caption.server.app:app --reload --host 0.0.0.0 --port 32100
-
-  stop:
-    cmds:
-      - pkill -f "uvicorn odr_caption.server.app:app"
-
   install:
     cmds:
       - pip install -e ./modules/odr_caption
@@ -30,3 +11,15 @@ tasks:
       - pip install flash-attn --no-build-isolation
       - task caption:outlines
       # - task caption:transformers
+
+  build:
+    cmds:
+      - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml build
+
+  run:
+    cmds:
+      - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml up
+
+  stop:
+    cmds:
+      - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml down

@@ -1,14 +1,7 @@
 version: '3'
 
-env:
-  CWD: '{{.TASKFILE_DIR}}'
-  PYTHON: '{{.CWD}}/vllm_venv/bin/python'
 
 tasks:
-  print-cwd:
-    cmds:
-      - echo {{.CWD}}
-
   create-venv:
     cmds:
       - python3 -m venv {{.CWD}}/vllm_venv
