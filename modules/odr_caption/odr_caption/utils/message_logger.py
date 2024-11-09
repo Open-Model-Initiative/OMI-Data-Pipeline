@@ -1,5 +1,3 @@
-# knowledge_worker/graph/message_logger.py
-
 import json
 from typing import List
 from copy import deepcopy

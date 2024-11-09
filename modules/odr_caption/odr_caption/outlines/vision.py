@@ -1,4 +1,3 @@
-# Load the image
 from PIL import Image
 from pathlib import Path
 from urllib.request import urlopen

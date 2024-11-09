@@ -69,7 +69,8 @@ pixtral_instruction = """
       "category": "Relationship",
       "confidence": 0.90
     },
-   }
+  ]
+}
 </Examples>
 </TagCategories>
 <ShortCaption note="The short caption is a concise single sentence caption of the image content with a maximum length of 100 characters.">

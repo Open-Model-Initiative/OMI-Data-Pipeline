@@ -1,9 +1,3 @@
-"""
-file: main.py
-description: Main entry point for the vision worker
-keywords: fastapi, florence, vision, caption
-"""
-
 from fastapi import FastAPI, File, UploadFile, HTTPException, Body, Form
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image

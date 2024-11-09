@@ -12,14 +12,14 @@ ENV PYTHONUNBUFFERED=1 \
 
 # Install system dependencies and Python
 RUN apt-get update && apt-get install -y \
-    python3.11 \
-    python3-pip \
-    python3.11-dev \
-    python3.11-venv \
     build-essential \
     exiftool \
     git \
     ninja-build \
+    python3-pip \
+    python3.11 \
+    python3.11-dev \
+    python3.11-venv \
     && rm -rf /var/lib/apt/lists/*
 
 # Set Python 3.11 as default

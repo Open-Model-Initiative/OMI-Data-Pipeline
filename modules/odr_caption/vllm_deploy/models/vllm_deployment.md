@@ -521,3 +521,4 @@ To create a new model configuration file, follow these steps:
      block_size: 16
      tensor_parallel_size: 1
      dtype: auto
+   ```
