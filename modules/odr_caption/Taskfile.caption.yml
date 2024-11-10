@@ -10,6 +10,7 @@ tasks:
       - pip install -r ./modules/odr_caption/requirements.txt
       - pip install flash-attn --no-build-isolation
       - task caption:outlines
+      - mkdir ./modules/odr_caption/local/cache
       # - task caption:transformers
 
   build:
@@ -19,6 +20,9 @@ tasks:
   run:
     cmds:
       - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml up
+  watch:
+    cmds:
+      - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml watch
 
   stop:
     cmds:

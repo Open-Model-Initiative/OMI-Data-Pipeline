@@ -9,6 +9,7 @@ import base64
 import threading
 from functools import lru_cache
 from odr_caption.utils.logger import logger
+import time
 
 from odr_caption.outlines.StructuredCaption import StructuredCaption
 
@@ -19,9 +20,11 @@ print(f"Device name: {torch.cuda.get_device_name(0)}")
 thread_local = threading.local()
 app = FastAPI()
 
-logger.info("Initializing StructuredCaption")
+logger.info("Starting StructuredCaption initialization...")
+start_time = time.time()
 structured_caption = StructuredCaption()
-logger.info("StructuredCaption initialized")
+init_time = time.time() - start_time
+logger.info(f"StructuredCaption initialization completed in {init_time:.2f} seconds")
 
 # Add CORS middleware
 app.add_middleware(

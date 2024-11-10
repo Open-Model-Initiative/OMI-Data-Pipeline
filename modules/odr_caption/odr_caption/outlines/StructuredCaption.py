@@ -1,4 +1,5 @@
 from PIL import Image
+import time
 import outlines
 import outlines.samplers
 from odr_caption.utils.logger import logger
@@ -15,15 +16,28 @@ from odr_caption.schemas.caption import ImageData
 
 class StructuredCaption:
     def __init__(self, model_config: VisionModel = default_vision_model):
+        start_total = time.time()
         self.model_config = model_config
         logger.info(
             f"Initializing StructuredCaption with model: {model_config.model_name}"
         )
-        self.model = get_vision_model(model_config)
-        logger.info("Model initialized successfully. Generating guided decoder...")
 
+        # Time model loading
+        start_model = time.time()
+        self.model = get_vision_model(model_config)
+        model_time = time.time() - start_model
+        logger.info(f"Model initialization completed in {model_time:.2f} seconds")
+
+        # Time decoder generation
+        start_decoder = time.time()
         sampler = outlines.samplers.multinomial(temperature=0.5)
+        logger.info("Generating decoder...")
         self.generator = outlines.generate.json(self.model, ImageData, sampler=sampler)
+        decoder_time = time.time() - start_decoder
+        logger.info(f"Decoder generation completed in {decoder_time:.2f} seconds")
+
+        total_time = time.time() - start_total
+        logger.info(f"Total StructuredCaption initialization took {total_time:.2f} seconds")
         logger.debug("StructuredCaption initialized successfully")
 
     def __call__(

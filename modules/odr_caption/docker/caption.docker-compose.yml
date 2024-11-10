@@ -13,5 +13,14 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+    volumes:
+      - ${HF_HOME}:/models
+      - ../odr_caption:/app/odr_caption
+      - ../local/cache:/root/.cache/
     environment:
-      - HF_HOME=/data/local/hf_cache
+      - HF_HOME=/models
+    develop:
+      watch:
+        - action: sync
+          path: ..
+          target: /app
