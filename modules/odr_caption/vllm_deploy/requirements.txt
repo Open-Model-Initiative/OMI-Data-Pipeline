@@ -1,2 +1,0 @@
-vllm
-huggingface-hub[cli]
