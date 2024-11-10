@@ -15,12 +15,11 @@ services:
               capabilities: [gpu]
     volumes:
       - ${HF_HOME}:/models
-      - ../odr_caption:/app/odr_caption
       - ../local/cache:/root/.cache/
     environment:
       - HF_HOME=/models
     develop:
       watch:
         - action: sync
-          path: ..
-          target: /app
+          path: ../odr_caption
+          target: /app/odr_caption
