@@ -1,13 +1,8 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Body, Form
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
-import io
-from typing import Optional
-import os
 import torch
-import base64
 import threading
-from functools import lru_cache
 from odr_caption.utils.logger import logger
 import time
 
@@ -34,14 +29,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-async def generate_caption():
-    pass
-
-
-def get_client():
-    pass
 
 
 @app.post("/generate_caption")
