@@ -7,7 +7,7 @@ import os
 import logging
 
 
-def configure_logger(output_log_dir: str, name: str = __name__) -> logging.Logger:
+def configure_logger(output_log_dir: str) -> logging.Logger:
     logger.setLevel(logging.DEBUG)  # Set to DEBUG for detailed logs
     output_log_path = f"{output_log_dir}/graph_extraction.log"
 
