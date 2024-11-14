@@ -5,7 +5,6 @@ fastapi
 click
 openai
 pydantic
-termcolor
 pillow
 python-dotenv
 torch
