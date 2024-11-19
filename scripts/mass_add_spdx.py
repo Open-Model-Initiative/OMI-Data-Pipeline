@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import os
 import argparse
 import fnmatch
@@ -11,7 +12,7 @@ SPDX_COMMENT_STYLES = {
     'double_slash': {
         'start': '// ',
         'end': '',
-        'extensions': ['.js', '.ts', '.java', '.c', '.cpp', '.cs']
+        'extensions': ['.js', '.ts']
     },
     'html': {
         'start': '<!-- ',

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
@@ -7,12 +8,16 @@ repos:
     -   id: check-yaml
     -   id: check-added-large-files
         args: ['--maxkb=2000']
-    # -   id: check-file-contents
-    #     name: Check SPDX license identifier
-    #     files: \.(py|js|ts|sh|bat|cmd|html|xml|java|c|cpp|cs|yaml|yml)$
-    #     content: 'SPDX-License-Identifier: Apache-2.0'
 -   repo: https://github.com/pycqa/flake8
     rev: 7.1.1
     hooks:
     -   id: flake8
         args: [--config=.flake8]
+-   repo: local
+    hooks:
+    -   id: check-spdx-license
+        name: Check SPDX License Headers
+        entry: python ./scripts/check_spdx.py
+        language: python
+        types_or: [python, javascript, jsx, ts, tsx, shell, batch, html, xml, yaml]
+        files: \.(py|js|ts|sh|bat|cmd|html|xml|yaml|yml)$
