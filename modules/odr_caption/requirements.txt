@@ -1,0 +1,15 @@
+vllm
+transformers
+qwen-vl-utils[decord]
+fastapi
+click
+openai
+pydantic
+pillow
+python-dotenv
+torch
+torchvision
+httpx
+accelerate
+termcolor
+python-multipart

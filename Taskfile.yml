@@ -9,6 +9,7 @@ includes:
   frontend: ./modules/odr_frontend/Taskfile.yml
   api-test: ./modules/odr_api/tests/Taskfile.api.test.yml
   monitoring: ./modules/odr_monitoring/Taskfile.yml
+  caption: ./modules/odr_caption/Taskfile.caption.yml
 
 dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
 vars:
