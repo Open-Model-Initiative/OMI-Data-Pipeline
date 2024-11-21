@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import io
 import logging
 import streamlit as st

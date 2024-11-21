@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from PIL import Image
 import base64
 from io import BytesIO

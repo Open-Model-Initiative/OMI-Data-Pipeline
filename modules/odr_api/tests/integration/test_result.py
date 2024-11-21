@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import httpx
 from odr_api.logger import get_logger, log_api_error, log_api_request
 from typing import List

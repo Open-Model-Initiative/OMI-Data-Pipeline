@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import type { IDBUser } from '$lib/server/pg';
 import type { IFeatureToggle } from '$lib/server/pg';
 

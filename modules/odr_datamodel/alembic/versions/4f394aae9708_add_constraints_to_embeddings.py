@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Add constraints to embeddings'
 
 Revision ID: 4f394aae9708

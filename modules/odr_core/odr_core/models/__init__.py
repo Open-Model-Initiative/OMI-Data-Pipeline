@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from odr_core.models.base import Base
 from odr_core.models.user import User
 from odr_core.models.team import Team, UserTeam

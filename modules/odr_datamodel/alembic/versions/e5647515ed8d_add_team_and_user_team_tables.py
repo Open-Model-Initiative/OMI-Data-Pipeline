@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Add team and user_team tables
 
 Revision ID: e5647515ed8d

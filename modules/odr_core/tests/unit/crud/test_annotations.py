@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from sqlalchemy.orm import Session
 from odr_core.crud.annotation import (
     create_annotation_rating, get_annotation_rating, update_annotation_rating, delete_annotation_rating, get_annotation_ratings,

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Add Content and ContentAuthor tables
 
 Revision ID: ddb9c9a9ecce

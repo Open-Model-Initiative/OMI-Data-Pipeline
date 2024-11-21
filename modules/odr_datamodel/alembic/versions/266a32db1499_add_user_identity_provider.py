@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Add user identity provider'
 
 Revision ID: 266a32db1499

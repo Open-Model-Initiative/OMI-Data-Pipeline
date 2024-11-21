@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import logging
 import sys
 from odr_monitoring.config import logging_config

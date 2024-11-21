@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

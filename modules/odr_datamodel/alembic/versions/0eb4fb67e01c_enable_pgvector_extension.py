@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Enable pgvector extension'
 
 Revision ID: 0eb4fb67e01c

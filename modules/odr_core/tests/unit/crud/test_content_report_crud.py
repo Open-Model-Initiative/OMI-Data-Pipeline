@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import pytest
 from odr_core.crud.content_report import create_content_report, get_content_report, update_content_report, delete_content_report
 from odr_core.schemas.content_report import ContentReportCreate, ContentReportUpdate, ReportStatus

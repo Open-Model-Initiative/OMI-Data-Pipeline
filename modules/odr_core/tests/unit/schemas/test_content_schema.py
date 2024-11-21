@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import pytest
 from odr_core.models.content import ContentType, ContentStatus
 from odr_core.schemas.content import Content as ContentSchema

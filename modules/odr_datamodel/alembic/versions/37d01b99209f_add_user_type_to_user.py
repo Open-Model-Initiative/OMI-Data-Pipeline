@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Add user_type to user'
 
 Revision ID: 37d01b99209f

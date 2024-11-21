@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { join } from 'path';
 import type { Config } from 'tailwindcss';
 import forms from '@tailwindcss/forms';

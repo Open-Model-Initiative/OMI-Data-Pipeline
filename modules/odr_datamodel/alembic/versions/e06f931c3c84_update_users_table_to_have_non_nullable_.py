@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Update users table to have non nullable and default values for flags'
 
 Revision ID: e06f931c3c84
