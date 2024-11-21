@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+  outlines:
+    cmds:
+      - pip install git+https://github.com/dottxt-ai/outlines --upgrade
+  install:
+    cmds:
+      - pip install -e ./modules/odr_caption
+      - pip install -r ./modules/odr_caption/requirements.txt
+      - pip install flash-attn --no-build-isolation
+      - task caption:outlines
+      - mkdir ./modules/odr_caption/local/cache
+
+  build:
+    cmds:
+      - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml build
+
+  run:
+    cmds:
+      - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml up
+  watch:
+    cmds:
+      - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml watch
+
+  stop:
+    cmds:
+      - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml down
