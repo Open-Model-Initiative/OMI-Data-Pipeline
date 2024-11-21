@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from fastembed import ImageEmbedding
 import chromadb
 from PIL import Image

@@ -36,7 +36,9 @@ IGNORE_PATTERNS = [
     'dist',
     '.idea',
     '.vscode',
-    'hugging_face',
+    'cache',
+    'env',
+    'tmp',
     '.svelte-kit'
 ]
 
