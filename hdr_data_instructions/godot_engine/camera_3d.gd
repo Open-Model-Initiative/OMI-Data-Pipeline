@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 extends Camera3D
 
 @export var mouse_sensitivity := 0.002
