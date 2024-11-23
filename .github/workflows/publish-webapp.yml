@@ -12,8 +12,8 @@ on:
     branches: [ "main" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -21,7 +21,6 @@ env:
   # github.repository as <account>/<repo>
   API_IMAGE_NAME: ${{ github.repository }}/odr-api
   FRONTEND_IMAGE_NAME: ${{ github.repository }}/odr-frontend
-  CAPTION_IMAGE_NAME: ${{ github.repository }}/odr-caption
 
 jobs:
   build:
@@ -76,12 +75,6 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}
 
-      - name: Extract Caption Docker metadata
-        id: meta-caption
-        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.CAPTION_IMAGE_NAME }}
-
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push API Docker image
@@ -108,18 +101,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and push Caption Docker image
-        id: build-and-push-caption
-        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
-        with:
-          context: ./modules/odr_caption
-          file: ./modules/odr_caption/docker/Dockerfile.caption
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta-caption.outputs.tags }}
-          labels: ${{ steps.meta-caption.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
       # repository is public to avoid leaking data.  If you would like to publish
@@ -141,11 +122,4 @@ jobs:
           DIGEST: ${{ steps.build-and-push-frontend.outputs.digest }}
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
-
-      - name: Sign the published Caption Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          TAGS: ${{ steps.meta-caption.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push-caption.outputs.digest }}
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
