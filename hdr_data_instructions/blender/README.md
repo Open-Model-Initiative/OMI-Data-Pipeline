@@ -12,9 +12,13 @@ This process was tested on Blender 4.2.3 LTS.
 
 # How to Run
 
-Open the initial_scene.blender, open the script panel, and open/load in the process_script.py
+Open the initial_scene.blend file in Blender, open the script panel, and open/load in the process_script.py
 
-Run the script and all objects in a relative /objects directory will be processed with renders taken various resolutions, angles, and background colours. More details provided in the "What it Does" section below.
+Create a folder named "objects" in the same directory as the initial_scene.blend file and process_script.py, where you can add models you want to take screenshots of.
+
+Run the script and all objects in the objects directory will be processed with renders taken at various resolutions, angles, and background colours. More details provided in the "What it Does" section below.
+
+Note that files will be moved into a 'processed' folder when completed, and output will be located in an 'output' folder.
 
 Alternatively use blender on the CLI:
 
