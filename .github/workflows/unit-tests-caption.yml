@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: Apache-2.0
+name: Caption Module Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'modules/odr_caption/**'
+      - '.github/workflows/caption-tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'modules/odr_caption/**'
+      - '.github/workflows/caption-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./modules/odr_caption
+
+    services:
+      vllm:
+        image: ghcr.io/vllm-project/vllm:latest
+        ports:
+          - 32000:32000
+        env:
+          MODEL: Qwen/Qwen2-7B-Instruct
+        options: >-
+          --health-cmd "curl -f http://localhost:32000/v1/health"
+          --health-interval 30s
+          --health-timeout 10s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pytest pytest-cov python-dotenv
+
+    - name: Create .env file
+      run: |
+        echo "VLLM_API_BASE=http://localhost:32000/v1" > .env
+
+    - name: Run smoke test
+      run: |
+        python smoke.py
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: caption
+        name: caption-module
+        fail_ci_if_error: true

@@ -1,0 +1,67 @@
+# SPDX-License-Identifier: Apache-2.0
+name: Frontend Module Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'modules/odr_frontend/**'
+      - '.github/workflows/frontend-tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'modules/odr_frontend/**'
+      - '.github/workflows/frontend-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./modules/odr_frontend
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: false
+
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+    - name: Setup pnpm cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Install dependencies
+      run: |
+        pnpm install
+        pnpm exec playwright install --with-deps
+
+    - name: Run unit tests with coverage
+      run: pnpm test:unit
+
+    - name: Run integration tests
+      run: pnpm test:integration
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.yml
+        flags: frontend
+        name: frontend-module
+        fail_ci_if_error: true

@@ -1,0 +1,39 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 1%
+      monitoring:
+        target: 10%
+        paths:
+          - "modules/odr_monitoring/"
+        flags:
+          - monitoring
+      core-unit:
+        target: 10%
+        paths:
+          - "modules/odr_core/"
+        flags:
+          - core-unit
+      core-integration:
+        target: 10%
+        paths:
+          - "modules/odr_core/"
+        flags:
+          - core-integration
+
+flags:
+  monitoring:
+    paths:
+      - modules/odr_monitoring/
+  core-unit:
+    paths:
+      - modules/odr_core/
+  core-integration:
+    paths:
+      - modules/odr_core/
+
+ignore:
+  - "tests/"
+  - "**/__init__.py"
