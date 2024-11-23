@@ -13,3 +13,4 @@ httpx
 accelerate
 termcolor
 python-multipart
+uvicorn

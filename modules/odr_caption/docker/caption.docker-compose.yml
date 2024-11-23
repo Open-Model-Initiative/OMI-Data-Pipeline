@@ -15,7 +15,7 @@ services:
               count: all
               capabilities: [gpu]
     volumes:
-      - ${HF_HOME}:/models
+      - ${HF_HOME:-~/.cache}:/models
       - ../local/cache:/root/.cache/
     environment:
       - HF_HOME=/models
