@@ -1,8 +1,11 @@
 FROM vllm/vllm-openai:v0.6.4.post1
 
+# Create a non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
 
 ENV VLLM_VERSION=v0.6.4.post1
 ENV DO_NOT_TRACK=1
+
 # Install dependencies
 COPY ./requirements.txt /app/requirements.txt
 
@@ -11,6 +14,11 @@ COPY . /app
 RUN pip3 install --no-cache-dir -e /app \
     && pip3 install git+https://github.com/dottxt-ai/outlines --upgrade
 
+# Set proper permissions for the application directory and vllm-workspace
+RUN chown -R appuser:appuser /app && \
+    mkdir -p /vllm-workspace && \
+    chown -R appuser:appuser /vllm-workspace
+
 # Set Python path to include the modules
 ENV PYTHONPATH=/app:/app/modules:$PYTHONPATH
 
@@ -18,6 +26,10 @@ ENV PYTHONPATH=/app:/app/modules:$PYTHONPATH
 EXPOSE 32100
 
 COPY --chmod=775 endpoints-entrypoint.sh entrypoint.sh
+RUN chown appuser:appuser entrypoint.sh
+
+# Switch to non-root user
+USER appuser
 
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
 CMD ["tail", "-f", "/dev/null"]
