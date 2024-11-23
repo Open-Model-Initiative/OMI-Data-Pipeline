@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Add team-user relationship
 
 Revision ID: 6f85df1a1521

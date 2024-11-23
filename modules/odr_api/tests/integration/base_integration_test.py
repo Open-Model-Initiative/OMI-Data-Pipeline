@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import httpx
 from odr_api.logger import log_api_error
 import random

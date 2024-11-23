@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """merge multiple heads
 
 Revision ID: 6917b71d9140

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import pytest
 from pydantic import ValidationError
 from odr_core.schemas.content_report import ContentReportCreate, ContentReport, ReportStatus

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import pytest
 from sqlalchemy.orm import Session
 from odr_core.crud.content import (

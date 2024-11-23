@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # odr_core/models/embedding.py
 
 from sqlalchemy import (

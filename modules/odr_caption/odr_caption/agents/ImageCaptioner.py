@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import base64
 from typing import Optional, Union
 from PIL import Image

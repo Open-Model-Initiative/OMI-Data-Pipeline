@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from pydantic import BaseModel, Field, confloat, constr
 from pydantic.types import StringConstraints
 from typing import List

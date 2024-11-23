@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Create initial tables
 
 Revision ID: 1fa445436f65

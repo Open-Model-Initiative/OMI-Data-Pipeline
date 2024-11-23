@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from pydantic_settings import BaseSettings
 from pydantic import ConfigDict
 

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Create users table
 
 Revision ID: 128baa363b71

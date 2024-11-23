@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Refactor schema to support Auth.js'
 
 Revision ID: 282031c50195
