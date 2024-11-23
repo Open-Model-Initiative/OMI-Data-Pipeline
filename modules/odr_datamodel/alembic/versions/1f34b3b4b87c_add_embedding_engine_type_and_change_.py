@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Add embedding engine type and change embedding to vector'
 
 Revision ID: 1f34b3b4b87c

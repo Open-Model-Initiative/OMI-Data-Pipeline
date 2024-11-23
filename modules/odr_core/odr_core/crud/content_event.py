@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from sqlalchemy.orm import Session
 from odr_core.models.content import ContentEvents, ContentStatus
 from odr_core.schemas.content import ContentEventCreate, ContentEventUpdate

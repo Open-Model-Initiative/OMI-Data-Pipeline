@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Add cascading deletion to content source and distinct constraint'
 
 Revision ID: d109dc6c5755

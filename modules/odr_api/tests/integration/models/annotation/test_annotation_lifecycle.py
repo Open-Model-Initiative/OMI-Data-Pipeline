@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from base_integration_test import BaseIntegrationTest, random_string
 from odr_api.logger import log_api_request, get_logger
 import pytest

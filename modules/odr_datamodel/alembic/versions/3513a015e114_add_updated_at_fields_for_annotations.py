@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Add updated_at fields for annotations'
 
 Revision ID: 3513a015e114

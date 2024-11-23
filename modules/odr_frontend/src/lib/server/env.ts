@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import * as dotenv from 'dotenv';
 import { env } from '$env/dynamic/private';
 dotenv.config();

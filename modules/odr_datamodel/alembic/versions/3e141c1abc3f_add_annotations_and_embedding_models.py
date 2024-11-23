@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Add annotations and embedding models
 
 Revision ID: 3e141c1abc3f

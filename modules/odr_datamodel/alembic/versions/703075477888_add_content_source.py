@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Add content source'
 
 Revision ID: 703075477888

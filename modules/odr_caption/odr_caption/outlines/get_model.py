@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from vllm import LLM
 from vllm.sampling_params import SamplingParams
 import torch

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import os
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from huggingface_hub import HfApi

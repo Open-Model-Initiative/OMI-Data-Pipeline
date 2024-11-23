@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Make team names unique'
 
 Revision ID: 31ba65eb76f9

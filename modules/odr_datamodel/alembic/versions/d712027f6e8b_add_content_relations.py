@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Add content relations
 
 Revision ID: d712027f6e8b

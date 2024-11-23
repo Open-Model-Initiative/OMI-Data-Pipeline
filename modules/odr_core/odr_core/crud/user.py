@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # odr_core/crud/user.py
 from sqlalchemy.orm import Session
 from sqlalchemy import update

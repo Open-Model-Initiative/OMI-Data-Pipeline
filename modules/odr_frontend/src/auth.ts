@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { SvelteKitAuth, type Session, type User } from '@auth/sveltekit';
 import GitHub from '@auth/sveltekit/providers/github';
 import discord from '@auth/sveltekit/providers/discord';

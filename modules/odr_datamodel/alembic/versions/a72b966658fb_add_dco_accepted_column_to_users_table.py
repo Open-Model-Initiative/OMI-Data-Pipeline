@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Add dco_accepted column to users table'
 
 Revision ID: a72b966658fb
