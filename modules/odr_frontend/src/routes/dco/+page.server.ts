@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { redirect, fail } from '@sveltejs/kit';
 import { pgClient } from '$lib/server/pg';
 import type { Actions } from './$types';

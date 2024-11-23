@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { PG_API, pgClient } from '$lib/server/pg';
 import type { RequestHandler } from '@sveltejs/kit';
 

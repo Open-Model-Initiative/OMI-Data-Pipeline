@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { pgClient, type IFeatureToggle } from '$lib/server/pg';
 import type { RequestHandler } from '@sveltejs/kit';
 

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'Add field requirements to Annotations'
 
 Revision ID: 680d29fa9b6c

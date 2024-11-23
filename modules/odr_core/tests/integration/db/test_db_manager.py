@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from sqlalchemy import create_engine

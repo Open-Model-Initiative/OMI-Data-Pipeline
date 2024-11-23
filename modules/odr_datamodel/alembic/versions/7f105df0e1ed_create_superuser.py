@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'create superuser'
 
 Revision ID: 7f105df0e1ed

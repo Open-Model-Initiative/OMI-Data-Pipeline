@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from odr_api.api.endpoints import (

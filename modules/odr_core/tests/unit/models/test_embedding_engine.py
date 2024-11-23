@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from odr_core.models.embedding import EmbeddingEngine, ContentEmbedding, AnnotationEmbedding
 import pytest
 from sqlalchemy.exc import IntegrityError

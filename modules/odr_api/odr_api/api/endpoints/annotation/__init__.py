@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from odr_api.api.endpoints.annotation.annotation import router as annotation_router
 from odr_api.api.endpoints.annotation.annotation_source import router as annotation_source_router
 from odr_api.api.endpoints.annotation.annotation_rating import router as annotation_rating_router

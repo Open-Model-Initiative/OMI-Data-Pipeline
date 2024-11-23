@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 from sqlalchemy.exc import IntegrityError
 from odr_core.models.content import ContentReport, ContentSet, ContentSetItem, ReportStatus, Content, ContentType, ContentStatus, ContentAuthor
 from odr_core.schemas.content import ContentCreate

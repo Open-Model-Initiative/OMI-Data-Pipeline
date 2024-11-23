@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """'create feature toggles table and insert initial toggles'
 
 Revision ID: 2f2d84a873f5

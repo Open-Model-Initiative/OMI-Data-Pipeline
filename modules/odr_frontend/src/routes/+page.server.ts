@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { PG_API } from '$lib/server/pg';

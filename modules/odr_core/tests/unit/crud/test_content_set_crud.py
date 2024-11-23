@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import pytest
 from odr_core.crud.content_set import (
     create_content_set, get_content_set, update_content_set, delete_content_set,

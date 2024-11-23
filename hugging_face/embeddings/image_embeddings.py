@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import chromadb
 from chromadb.config import Settings
 from fastembed import ImageEmbedding
