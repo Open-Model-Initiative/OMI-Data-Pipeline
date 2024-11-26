@@ -16,10 +16,21 @@ tasks:
   build:
     cmds:
       - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml build
+  rebuild:
+    cmds:
+      - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml up --build
 
   run:
     cmds:
       - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml up
+
+  qwen7b:
+    cmds:
+      - ODR_VISION_MODEL=unsloth/Qwen2-VL-7B-Instruct docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml up
+
+  qwen2b:
+    cmds:
+      - ODR_VISION_MODEL=Qwen/Qwen2-VL-2B-Instruct docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml up
   watch:
     cmds:
       - docker compose -f ./modules/odr_caption/docker/caption.docker-compose.yml watch
