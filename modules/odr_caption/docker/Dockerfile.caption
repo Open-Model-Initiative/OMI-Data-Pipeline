@@ -1,7 +1,9 @@
 FROM vllm/vllm-openai:v0.6.4.post1
 
-# Create a non-root user
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+# Create a non-root user and set up cache directory
+RUN groupadd -r appuser && useradd -r -g appuser appuser \
+    && mkdir -p /home/appuser/.cache \
+    && chown -R appuser:appuser /home/appuser
 
 ENV VLLM_VERSION=v0.6.4.post1
 ENV DO_NOT_TRACK=1
@@ -19,6 +21,9 @@ RUN pip3 install --no-cache-dir -e /app \
 
 # Set Python path to include the modules
 ENV PYTHONPATH=/app:/app/modules:$PYTHONPATH
+
+# Set cache directory environment variable
+ENV TRANSFORMERS_CACHE=/vllm-workspace/cache
 
 # Expose the port the app runs on
 EXPOSE 32100
