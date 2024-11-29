@@ -2,9 +2,40 @@
 	import { page } from '$app/stores';
 	import UploadIcon from '$lib/icons/UploadIcon.svelte';
 	import { FileDropzone } from '@skeletonlabs/skeleton';
+	import { enhance } from '$app/forms';
 
 	$: featureToggles = $page.data.featureToggles;
 	$: user = $page.data.session?.user;
+
+	const acceptedFileTypes = ['.dng'];
+	let uploadStatus = '';
+	let uploadProgress = 0;
+
+	function handleFileUpload(event: CustomEvent<File[]>) {
+		const files = event.detail;
+		if (files.length > 0) {
+			const file = files[0];
+			if (acceptedFileTypes.some(type => file.name.endsWith(type))) {
+				uploadStatus = 'Uploading...';
+				// The form will be submitted automatically
+			} else {
+				uploadStatus = `Invalid file type: ${file.name}`;
+			}
+		}
+	}
+
+	function handleSubmit(event: SubmitEvent) {
+		uploadProgress = 0;
+		const formData = new FormData(event.target as HTMLFormElement);
+		const xhr = new XMLHttpRequest();
+		xhr.open('POST', '?/upload');
+		xhr.upload.onprogress = (e) => {
+			if (e.lengthComputable) {
+				uploadProgress = Math.round((e.loaded * 100) / e.total);
+			}
+		};
+		xhr.send(formData);
+	}
 </script>
 
 <svelte:head>
@@ -14,23 +45,34 @@
 <main class="space-y-4">
 	<div class="container h-full mx-auto grid grid-cols-4 gap-4">
 		{#if featureToggles['HDR Image Upload']}
-			<FileDropzone name="files">
-				<svelte:fragment slot="lead">
-					<figure class="flex items-center justify-center">
-						<UploadIcon />
-					</figure>
-				</svelte:fragment>
-				<svelte:fragment slot="message">Upload Images</svelte:fragment>
-				<svelte:fragment slot="meta">Currently only accepting RAW images in .DNG</svelte:fragment>
-			</FileDropzone>
+			<form method="POST" action="?/upload" use:enhance on:submit={handleSubmit} enctype="multipart/form-data">
+				<FileDropzone name="file" accept={acceptedFileTypes.join(',')} on:files={handleFileUpload}>
+					<svelte:fragment slot="lead">
+						<figure class="flex items-center justify-center">
+							<UploadIcon />
+						</figure>
+					</svelte:fragment>
+					<svelte:fragment slot="message">Upload Images</svelte:fragment>
+					<svelte:fragment slot="meta">Currently only accepting RAW images in .DNG</svelte:fragment>
+				</FileDropzone>
+				<button type="submit" class="mt-4">Upload</button>
+			</form>
+			{#if uploadStatus}
+				<div class="mt-4">
+					<p>{uploadStatus}</p>
+					{#if uploadProgress > 0 && uploadProgress < 100}
+						<progress value={uploadProgress} max="100"></progress>
+					{/if}
+				</div>
+			{/if}
 		{/if}
 
-		<div class="card variant-filled-surface">
+		<!-- <div class="card variant-filled-surface">
 			<header class="card-header text-lg font-bold text-primary-200">
 				<a href="/queue">Queue</a>
 			</header>
 			<section class="p-4">List content pending approval here...</section>
-		</div>
+		</div> -->
 
 		{#if featureToggles['Show Datasets']}
 			<div class="card variant-filled-surface">

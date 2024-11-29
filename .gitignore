@@ -82,3 +82,6 @@ models_cache/
 
 # Embedding models
 **/models--**
+
+# Local uploads
+uploads/
