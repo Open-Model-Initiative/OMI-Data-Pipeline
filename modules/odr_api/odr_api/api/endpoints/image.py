@@ -162,7 +162,7 @@ async def create_jpg_preview(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-# Endpoint for metadata retrieval
+# TODO: Needs updated to use exiftool as well
 @router.post("/image/metadata")
 async def get_image_metadata(file: UploadFile = File(...)):
     try:
@@ -176,13 +176,6 @@ async def get_image_metadata(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-# For debugging
-# docker cp $(docker ps --filter name=omi-postgres-odr-api -q):./app/cleaned_image_exiftool.dng ./cleaned_image_exiftool.dng
-# def save_image_locally(image_bytes: bytes, filename: str):
-#     with open(filename, 'wb') as f:
-#         f.write(image_bytes)
 
 
 def remove_metadata_with_exiftool(input_bytes):
@@ -252,9 +245,6 @@ async def clean_image_metadata(file: UploadFile = File(...)):
         contents = await file.read()
 
         cleaned_image_bytes = remove_metadata_with_exiftool(contents)
-        # For debugging
-        # save_image_locally(cleaned_image_bytes, 'cleaned_image_exiftool.dng')
-
         encoded_image = base64.b64encode(cleaned_image_bytes).decode('utf-8')
 
         return {
