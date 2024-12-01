@@ -25,6 +25,7 @@
 
 				const formData = new FormData();
 				formData.append('file', file);
+				formData.append('userId', user?.id ?? '');
 
 				try {
 					const response = await fetch('?/upload', {
@@ -33,7 +34,20 @@
 					});
 
 					if (response.ok) {
-						uploadStatus = `${file.name} uploaded successfully`;
+						const result = await response.json();
+						if (result.type === 'success') {
+							const data = JSON.parse(result.data);
+							const isSuccess = data[1];
+							const message = data[2];
+
+							if (isSuccess) {
+								uploadStatus = `${file.name} uploaded successfully`;
+							} else {
+								errorArray.push(`Failed to upload ${file.name}: ${message}`);
+							}
+						} else {
+							errorArray.push(`Failed to upload ${file.name}: Unexpected response type`);
+						}
 					} else {
 						errorArray.push(`Failed to upload ${file.name}: ${response.statusText || 'Unknown error'}`);
 					}

@@ -61,16 +61,21 @@ export const actions = {
 	upload: async ({ request }: RequestEvent) => {
 		const formData = await request.formData();
 		const file = formData.get('file');
+		const userId = formData.get('userId');
 
 		if (!(file instanceof Blob)) {
 			return { success: false, error: 'No file uploaded' };
+		}
+
+		if (!userId || typeof userId !== 'string') {
+			return { success: false, error: 'No user ID provided' };
 		}
 
 		try {
 			const originalFilename = file.name;
 			const fileExtension = originalFilename.split('.').pop();
 			const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
-			const uniqueFilename = `${timestamp}.${fileExtension}`;
+			const uniqueFilename = `${userId}_${timestamp}.${fileExtension}`;
 
 			if (process.env.NODE_ENV === 'production') {
 			  // S3 upload for production
@@ -107,11 +112,11 @@ export const actions = {
 				// Create JPG preview
 				const jpgData = await makeApiCall('/image/jpg-preview', cleanedBlob, uniqueFilename);
 				const jpgBuffer = Buffer.from(jpgData.jpg_preview, 'base64');
-				const jpgFilePath = join(UPLOAD_DIR, `${timestamp}.jpg`);
+				const jpgFilePath = join(UPLOAD_DIR, `${userId}_${timestamp}.jpg`);
 				await writeFile(jpgFilePath, jpgBuffer);
 
 				// Save metadata to a json file
-				const metadataFilePath = join(UPLOAD_DIR, `${timestamp}.json`);
+				const metadataFilePath = join(UPLOAD_DIR, `${userId}_${timestamp}.json`);
 				const metadataContent = JSON.stringify({
 					hdrStats: statsData,
 					metadata: metadataData
