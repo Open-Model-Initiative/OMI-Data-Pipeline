@@ -75,56 +75,75 @@ export const actions = {
 			const originalFilename = file.name;
 			const fileExtension = originalFilename.split('.').pop();
 			const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
-			const uniqueFilename = `${userId}_${timestamp}.${fileExtension}`;
+			const uniqueFileName = `${userId}_${timestamp}.${fileExtension}`;
+
+			// Clean metadata
+			const cleanedData = await makeApiCall('/image/clean-metadata', file, uniqueFileName);
+			const cleaned_image_base64 = cleanedData.cleaned_image
+
+			// Convert base64 to Blob
+			const byteCharacters = atob(cleaned_image_base64);
+			const byteNumbers = new Array(byteCharacters.length);
+			for (let i = 0; i < byteCharacters.length; i++) {
+			  byteNumbers[i] = byteCharacters.charCodeAt(i);
+			}
+			const byteArray = new Uint8Array(byteNumbers);
+			const cleanedBlob = new Blob([byteArray], { type: 'application/octet-stream' });
+
+			const cleanedBuffer = Buffer.from(byteArray);
+
+			// Calculate HDR stats and metadata
+			const statsData = await makeApiCall('/image/hdr-stats', cleanedBlob, uniqueFileName);
+			const metadataData = await makeApiCall('/image/metadata', cleanedBlob, uniqueFileName);
+
+			// Create JPG preview
+			const jpgData = await makeApiCall('/image/jpg-preview', cleanedBlob, uniqueFileName);
+			const jpgBuffer = Buffer.from(jpgData.jpg_preview, 'base64');
+			const jpgFileName = `${userId}_${timestamp}.jpg`
+
+			// Combine metadata for temporary file storage
+			const metadataContent = JSON.stringify({
+				uploadedByUser: userId,
+				hdrStats: statsData,
+				metadata: metadataData
+			}, null, 2);
+			const metadataFileName = `${userId}_${timestamp}.json`
 
 			if (process.env.NODE_ENV === 'production') {
-			  // S3 upload for production
+			  	// S3 upload for production
+
 				// await s3Client.send(new PutObjectCommand({
 				// 	Bucket: process.env.S3_BUCKET_NAME,
 				// 	Key: uniqueFilename,
-				// 	Body: Buffer.from(arrayBuffer),
+				// 	Body: cleanedBuffer,
 				// }));
-				console.log(`File uploaded to S3: ${uniqueFilename}`);
+
+				// await s3Client.send(new PutObjectCommand({
+				// 	Bucket: process.env.S3_BUCKET_NAME,
+				// 	Key: jpgFileName,
+				// 	Body: jpgBuffer,
+				// }));
+
+				// await s3Client.send(new PutObjectCommand({
+				// 	Bucket: process.env.S3_BUCKET_NAME,
+				// 	Key: metadataFileName,
+				// 	Body: metadataContent,
+				// }));
+
+				console.log(`File uploaded to S3: ${uniqueFileName}`);
 			} else {
 				// Local file system for development
-
-				// Clean metadata
-				const cleanedFilePath = join(UPLOAD_DIR, uniqueFilename);
-				const cleanedData = await makeApiCall('/image/clean-metadata', file, uniqueFilename);
-				const cleaned_image_base64 = cleanedData.cleaned_image
-
-				// Convert base64 to Blob
-				const byteCharacters = atob(cleaned_image_base64);
-				const byteNumbers = new Array(byteCharacters.length);
-				for (let i = 0; i < byteCharacters.length; i++) {
-				  byteNumbers[i] = byteCharacters.charCodeAt(i);
-				}
-				const byteArray = new Uint8Array(byteNumbers);
-				const cleanedBlob = new Blob([byteArray], { type: 'application/octet-stream' });
-
-				const cleanedBuffer = Buffer.from(byteArray);
+				const cleanedFilePath = join(UPLOAD_DIR, uniqueFileName);
 				await writeFile(cleanedFilePath, cleanedBuffer);
 
-				// Calculate HDR stats and metadata
-				const statsData = await makeApiCall('/image/hdr-stats', cleanedBlob, uniqueFilename);
-				const metadataData = await makeApiCall('/image/metadata', cleanedBlob, uniqueFilename);
-
-				// Create JPG preview
-				const jpgData = await makeApiCall('/image/jpg-preview', cleanedBlob, uniqueFilename);
-				const jpgBuffer = Buffer.from(jpgData.jpg_preview, 'base64');
-				const jpgFilePath = join(UPLOAD_DIR, `${userId}_${timestamp}.jpg`);
+				const jpgFilePath = join(UPLOAD_DIR, jpgFileName);
 				await writeFile(jpgFilePath, jpgBuffer);
 
-				// Save metadata to a json file
-				const metadataFilePath = join(UPLOAD_DIR, `${userId}_${timestamp}.json`);
-				const metadataContent = JSON.stringify({
-					hdrStats: statsData,
-					metadata: metadataData
-				}, null, 2);
+				const metadataFilePath = join(UPLOAD_DIR, metadataFileName);
 				await writeFile(metadataFilePath, metadataContent);
 			}
 
-			return { success: true, uniqueFilename };
+			return { success: true, uniqueFileName };
 		} catch (error) {
 			console.error('Error uploading file:', error);
 			return { success: false, error: 'Failed to upload file' };
