@@ -14,6 +14,7 @@ import imageio
 from typing import Any
 import base64
 import traceback
+import json
 import subprocess
 import tempfile
 import os
@@ -72,21 +73,6 @@ def calculate_entropy(tensor: torch.Tensor):
 
 
 # Helper functions for HDR metadata and preview conversion
-def extract_metadata(image_bytes: bytes) -> Dict:
-    metadata = {}
-    try:
-        with Image.open(BytesIO(image_bytes)) as img:
-            exif_data = img.getexif()
-            if exif_data:
-                for tag_id, value in exif_data.items():
-                    tag = TAGS.get(tag_id, tag_id)
-                    metadata[tag] = value
-        print('Metadata extracted from image file')
-    except UnidentifiedImageError:
-        print('Could not extract metadata from image')
-    return metadata
-
-
 def convert_ifd_rational(value):
     if isinstance(value, IFDRational):
         return float(value)
@@ -95,16 +81,40 @@ def convert_ifd_rational(value):
     return value
 
 
-def get_desired_metadata(metadata: Dict) -> Dict[str, Any]:
-    important_keys = ['Make', 'Model', 'BitsPerSample', 'BaselineExposure', 'LinearResponseLimit', 'ImageWidth', 'ImageLength', 'DateTime']
-    result = {key: convert_ifd_rational(metadata.get(key)) for key in important_keys if key in metadata}
+def get_metadata_with_exiftool(image_bytes: bytes) -> Dict[str, Any]:
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.dng') as temp_input_file:
+        temp_input_file.write(image_bytes)
+        temp_input_filename = temp_input_file.name
 
-    if 'DNGVersion' in metadata:
-        dng_version = metadata['DNGVersion']
-        version_string = '.'.join(str(b) for b in dng_version)
-        result['DNGVersion'] = version_string
+    try:
+        tags = [
+            '-Make', '-Model', '-BitsPerSample', '-BaselineExposure',
+            '-LinearResponseLimit', '-ImageWidth', '-ImageHeight',
+            '-DNGVersion'
+        ]
 
-    return result
+        result = subprocess.run(
+            ['exiftool', '-j'] + tags + [temp_input_filename],
+            capture_output=True, text=True, check=True
+        )
+
+        metadata = json.loads(result.stdout)[0]
+
+        if 'BitsPerSample' in metadata:
+            metadata['BitsPerSample'] = int(metadata['BitsPerSample'])
+        if 'BaselineExposure' in metadata:
+            metadata['BaselineExposure'] = float(metadata['BaselineExposure'])
+        if 'LinearResponseLimit' in metadata:
+            metadata['LinearResponseLimit'] = float(metadata['LinearResponseLimit'])
+        if 'ImageWidth' in metadata:
+            metadata['ImageWidth'] = int(metadata['ImageWidth'])
+        if 'ImageHeight' in metadata:
+            metadata['ImageHeight'] = int(metadata['ImageHeight'])
+
+        return metadata
+
+    finally:
+        os.remove(temp_input_filename)
 
 
 def convert_dng_to_jpg(dng_bytes: bytes) -> bytes:
@@ -162,20 +172,19 @@ async def create_jpg_preview(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-# TODO: Needs updated to use exiftool as well
 @router.post("/image/metadata")
 async def get_image_metadata(file: UploadFile = File(...)):
     try:
         contents = await file.read()
-        metadata = extract_metadata(contents)
+        metadata = get_metadata_with_exiftool(contents)
 
-        important_metadata = get_desired_metadata(metadata)
-
-        return important_metadata
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        return metadata
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=400, detail=f"Error processing image with exiftool: {str(e)}")
+    except json.JSONDecodeError as e:
+        raise HTTPException(status_code=500, detail=f"Error parsing exiftool output: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 
 def remove_metadata_with_exiftool(input_bytes):
