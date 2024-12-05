@@ -12,10 +12,10 @@ ENV DO_NOT_TRACK=1
 ENV HF_HOME=/cache/HF_HOME
 
 # Install dependencies with read-only permissions
-COPY --chmod=555 --chown=appuser:appuser ./requirements.txt /app/requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 
 # Copy application code with read-only permissions
-COPY --chmod=555 --chown=appuser:appuser  . /app
+COPY  . /app
 RUN pip3 install --no-cache-dir -e /app \
     && pip3 install git+https://github.com/dottxt-ai/outlines --upgrade
 
