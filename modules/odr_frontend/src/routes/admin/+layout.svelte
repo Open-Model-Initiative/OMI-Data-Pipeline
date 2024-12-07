@@ -16,6 +16,11 @@
 					<span class="flex-auto">Feature Toggles</span>
 				</a>
 			</li>
+			<li>
+				<a href="/admin/moderation">
+					<span class="flex-auto">Image Moderation</span>
+				</a>
+			</li>
 		</ul>
 	</nav>
 	<main class="w-full p-8">

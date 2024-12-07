@@ -2,7 +2,7 @@
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { PG_API } from '$lib/server/pg';
-import { writeFile } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import axios from 'axios';
 
@@ -23,7 +23,10 @@ export const load: PageServerLoad = async (event) => {
 	};
 };
 
-const UPLOAD_DIR = process.env.UPLOAD_DIR || '/app/uploads';
+const UPLOAD_DIR = process.env.UPLOAD_DIR || './uploads';
+const PENDING_DIR = join(UPLOAD_DIR, 'pending');
+const ACCEPTED_DIR = join(UPLOAD_DIR, 'accepted');
+const REJECTED_DIR = join(UPLOAD_DIR, 'rejected');
 const API_BASE_URL = process.env.API_SERVICE_URL || 'http://odr-api:31100/api/v1';
 
 // const s3Client = new S3Client({
@@ -109,6 +112,10 @@ export const actions = {
 			}, null, 2);
 			const metadataFileName = `${userId}_${timestamp}.json`
 
+			await mkdir(PENDING_DIR, { recursive: true });
+			await mkdir(ACCEPTED_DIR, { recursive: true });
+			await mkdir(REJECTED_DIR, { recursive: true });
+
 			if (process.env.NODE_ENV === 'production') {
 			  	// S3 upload for production
 
@@ -133,13 +140,13 @@ export const actions = {
 				console.log(`File uploaded to S3: ${uniqueFileName}`);
 			} else {
 				// Local file system for development
-				const cleanedFilePath = join(UPLOAD_DIR, uniqueFileName);
+				const cleanedFilePath = join(PENDING_DIR, uniqueFileName);
 				await writeFile(cleanedFilePath, cleanedBuffer);
 
-				const jpgFilePath = join(UPLOAD_DIR, jpgFileName);
+				const jpgFilePath = join(PENDING_DIR, jpgFileName);
 				await writeFile(jpgFilePath, jpgBuffer);
 
-				const metadataFilePath = join(UPLOAD_DIR, metadataFileName);
+				const metadataFilePath = join(PENDING_DIR, metadataFileName);
 				await writeFile(metadataFilePath, metadataContent);
 			}
 
