@@ -4,6 +4,8 @@ import { join } from 'path';
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 
+import { PG_API } from '$lib/server/pg';
+
 const UPLOAD_DIR = process.env.UPLOAD_DIR || './uploads';
 const PENDING_DIR = join(UPLOAD_DIR, 'pending');
 const ACCEPTED_DIR = join(UPLOAD_DIR, 'accepted');
@@ -32,16 +34,23 @@ export const load: PageServerLoad = async ({ url }) => {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const pageImageFiles = imageFiles.slice(startIndex, endIndex);
 
+  const users = await PG_API.users.getAll();
+
   const imagesData: ImageData[] = await Promise.all(
     pageImageFiles.map(async (filename) => {
       const jsonFilename = filename.replace('.jpg', '.json');
       const jsonPath = join(PENDING_DIR, jsonFilename);
       const metadata = JSON.parse(await readFile(jsonPath, 'utf-8'));
 
+      const user = users.find(u => u.id === parseInt(metadata.uploadedByUser));
+
       return {
         filename,
         previewUrl: `/uploads/pending/${filename}`,
-        metadata,
+        metadata: {
+          ...metadata,
+          uploadedByUser: user ? user.email : metadata.uploadedByUser
+        },
       };
     })
   );
