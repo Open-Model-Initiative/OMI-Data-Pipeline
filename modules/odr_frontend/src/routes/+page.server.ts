@@ -29,13 +29,19 @@ const ACCEPTED_DIR = join(UPLOAD_DIR, 'accepted');
 const REJECTED_DIR = join(UPLOAD_DIR, 'rejected');
 const API_BASE_URL = process.env.API_SERVICE_URL || 'http://odr-api:31100/api/v1';
 
-// const s3Client = new S3Client({
-// 	region: process.env.AWS_REGION,
-// 	credentials: {
-// 	  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-// 	  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-// 	},
-//   });
+let s3Client: S3Client | null = null;
+
+if (process.env.AWS_REGION && process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
+  s3Client = new S3Client({
+    region: process.env.AWS_REGION,
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+  });
+} else {
+  console.warn('AWS credentials not found in environment variables. S3 functionality will be disabled.');
+}
 
 async function makeApiCall(endpoint: string, file: Blob, filename: string) {
 	const formData = new FormData();
@@ -118,24 +124,27 @@ export const actions = {
 
 			if (process.env.NODE_ENV === 'production') {
 			  	// S3 upload for production
+				if (!s3Client) {
+					throw new Error('S3 client is not initialized');
+				}
 
-				// await s3Client.send(new PutObjectCommand({
-				// 	Bucket: process.env.S3_BUCKET_NAME,
-				// 	Key: uniqueFilename,
-				// 	Body: cleanedBuffer,
-				// }));
+				await s3Client.send(new PutObjectCommand({
+					Bucket: process.env.S3_BUCKET_NAME,
+					Key: uniqueFileName,
+					Body: cleanedBuffer,
+				}));
 
-				// await s3Client.send(new PutObjectCommand({
-				// 	Bucket: process.env.S3_BUCKET_NAME,
-				// 	Key: jpgFileName,
-				// 	Body: jpgBuffer,
-				// }));
+				await s3Client.send(new PutObjectCommand({
+					Bucket: process.env.S3_BUCKET_NAME,
+					Key: jpgFileName,
+					Body: jpgBuffer,
+				}));
 
-				// await s3Client.send(new PutObjectCommand({
-				// 	Bucket: process.env.S3_BUCKET_NAME,
-				// 	Key: metadataFileName,
-				// 	Body: metadataContent,
-				// }));
+				await s3Client.send(new PutObjectCommand({
+					Bucket: process.env.S3_BUCKET_NAME,
+					Key: metadataFileName,
+					Body: metadataContent,
+				}));
 
 				console.log(`File uploaded to S3: ${uniqueFileName}`);
 			} else {
