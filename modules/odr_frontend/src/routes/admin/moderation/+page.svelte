@@ -39,8 +39,9 @@
 	function closePreview() {
 		showPreview = false;
 	}
-  </script>
+</script>
 
+<div class="moderation-page">
   <h1>HDR Image Moderation</h1>
   <div class="table-container">
 	<table class="table table-hover">
@@ -112,3 +113,4 @@
 	  <button on:click={() => goToPage(currentPage + 1)}>Next</button>
 	{/if}
   </div>
+</div>

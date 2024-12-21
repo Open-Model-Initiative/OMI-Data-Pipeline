@@ -66,3 +66,25 @@
     max-height: 100px;
     object-fit: cover;
   }
+
+  .moderation-page {
+    height: calc(100vh - 128px);
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .table-container {
+    flex: 1;
+    overflow: auto;
+    margin-bottom: 1rem;
+  }
+
+  .pagination {
+    margin-top: auto;
+    padding: 1rem 0;
+  }
+
+  h1 {
+    padding: 0 0 1rem 0;
+  }
