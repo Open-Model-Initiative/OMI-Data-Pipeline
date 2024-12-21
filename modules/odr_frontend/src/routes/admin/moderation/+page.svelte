@@ -104,13 +104,13 @@
 
   <div class="pagination">
 	{#if currentPage > 1}
-	  <button on:click={() => goToPage(currentPage - 1)}>Previous</button>
+	  <button class='btn btn-sm variant-outline-primary' on:click={() => goToPage(currentPage - 1)}>Previous</button>
 	{/if}
 
 	<span>Page {currentPage} of {totalPages}</span>
 
 	{#if currentPage < totalPages}
-	  <button on:click={() => goToPage(currentPage + 1)}>Next</button>
+	  <button class='btn btn-sm variant-outline-primary' on:click={() => goToPage(currentPage + 1)}>Next</button>
 	{/if}
   </div>
 </div>
