@@ -4,7 +4,6 @@ import type { PageServerLoad } from './$types';
 import { PG_API } from '$lib/server/pg';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
-import axios from 'axios';
 
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
@@ -48,22 +47,20 @@ async function makeApiCall(endpoint: string, file: Blob, filename: string) {
     formData.append('file', file, filename);
 
 	try {
-		const response = await axios.post(`${API_BASE_URL}${endpoint}`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			},
-			validateStatus: (status) => status >= 200 && status < 300, // Consider only 2xx status codes as success
-		});
-		return response.data;
-	} catch (error) {
-		if (axios.isAxiosError(error) && error.response) {
-			console.error(`Error calling ${endpoint}:`, error.response.data);
-			throw new Error(`API error (${endpoint}): ${error.response.status} - ${JSON.stringify(error.response.data)}`);
-		} else {
-			console.error(`Error calling ${endpoint}:`, error);
-			throw new Error(`API error (${endpoint}): ${error}`);
-		}
-	}
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(`Error calling ${endpoint}:`, error);
+        throw new Error(`API error (${endpoint}): ${error instanceof Error ? error.message : String(error)}`);
+    }
 }
 
 export const actions = {
