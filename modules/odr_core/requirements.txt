@@ -1,6 +1,6 @@
 alembic==1.13.2
 sqlalchemy==2.0.31
-pydantic==2.8.2
+pydantic==2.10.4
 pydantic-settings==2.4.0
 pytest==8.3.2
 loguru==0.7.2

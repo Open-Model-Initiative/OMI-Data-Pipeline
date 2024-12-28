@@ -4,7 +4,7 @@ qwen-vl-utils[decord]
 fastapi
 click
 openai
-pydantic
+pydantic==2.10.4
 pillow
 python-dotenv
 torch

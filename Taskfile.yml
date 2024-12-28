@@ -34,7 +34,7 @@ tasks:
         platforms: [linux, darwin]
       - cmd: docker network inspect omi-network >/dev/null 2>&1 || docker network create omi-network
       - cmd: task setup-venv
-      - cmd: task frontend:install
+      - cmd: task frontend:install-dev
 
   setup-venv:
     desc: Setup the virtual environment
