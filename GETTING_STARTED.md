@@ -105,5 +105,3 @@ Before committing any changes, remember DCO and sign offs! If any commits are no
 To stop the environment, start by using ctrl+c (or cmd+c) to stop the current processes.
 
 Then use `task stop-all` to full stop the environment.
-
-If you want to remove the docker volumes used by the database, run `task db:teardown`

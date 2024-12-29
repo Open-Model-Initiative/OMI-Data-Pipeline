@@ -4,7 +4,6 @@ version: '3'
 
 includes:
   api: ./modules/odr_api/Taskfile.api.yml
-  # db: ./modules/odr_database/Taskfile.yml
   core: ./modules/odr_core/Taskfile.yml
   data: ./modules/odr_datamodel/Taskfile.yml
   frontend: ./modules/odr_frontend/Taskfile.yml
@@ -74,7 +73,6 @@ tasks:
       - |
         task core:test &
         task core:test-db &
-        # task db:test-postgres &
         task api-test:test-all &
         task monitoring:test &
         wait
@@ -87,10 +85,9 @@ tasks:
       - docker compose logs -f
 
   smoke_tests:
-    desc: Run smoke tests for both API and PostgreSQL
+    desc: Run smoke tests for the API
     cmds:
       - task api-test:health-check
-      - task db:test-postgres
 
   build-all:
     desc: Build all services
