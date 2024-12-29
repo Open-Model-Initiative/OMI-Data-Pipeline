@@ -58,15 +58,15 @@ You can update this file if you'd like to change any of the default values for y
 
 You will also need to manually copy the `.env.template` file in `modules/odr_frontend` to a `.env` file in the same folder, and make matching updates.
 
-To create the required data and tables you'll need to run `task data:migrate`
-
 # Running The Local Environment
 
 To start your virtual environment, run `task activate-venv` or `source ./venv/bin/activate`
 
 Then to start all the required services, run `task dev`
 
-This will spin up the required front end, api, and database components.
+This will spin up the required front end, api, and database containers.
+
+Before the site will 'work' you will need to run `task data:migrate` to create the required data and tables
 
 By default, you will have the following:
 
@@ -91,7 +91,7 @@ By default, you will have the following:
 
 Before committing any changes, ensure you run all tests to be sure existing behaviour continues to work. If any tests require updates to pass with your changes, ensure you update them as well.
 
-To run all tests, run `task test-all`
+To run all tests, run `task test-all`. Note this is not working at the moment and needs some work but some tests are run via the pipeline automatically.
 
 (Todo: Add instructions for how to run the different types individual as well to check work under development.)
 
