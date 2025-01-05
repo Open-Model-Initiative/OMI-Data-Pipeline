@@ -12,7 +12,7 @@ COPY package.json pnpm-lock.yaml* ./
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-COPY template.env /app/.env
+COPY .env.template /app/.env
 
 EXPOSE 5173
 
