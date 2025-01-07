@@ -21,4 +21,3 @@ repos:
         language: python
         types_or: [python, javascript, jsx, ts, tsx, shell, batch, html, xml, yaml]
         files: \.(py|js|ts|sh|bat|cmd|html|xml|yaml|yml)$
-        exclude: ^pnpm-lock\.yaml$

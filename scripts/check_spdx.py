@@ -9,6 +9,8 @@ EXIT_FAILURE = 1
 
 
 def check_file(filename):
+    if Path(filename).name == 'pnpm-lock.yaml':
+        return True
     try:
         # Read only first 1000 bytes - license header should be at the top
         with open(filename, 'r', encoding='utf-8') as f:
