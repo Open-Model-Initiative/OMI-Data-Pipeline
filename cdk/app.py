@@ -21,9 +21,9 @@ env = cdk.Environment(
 vpc_stack = VpcStack(app, "VpcStack", env=env)
 database_stack = DatabaseStack(app, "DatabaseStack", vpc_stack=vpc_stack, env=env)
 ecr_stack = EcrStack(app, "EcrStack", env=env)
-ecs_stack = EcsStack(app, "EcsStack", vpc_stack=vpc_stack, ecr_stack=ecr_stack, env=env)
-s3_stack = S3Stack(app, "S3Stack", ecs_stack=ecs_stack, env=env)
+s3_stack = S3Stack(app, "S3Stack", env=env)
+ecs_stack = EcsStack(app, "EcsStack", vpc_stack=vpc_stack, ecr_stack=ecr_stack, s3_stack=s3_stack, env=env)
 waf_stack = WafStack(app, "WafStack", ecs_stack=ecs_stack, env=env)
-CdkStack(app, "CdkStack", env=env)
+# CdkStack(app, "CdkStack", env=env)
 
 app.synth()
