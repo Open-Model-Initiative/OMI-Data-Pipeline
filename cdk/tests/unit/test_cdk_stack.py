@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
-import aws_cdk as core
-import aws_cdk.assertions as assertions
+# import aws_cdk as core
+# import aws_cdk.assertions as assertions
 
-from cdk.cdk_stack import CdkStack
+# from cdk.cdk_stack import CdkStack
 
 
 # example tests. To run these tests, uncomment this file along with the example
