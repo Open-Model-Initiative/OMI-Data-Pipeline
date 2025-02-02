@@ -21,8 +21,8 @@ class EcrStack(Stack):
             image_tag_mutability=ecr.TagMutability.MUTABLE,
             lifecycle_rules=[
                 ecr.LifecycleRule(
-                    max_image_count=5,
-                    description="Keep only 5 latest images"
+                    max_image_count=10,
+                    description="Keep only 10 latest images"
                 )
             ]
         )
@@ -36,8 +36,8 @@ class EcrStack(Stack):
             image_tag_mutability=ecr.TagMutability.MUTABLE,
             lifecycle_rules=[
                 ecr.LifecycleRule(
-                    max_image_count=5,
-                    description="Keep only 5 latest images"
+                    max_image_count=10,
+                    description="Keep only 10 latest images"
                 )
             ]
         )

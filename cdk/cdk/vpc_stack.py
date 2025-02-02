@@ -17,7 +17,7 @@ class VpcStack(Stack):
             "omi-vpc-stack",
             vpc_name="VpcStack",
             ip_addresses=ec2.IpAddresses.cidr("10.1.0.0/16"),
-            max_azs=1,
+            max_azs=2,
             enable_dns_hostnames=True,
             enable_dns_support=True,
             # Subnet configuration

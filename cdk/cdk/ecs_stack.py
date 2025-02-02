@@ -7,12 +7,15 @@ from aws_cdk import (
     aws_elasticloadbalancingv2 as elbv2,
     aws_efs as efs,
     aws_iam as iam,
+    aws_secretsmanager as secretsmanager,
     RemovalPolicy,
+    Environment,
 )
 from constructs import Construct
 from .vpc_stack import VpcStack
 from .ecr_stack import EcrStack
 from .s3_stack import S3Stack
+from .database_stack import DatabaseStack
 
 
 class EcsStack(Stack):
@@ -23,9 +26,14 @@ class EcsStack(Stack):
         vpc_stack: VpcStack,
         ecr_stack: EcrStack,
         s3_stack: S3Stack,
+        database_stack: DatabaseStack,
+        env: Environment,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        region = env.region
+        account = env.account
 
         # Create ECS Cluster
         self.cluster = ecs.Cluster(
@@ -61,7 +69,7 @@ class EcsStack(Stack):
         access_point = fs.add_access_point(
             "OmiEfsAccessPoint",
             create_acl=efs.Acl(owner_uid="1000", owner_gid="1000", permissions="750"),
-            path="/data",
+            path="/upload",
             posix_user=efs.PosixUser(uid="1000", gid="1000"),
         )
 
@@ -77,66 +85,136 @@ class EcsStack(Stack):
             ),
         )
 
+        s3_policy = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:ListBucket",
+                "s3:DeleteObject",
+            ],
+            resources=[s3_stack.bucket.bucket_arn, f"{s3_stack.bucket.bucket_arn}/*"],
+        )
+
+        default_policy = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                "logs:CreateLogGroup",
+                "elasticfilesystem:ClientMount",
+                "elasticfilesystem:ClientWrite",
+                "elasticfilesystem:ClientRootAccess",
+                "elasticfilesystem:DescribeMountTargets",
+                "elasticfilesystem:DescribeFileSystems",
+                "secretsmanager:GetSecretValue",
+            ],
+            resources=["*"],
+        )
+
+        default_environment = {
+            "ROOT_DIR": ".",
+            "MODEL_CACHE_DIR": "/mnt/models",
+            "S3_BUCKET": s3_stack.bucket.bucket_name,
+            "UPLOAD_DIR": "/mnt/upload",
+            "POSTGRES_HOST": database_stack.db_instance.db_instance_endpoint_address,
+            "POSTGRES_PORT": database_stack.db_instance.db_instance_endpoint_port,
+            "POSTGRES_DB": database_stack.db_name,
+        }
+
+        omi_sercret_arn = (
+            f"arn:aws:secretsmanager:{region}:{account}:secret:omi-oauth2-i1xzfK"
+        )
+
+        default_secrets = {
+            "POSTGRES_USER": ecs.Secret.from_secrets_manager(
+                secret=database_stack.database_secret, field="username"
+            ),
+            "POSTGRES_PASSWORD": ecs.Secret.from_secrets_manager(
+                secret=database_stack.database_secret, field="password"
+            ),
+            "GOOGLE_CLIENT_ID": ecs.Secret.from_secrets_manager(
+                secret=secretsmanager.Secret.from_secret_complete_arn(
+                    self,
+                    "google-oauth2-id",
+                    secret_complete_arn=omi_sercret_arn,
+                ),
+                field="google_client_id",
+            ),
+            "GOOGLE_CLIENT_SECRET": ecs.Secret.from_secrets_manager(
+                secret=secretsmanager.Secret.from_secret_complete_arn(
+                    self,
+                    "google-oauth2-secret",
+                    secret_complete_arn=omi_sercret_arn,
+                ),
+                field="google_client_secret",
+            ),
+            "GITHUB_CLIENT_ID": ecs.Secret.from_secrets_manager(
+                secret=secretsmanager.Secret.from_secret_complete_arn(
+                    self,
+                    "github-oauth2-id",
+                    secret_complete_arn=omi_sercret_arn,
+                ),
+                field="github_client_id",
+            ),
+            "GITHUB_CLIENT_SECRET": ecs.Secret.from_secrets_manager(
+                secret=secretsmanager.Secret.from_secret_complete_arn(
+                    self,
+                    "github-oauth2-secret",
+                    secret_complete_arn=omi_sercret_arn,
+                ),
+                field="github_client_secret",
+            ),
+            "DISCORD_CLIENT_ID": ecs.Secret.from_secrets_manager(
+                secret=secretsmanager.Secret.from_secret_complete_arn(
+                    self,
+                    "discord-oauth2-id",
+                    secret_complete_arn=omi_sercret_arn,
+                ),
+                field="discord_client_id",
+            ),
+            "DISCORD_CLIENT_SECRET": ecs.Secret.from_secrets_manager(
+                secret=secretsmanager.Secret.from_secret_complete_arn(
+                    self,
+                    "discord-oauth2-secret",
+                    secret_complete_arn=omi_sercret_arn,
+                ),
+                field="discord_client_secret",
+            ),
+        }
+
         # Backend Service Task Definition
-        task_definition = ecs.FargateTaskDefinition(
+        backend_task_definition = ecs.FargateTaskDefinition(
             self,
             "OmiBackendTaskDef",
-            cpu=256,
-            memory_limit_mib=512,
+            cpu=512,
+            memory_limit_mib=1024,
             volumes=[efs_volume],
         )
 
         # Add S3 permissions to task role
-        task_definition.add_to_task_role_policy(
-            iam.PolicyStatement(
-                effect=iam.Effect.ALLOW,
-                actions=[
-                    "s3:GetObject",
-                    "s3:PutObject",
-                    "s3:ListBucket",
-                    "s3:DeleteObject",
-                ],
-                resources=[
-                    s3_stack.bucket.bucket_arn,
-                    f"{s3_stack.bucket.bucket_arn}/*",
-                ],
-            )
-        )
+        backend_task_definition.add_to_task_role_policy(s3_policy)
 
-        # Add permissions for s3fs-fuse
-        task_definition.add_to_task_role_policy(
-            iam.PolicyStatement(
-                effect=iam.Effect.ALLOW,
-                actions=[
-                    "s3:ListAllMyBuckets",
-                    "s3:HeadBucket",
-                    "s3:ListMultipartUploadParts",
-                    "s3:AbortMultipartUpload",
-                ],
-                resources=["*"],
-            )
-        )
+        # Add permissions for mounting EFS and accessing secrets
+        backend_task_definition.add_to_task_role_policy(default_policy)
 
-        container = task_definition.add_container(
+        backend_container = backend_task_definition.add_container(
             "omi-backend",
             image=ecs.ContainerImage.from_ecr_repository(ecr_stack.backend_repository),
             container_name="omi-backend",
             port_mappings=[ecs.PortMapping(container_port=8000)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-backend"),
-            environment={"S3_BUCKET": "omi-data-bucket", "MOUNT_POINT": "/mnt/data"},
-            entry_point=["sh", "-c"],
-            # todo, move it to a dockerfile
-            command=[
-                "amazon-linux-extras install -y aws-cli && "
-                + "yum install -y s3fs-fuse && "
-                + "s3fs $S3_BUCKET $MOUNT_POINT -o iam_role=auto && "
-                + "python app.py"
-            ],
+            environment=default_environment,
+            secrets=default_secrets,
+            # test which is better, mount point or s3fs command
+            # entry_point=["sh", "-c"],
+            # command=[
+            #     + "s3fs $S3_BUCKET $UPLOAD_DIR -o iam_role=auto && "
+            #     + "uvicorn odr_api.app:app --host 0.0.0.0 --port 31100 --reload"
+            # ]
         )
 
-        container.add_mount_points(
+        backend_container.add_mount_points(
             ecs.MountPoint(
-                container_path="/mnt/data",
+                container_path="/mnt/upload",
                 source_volume="omi-data-volume",
                 read_only=False,
             )
@@ -147,9 +225,9 @@ class EcsStack(Stack):
             self,
             "OmiBackendService",
             cluster=self.cluster,
-            task_definition=task_definition,
+            task_definition=backend_task_definition,
             desired_count=1,
-            public_load_balancer=True,
+            public_load_balancer=False,
             security_groups=[backend_sg],
             service_name="omi-backend",
         )
@@ -159,15 +237,44 @@ class EcsStack(Stack):
 
         # Frontend Service Task Definition
         frontend_task_definition = ecs.FargateTaskDefinition(
-            self, "OmiFrontendTaskDef", cpu=256, memory_limit_mib=512
+            self,
+            "OmiFrontendTaskDef",
+            cpu=256,
+            memory_limit_mib=512,
+            volumes=[efs_volume],
         )
 
-        frontend_task_definition.add_container(
+        # Add S3 permissions to task role
+        frontend_task_definition.add_to_task_role_policy(s3_policy)
+
+        # Add permissions for mounting EFS and accessing secrets
+        frontend_task_definition.add_to_task_role_policy(default_policy)
+
+        frontend_container = frontend_task_definition.add_container(
             "omi-frontend",
             image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository),
             container_name="omi-frontend",
             port_mappings=[ecs.PortMapping(container_port=80)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-frontend"),
+            environment=default_environment
+            | {
+                "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}"
+            },
+            secrets=default_secrets,
+            # test which is better, mount point or s3fs command
+            # entry_point=["sh", "-c"],
+            # command=[
+            #     + "s3fs $S3_BUCKET $UPLOAD_DIR -o iam_role=auto && "
+            #     + "/entrypoint.sh pnpm run dev -- --host 0.0.0.0"
+            # ]
+        )
+
+        frontend_container.add_mount_points(
+            ecs.MountPoint(
+                container_path="/mnt/upload",
+                source_volume="omi-data-volume",
+                read_only=False,
+            )
         )
 
         # Frontend Service
@@ -187,4 +294,18 @@ class EcsStack(Stack):
             peer=ec2.Peer.any_ipv4(),
             connection=ec2.Port.tcp(5432),
             description="Allow backend to access PostgreSQL",
+        )
+
+        # Allow frontend to access backend
+        backend_sg.add_ingress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(8000),
+            description="Allow frontend to access backend",
+        )
+
+        # Allow frontend to database
+        frontend_sg.add_ingress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(5432),
+            description="Allow frontend to access PostgreSQL",
         )

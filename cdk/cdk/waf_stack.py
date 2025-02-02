@@ -77,11 +77,12 @@ class WafStack(Stack):
         )
 
         # Associate WAF with ALBs
-        wafv2.CfnWebACLAssociation(
-            self, "BackendWafAssociation",
-            resource_arn=ecs_stack.backend_service.load_balancer.load_balancer_arn,
-            web_acl_arn=self.waf_acl.attr_arn
-        )
+        # Verify if needed for private ALB
+        # wafv2.CfnWebACLAssociation(
+        #     self, "BackendWafAssociation",
+        #     resource_arn=ecs_stack.backend_service.load_balancer.load_balancer_arn,
+        #     web_acl_arn=self.waf_acl.attr_arn
+        # )
 
         wafv2.CfnWebACLAssociation(
             self, "FrontendWafAssociation",

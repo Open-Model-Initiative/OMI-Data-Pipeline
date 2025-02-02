@@ -16,6 +16,7 @@ class S3Stack(Stack):
             encryption=s3.BucketEncryption.S3_MANAGED,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             removal_policy=RemovalPolicy.RETAIN,
+
             lifecycle_rules=[
                 s3.LifecycleRule(
                     transitions=[

@@ -5,6 +5,8 @@ FROM python:3.11-slim-bookworm
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     exiftool \
+    awscli \
+    s3fs \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \
@@ -14,6 +16,16 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DEFAULT_TIMEOUT=100
 
 WORKDIR /app
+
+# # Install aws-cli
+# RUN pip install --no-cache-dir awscli
+
+# # Install s3fs-fuse for mounting S3 bucket
+# RUN apt-get install s3fs
+
+# Prepare for the AWS
+RUN mkdir -p /mnt/upload
+RUN mkdir -p /mnt/models
 
 # Copy requirements file
 COPY modules/odr_api/requirements.txt .
