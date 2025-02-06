@@ -14,8 +14,7 @@ class EcrStack(Stack):
 
         # Create ECR repository for frontend
         self.frontend_repository = ecr.Repository(
-            self, "FrontendRepository",
-            repository_name="omi-frontend",
+            self, "omi-frontend",
             removal_policy=RemovalPolicy.RETAIN,
             image_scan_on_push=True,
             image_tag_mutability=ecr.TagMutability.MUTABLE,
@@ -29,8 +28,7 @@ class EcrStack(Stack):
 
         # Create ECR repository for backend
         self.backend_repository = ecr.Repository(
-            self, "BackendRepository",
-            repository_name="omi-backend",
+            self, "omi-backend",
             removal_policy=RemovalPolicy.RETAIN,
             image_scan_on_push=True,
             image_tag_mutability=ecr.TagMutability.MUTABLE,

@@ -10,8 +10,7 @@ class S3Stack(Stack):
         # Create S3 bucket with infrequent access
         self.bucket = s3.Bucket(
             self,
-            "OmiBucket",
-            bucket_name="omi-data-bucket",
+            "omi-data-bucket",
             versioned=True,
             encryption=s3.BucketEncryption.S3_MANAGED,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
