@@ -10,6 +10,7 @@ from aws_cdk import (
     aws_secretsmanager as secretsmanager,
     RemovalPolicy,
     Environment,
+    CfnOutput,
 )
 from constructs import Construct
 from .vpc_stack import VpcStack
@@ -27,13 +28,12 @@ class EcsStack(Stack):
         ecr_stack: EcrStack,
         s3_stack: S3Stack,
         database_stack: DatabaseStack,
-        env: Environment,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        region = env.region
-        account = env.account
+        region = kwargs["env"].region
+        account = kwargs["env"].account
 
         # Create ECS Cluster
         self.cluster = ecs.Cluster(
@@ -74,7 +74,17 @@ class EcsStack(Stack):
         )
 
         # Create volume configuration
-        efs_volume = ecs.Volume(
+        efs_backend_volume = ecs.Volume(
+            name="omi-data-volume",
+            efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                file_system_id=fs.file_system_id,
+                transit_encryption="ENABLED",
+                authorization_config=ecs.AuthorizationConfig(
+                    access_point_id=access_point.access_point_id, iam="ENABLED"
+                ),
+            ),
+        )
+        efs_frontend_volume = ecs.Volume(
             name="omi-data-volume",
             efs_volume_configuration=ecs.EfsVolumeConfiguration(
                 file_system_id=fs.file_system_id,
@@ -187,7 +197,7 @@ class EcsStack(Stack):
             "OmiBackendTaskDef",
             cpu=512,
             memory_limit_mib=1024,
-            volumes=[efs_volume],
+            volumes=[efs_backend_volume],
         )
 
         # Add S3 permissions to task role
@@ -241,7 +251,7 @@ class EcsStack(Stack):
             "OmiFrontendTaskDef",
             cpu=256,
             memory_limit_mib=512,
-            volumes=[efs_volume],
+            volumes=[efs_frontend_volume],
         )
 
         # Add S3 permissions to task role
@@ -254,7 +264,7 @@ class EcsStack(Stack):
             "omi-frontend",
             image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository),
             container_name="omi-frontend",
-            port_mappings=[ecs.PortMapping(container_port=80)],
+            port_mappings=[ecs.PortMapping(container_port=80), ecs.PortMapping(container_port=443)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-frontend"),
             environment=default_environment
             | {
@@ -289,23 +299,48 @@ class EcsStack(Stack):
             service_name="omi-frontend",
         )
 
-        # Allow backend to access database
-        backend_sg.add_egress_rule(
-            peer=ec2.Peer.any_ipv4(),
-            connection=ec2.Port.tcp(5432),
-            description="Allow backend to access PostgreSQL",
-        )
+        # update security group rules to be more restrictive
 
-        # Allow frontend to access backend
         backend_sg.add_ingress_rule(
             peer=ec2.Peer.any_ipv4(),
-            connection=ec2.Port.tcp(8000),
-            description="Allow frontend to access backend",
+            connection=ec2.Port.all_tcp(),
+            description="Allow all",
         )
 
-        # Allow frontend to database
+        backend_sg.add_egress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.all_traffic(),
+            description="Allow all",
+        )
+
         frontend_sg.add_ingress_rule(
             peer=ec2.Peer.any_ipv4(),
-            connection=ec2.Port.tcp(5432),
-            description="Allow frontend to access PostgreSQL",
+            connection=ec2.Port.all_traffic(),
+            description="Allow all",
+        )
+
+        frontend_sg.add_egress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.all_traffic(),
+            description="Allow all",
+        )
+
+        # Outputs
+        CfnOutput(
+            self,
+            "ClusterName",
+            value=self.cluster.cluster_name,
+            description="Name of the created ECS cluster",
+        )
+        CfnOutput(
+            self,
+            "BackendServiceUrl",
+            value=f"http://{self.backend_service.load_balancer.load_balancer_dns_name}",
+            description="URL of the backend service",
+        )
+        CfnOutput(
+            self,
+            "FrontendServiceUrl",
+            value=f"http://{self.frontend_service.load_balancer.load_balancer_dns_name}",
+            description="URL of the frontend service",
         )
