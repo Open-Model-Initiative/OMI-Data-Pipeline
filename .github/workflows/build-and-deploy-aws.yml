@@ -2,8 +2,8 @@
 name: Build and Deploy to AWS
 
 on:
-  # push:
-  #   branches: [ main ]
+  push:
+    branches: [ 138-create-cdk-deployment-pipeline ]
   # pull_request:
   #   branches: [ main ]
   workflow_dispatch:
