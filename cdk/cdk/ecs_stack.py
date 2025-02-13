@@ -9,7 +9,6 @@ from aws_cdk import (
     aws_iam as iam,
     aws_secretsmanager as secretsmanager,
     RemovalPolicy,
-    Environment,
     CfnOutput,
 )
 from constructs import Construct
@@ -214,12 +213,6 @@ class EcsStack(Stack):
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-backend"),
             environment=default_environment,
             secrets=default_secrets,
-            # test which is better, mount point or s3fs command
-            # entry_point=["sh", "-c"],
-            # command=[
-            #     + "s3fs $S3_BUCKET $UPLOAD_DIR -o iam_role=auto && "
-            #     + "uvicorn odr_api.app:app --host 0.0.0.0 --port 31100 --reload"
-            # ]
         )
 
         backend_container.add_mount_points(
@@ -270,13 +263,7 @@ class EcsStack(Stack):
             | {
                 "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}"
             },
-            secrets=default_secrets,
-            # test which is better, mount point or s3fs command
-            # entry_point=["sh", "-c"],
-            # command=[
-            #     + "s3fs $S3_BUCKET $UPLOAD_DIR -o iam_role=auto && "
-            #     + "/entrypoint.sh pnpm run dev -- --host 0.0.0.0"
-            # ]
+            secrets=default_secrets
         )
 
         frontend_container.add_mount_points(
