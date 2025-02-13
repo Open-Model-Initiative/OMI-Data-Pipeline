@@ -257,7 +257,7 @@ class EcsStack(Stack):
             "omi-frontend",
             image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository),
             container_name="omi-frontend",
-            port_mappings=[ecs.PortMapping(container_port=5173, host_port=80), ecs.PortMapping(container_port=5173, host_port=443)],
+            port_mappings=[ecs.PortMapping(container_port=5173)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-frontend"),
             environment=default_environment
             | {
