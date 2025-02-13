@@ -31,9 +31,6 @@ class EcsStack(Stack):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        region = kwargs["env"].region
-        account = kwargs["env"].account
-
         # Create ECS Cluster
         self.cluster = ecs.Cluster(
             self, "OmiCluster", vpc=vpc_stack.vpc, cluster_name="omi-cluster"
@@ -114,7 +111,6 @@ class EcsStack(Stack):
                 "elasticfilesystem:ClientRootAccess",
                 "elasticfilesystem:DescribeMountTargets",
                 "elasticfilesystem:DescribeFileSystems",
-                "secretsmanager:GetSecretValue",
             ],
             resources=["*"],
         )
@@ -127,13 +123,37 @@ class EcsStack(Stack):
             "POSTGRES_HOST": database_stack.db_instance.db_instance_endpoint_address,
             "POSTGRES_PORT": database_stack.db_instance.db_instance_endpoint_port,
             "POSTGRES_DB": database_stack.db_name,
+            "DEFAULT_SUPERUSER_EMAIL": "opendatarepository@opendatarepository.com",
+            "DEFAULT_SUPERUSER_PASSWORD": "",
+            "DEFAULT_SUPERUSER_USERNAME": "opendatarepository",
+            "TEST_POSTGRES_DB": "",
         }
 
         omi_sercret_arn = (
-            f"arn:aws:secretsmanager:{region}:{account}:secret:omi-oauth2-i1xzfK"
+            "arn:aws:secretsmanager:us-east-1:474668405283:secret:omi-oauth2-i1xzfK"
+        )
+
+        hf_sercret_arn = (
+            "arn:aws:secretsmanager:us-east-1:474668405283:secret:huggingface-0L3S0w"
         )
 
         default_secrets = {
+            "HF_TOKEN": ecs.Secret.from_secrets_manager(
+                secret=secretsmanager.Secret.from_secret_complete_arn(
+                    self,
+                    "hf-token",
+                    secret_complete_arn=hf_sercret_arn,
+                ),
+                field="token",
+            ),
+            "HF_HDR_DATASET_NAME": ecs.Secret.from_secrets_manager(
+                secret=secretsmanager.Secret.from_secret_complete_arn(
+                    self,
+                    "hf-hdr-dataset-name",
+                    secret_complete_arn=hf_sercret_arn,
+                ),
+                field="hdr_dataset_name",
+            ),
             "POSTGRES_USER": ecs.Secret.from_secrets_manager(
                 secret=database_stack.database_secret, field="username"
             ),
@@ -193,7 +213,7 @@ class EcsStack(Stack):
         # Backend Service Task Definition
         backend_task_definition = ecs.FargateTaskDefinition(
             self,
-            "OmiBackendTaskDef",
+            "OmiBackendTaskDefiniton",
             cpu=512,
             memory_limit_mib=1024,
             volumes=[efs_backend_volume],
@@ -241,7 +261,7 @@ class EcsStack(Stack):
         # Frontend Service Task Definition
         frontend_task_definition = ecs.FargateTaskDefinition(
             self,
-            "OmiFrontendTaskDef",
+            "OmiFrontendTaskDefiniton",
             cpu=256,
             memory_limit_mib=512,
             volumes=[efs_frontend_volume],
@@ -263,7 +283,7 @@ class EcsStack(Stack):
             | {
                 "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}:31100"
             },
-            secrets=default_secrets
+            secrets=default_secrets,
         )
 
         frontend_container.add_mount_points(
@@ -300,15 +320,9 @@ class EcsStack(Stack):
             description="Allow all",
         )
 
-        # only port 80 and 443 are allowed
         frontend_sg.add_ingress_rule(
             peer=ec2.Peer.any_ipv4(),
-            connection=ec2.Port.tcp(80),
-            description="Allow all",
-        )
-        frontend_sg.add_ingress_rule(
-            peer=ec2.Peer.any_ipv4(),
-            connection=ec2.Port.tcp(443),
+            connection=ec2.Port.all_tcp(),
             description="Allow all",
         )
 
