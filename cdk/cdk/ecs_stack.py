@@ -209,7 +209,7 @@ class EcsStack(Stack):
             "omi-backend",
             image=ecs.ContainerImage.from_ecr_repository(ecr_stack.backend_repository),
             container_name="omi-backend",
-            port_mappings=[ecs.PortMapping(container_port=8000)],
+            port_mappings=[ecs.PortMapping(container_port=31100)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-backend"),
             environment=default_environment,
             secrets=default_secrets,
@@ -257,11 +257,11 @@ class EcsStack(Stack):
             "omi-frontend",
             image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository),
             container_name="omi-frontend",
-            port_mappings=[ecs.PortMapping(container_port=80), ecs.PortMapping(container_port=443)],
+            port_mappings=[ecs.PortMapping(container_port=5173, host_port=80), ecs.PortMapping(container_port=5173, host_port=443)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-frontend"),
             environment=default_environment
             | {
-                "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}"
+                "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}:31100"
             },
             secrets=default_secrets
         )
@@ -300,9 +300,15 @@ class EcsStack(Stack):
             description="Allow all",
         )
 
+        # only port 80 and 443 are allowed
         frontend_sg.add_ingress_rule(
             peer=ec2.Peer.any_ipv4(),
-            connection=ec2.Port.all_traffic(),
+            connection=ec2.Port.tcp(80),
+            description="Allow all",
+        )
+        frontend_sg.add_ingress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(443),
             description="Allow all",
         )
 
