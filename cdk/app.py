@@ -13,9 +13,6 @@ from cdk.waf_stack import WafStack
 
 app = cdk.App()
 env = cdk.Environment(
-    # account=os.getenv('CDK_DEFAULT_ACCOUNT'),
-    # region=os.getenv('CDK_DEFAULT_REGION')
-    account="474668405283",
     region="us-east-1"
 )
 

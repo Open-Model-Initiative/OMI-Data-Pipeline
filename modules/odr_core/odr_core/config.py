@@ -23,29 +23,16 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_PORT: str
 
-    # PGADMIN
-    PGADMIN_DEFAULT_EMAIL: str
-    PGADMIN_DEFAULT_PASSWORD: str
-
     # Auth - make sure to set this to False in production
     SKIP_AUTH: bool = False
 
-    # Session
-    SESSION_MAX_AGE_SECONDS: int = 60 * 60 * 24 * 7 * 4  # 4 weeks
-
-    # Default Superuser
-    DEFAULT_SUPERUSER_EMAIL: str
-    DEFAULT_SUPERUSER_PASSWORD: str
-    DEFAULT_SUPERUSER_USERNAME: str
-
-    # JWT
-    JWT_SECRET: str
-    JWT_ALGORITHM: str = "HS256"
-    JWT_EXPIRATION_SECONDS: int = 3600
-    JWT_LEEWAY_SECONDS: int = 60
+    # Default Superuser - should be removed
+    DEFAULT_SUPERUSER_EMAIL: str = None
+    DEFAULT_SUPERUSER_PASSWORD: str = None
+    DEFAULT_SUPERUSER_USERNAME: str = None
 
     # Test Database
-    TEST_POSTGRES_DB: str
+    TEST_POSTGRES_DB: str = None
     TEST: bool = False
 
     ROOT_DIR: str
@@ -53,25 +40,13 @@ class Settings(BaseSettings):
     # Models
     MODEL_CACHE_DIR: str
 
-    # OAUTH
-    GOOGLE_CLIENT_ID: str
-    GOOGLE_CLIENT_SECRET: str
-
-    GITHUB_CLIENT_ID: str
-    GITHUB_CLIENT_SECRET: str
-
-    DISCORD_CLIENT_ID: str
-    DISCORD_CLIENT_SECRET: str
-
-    OAUTH2_REDIRECT_PATH: str
-
     # Embedding
     CONTENT_EMBEDDING_DIMENSION: int = 512
     ANNOTATION_EMBEDDING_DIMENSION: int = 384
 
     # Hugging Face
-    HF_TOKEN: str
-    HF_HDR_DATASET_NAME: str
+    HF_TOKEN: str = None
+    HF_HDR_DATASET_NAME: str = None
 
     class Config:
         env_file = ".env"
