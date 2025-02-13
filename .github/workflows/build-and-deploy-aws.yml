@@ -73,7 +73,7 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.deployment_type != 'none'
+    # if: github.event_name == 'workflow_dispatch' && github.event.inputs.deployment_type != 'none'
 
     steps:
     - name: Checkout repository
@@ -97,14 +97,14 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
 
-    - name: Deploy all stacks
-      if: github.event.inputs.deployment_type == 'all'
-      working-directory: cdk
-      run: |
-        cdk deploy --all --require-approval never
+    # - name: Deploy all stacks
+    #   if: github.event.inputs.deployment_type == 'all'
+    #   working-directory: cdk
+    #   run: |
+    #     cdk deploy --all --require-approval never
 
     - name: Deploy app stack only
-      if: github.event.inputs.deployment_type == 'app-only'
+      # if: github.event.inputs.deployment_type == 'app-only'
       working-directory: cdk
       run: |
         cdk deploy EcsStack --require-approval never
