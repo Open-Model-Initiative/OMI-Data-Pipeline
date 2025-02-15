@@ -1,6 +1,7 @@
 <script lang="ts">
 	import './moderation.css';
 	import { goto } from '$app/navigation';
+	import { TriangleExclamationSolid } from 'svelte-awesome-icons';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -11,7 +12,7 @@
 		goto(`?page=${page}`);
 	}
 
-	async function handleAction(action: 'accept' | 'reject', filename: string) {
+	async function handleAction(action: 'accept' | 'reject' | 'flag', filename: string) {
 		const form = new FormData();
 		form.append('filename', filename);
 
@@ -84,6 +85,13 @@
 				on:click={() => handleAction('reject', image.filename)}
 			  >
 				Reject
+			  </button>
+			  <button
+				class="btn btn-sm variant-filled-warning"
+				on:click={() => handleAction('flag', image.filename)}
+				title="Flag suspected illegal content"
+			  >
+				<TriangleExclamationSolid size="20" />
 			  </button>
 			</td>
 		  </tr>

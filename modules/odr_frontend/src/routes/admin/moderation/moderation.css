@@ -88,3 +88,12 @@
   h1 {
     padding: 0 0 1rem 0;
   }
+
+  .variant-filled-warning {
+    background-color: #ffc107;
+    color: #000;
+  }
+
+  .variant-filled-warning:hover {
+    background-color: #e0a800;
+  }

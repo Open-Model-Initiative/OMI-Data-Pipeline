@@ -12,6 +12,7 @@ const UPLOAD_DIR = process.env.UPLOAD_DIR || './uploads';
 const PENDING_DIR = join(UPLOAD_DIR, 'pending');
 const ACCEPTED_DIR = join(UPLOAD_DIR, 'accepted');
 const REJECTED_DIR = join(UPLOAD_DIR, 'rejected');
+const FLAGGED_DIR = join(UPLOAD_DIR, 'flagged');
 const ITEMS_PER_PAGE = 10;
 
 let s3Client: S3Client | null = null;
@@ -168,6 +169,16 @@ export const actions = {
       }
       await moveFile(filename, 'rejected');
       return { success: true };
+    },
+
+    flag: async ({ request }) => {
+      const formData = await request.formData();
+      const filename = formData.get('filename');
+      if (typeof filename !== 'string') {
+        throw error(400, 'Invalid filename');
+      }
+      await moveFile(filename, 'flagged');
+      return { success: true };
     }
   };
 
@@ -201,7 +212,17 @@ export const actions = {
     } else {
       // Local file system move logic
       const sourcePath = join(PENDING_DIR, filename);
-      const destPath = join(destFolder === 'accepted' ? ACCEPTED_DIR : REJECTED_DIR, filename);
+      let destPath;
+      if (destFolder === 'accepted') {
+        destPath = join(ACCEPTED_DIR, filename)
+      } else if (destFolder === 'rejected') {
+        destPath = join(REJECTED_DIR, filename)
+      } else if (destFolder === 'flagged') {
+        destPath = join(FLAGGED_DIR, filename)
+      } else {
+        throw new Error(`Invalid destination folder: ${destFolder}`);
+      }
+
       await rename(sourcePath, destPath);
 
       // Move associated JSON and DNG files
