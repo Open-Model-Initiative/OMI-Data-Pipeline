@@ -1,8 +1,12 @@
 <script lang="ts">
+	import { getToastStore } from '@skeletonlabs/skeleton';
 	import './moderation.css';
 	import { goto } from '$app/navigation';
 	import { TriangleExclamationSolid } from 'svelte-awesome-icons';
 	import type { PageData } from './$types';
+	import { MakeToastMessage } from '$lib/toastHelper';
+
+	const toastStore = getToastStore();
 
 	export let data: PageData;
 
@@ -24,8 +28,10 @@
 		if (response.ok) {
 			// Remove the image from the list
 			images = images.filter(img => img.filename !== filename);
+			toastStore.trigger(MakeToastMessage(`Image ${action}ed successfully.`, 'success'));
 		} else {
 			console.error(`Failed to ${action} image`);
+			toastStore.trigger(MakeToastMessage(`Failed to ${action} image`, 'error'));
 		}
 	}
 
@@ -74,26 +80,30 @@
 			  <pre>{JSON.stringify(image.metadata, null, 2)}</pre>
 			</td>
 			<td>
-				<button
+				<div class="button-group">
+				  <button
 					class="btn btn-sm variant-filled-success"
 					on:click={() => handleAction('accept', image.filename)}
-				>
-				Accept
-			  </button>
-			  <button
-				class="btn btn-sm variant-filled-error"
-				on:click={() => handleAction('reject', image.filename)}
-			  >
-				Reject
-			  </button>
-			  <button
-				class="btn btn-sm variant-filled-warning"
-				on:click={() => handleAction('flag', image.filename)}
-				title="Flag suspected illegal content"
-			  >
-				<TriangleExclamationSolid size="20" />
-			  </button>
-			</td>
+					title="Accept the image"
+				  >
+					Accept
+				  </button>
+				  <button
+					class="btn btn-sm variant-filled-error"
+					on:click={() => handleAction('reject', image.filename)}
+					title="Reject the image"
+				  >
+					Reject
+				  </button>
+				  <button
+					class="btn btn-sm variant-filled-warning flag-button"
+					on:click={() => handleAction('flag', image.filename)}
+					title="Flag suspected illegal content"
+				  >
+					<TriangleExclamationSolid size="23" />
+				  </button>
+				</div>
+			  </td>
 		  </tr>
 		{/each}
 	  </tbody>

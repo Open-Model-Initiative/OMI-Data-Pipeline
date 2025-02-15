@@ -97,3 +97,21 @@
   .variant-filled-warning:hover {
     background-color: #e0a800;
   }
+
+  .button-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .flag-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    height: 100%;
+  }
+
+  .flag-button :global(svg) {
+    display: block;
+  }
