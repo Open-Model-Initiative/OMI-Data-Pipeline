@@ -56,6 +56,7 @@
 		"highlight.js": "11.10.0",
 		"next-auth": "^4.24.11",
 		"pg": "^8.13.1",
-		"pnpm": "^9.15.3"
+		"pnpm": "^9.15.3",
+		"svelte-awesome-icons": "^1.2.1"
 	}
 }

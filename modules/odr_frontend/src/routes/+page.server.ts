@@ -26,6 +26,7 @@ const UPLOAD_DIR = process.env.UPLOAD_DIR || './uploads';
 const PENDING_DIR = join(UPLOAD_DIR, 'pending');
 const ACCEPTED_DIR = join(UPLOAD_DIR, 'accepted');
 const REJECTED_DIR = join(UPLOAD_DIR, 'rejected');
+const FLAGGED_DIR = join(UPLOAD_DIR, 'flagged');
 const API_BASE_URL = process.env.API_SERVICE_URL || 'http://odr-api:31100/api/v1';
 
 let s3Client: S3Client | null = null;
@@ -118,6 +119,8 @@ export const actions = {
 			await mkdir(PENDING_DIR, { recursive: true });
 			await mkdir(ACCEPTED_DIR, { recursive: true });
 			await mkdir(REJECTED_DIR, { recursive: true });
+			await mkdir(FLAGGED_DIR, { recursive: true });
+
 
 			if (process.env.NODE_ENV === 'production') {
 			  	// S3 upload for production
@@ -147,10 +150,10 @@ export const actions = {
 			} else {
 				// Local file system for development
 				const cleanedFilePath = join(PENDING_DIR, uniqueFileName);
-				await writeFile(cleanedFilePath, cleanedBuffer);
+				await writeFile(cleanedFilePath, new Uint8Array(cleanedBuffer));
 
 				const jpgFilePath = join(PENDING_DIR, jpgFileName);
-				await writeFile(jpgFilePath, jpgBuffer);
+				await writeFile(jpgFilePath, new Uint8Array(jpgBuffer));
 
 				const metadataFilePath = join(PENDING_DIR, metadataFileName);
 				await writeFile(metadataFilePath, metadataContent);
