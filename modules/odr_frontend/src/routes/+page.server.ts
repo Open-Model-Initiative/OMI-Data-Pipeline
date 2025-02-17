@@ -121,7 +121,6 @@ export const actions = {
 			await mkdir(REJECTED_DIR, { recursive: true });
 			await mkdir(FLAGGED_DIR, { recursive: true });
 
-
 			if (process.env.NODE_ENV === 'production') {
 			  	// S3 upload for production
 				if (!s3Client) {
