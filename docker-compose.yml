@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
-name: omi-postgres
+name: omi-data-repository
 services:
   postgres:
-    image: pgvector/pgvector:pg16
+    image: pgvector/pgvector:pg17
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -15,23 +15,6 @@ services:
       - 35432:5432
     networks:
       - omi-network
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_LISTEN_ADDRESS: 0.0.0.0
-    entrypoint: /bin/sh -c "chmod 600 /pgpass; /entrypoint.sh;"
-    user: root
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    ports:
-      - "${PGADMIN_PORT:-35050}:80"
-    networks:
-      - omi-network
-    depends_on:
-      - postgres
 
   odr-api:
     build:
@@ -81,6 +64,8 @@ services:
       - ./modules/odr_frontend/.env
     networks:
       - omi-network
+    depends_on:
+      - postgres
     develop:
       watch:
         - action: sync
