@@ -7,6 +7,6 @@ export default defineConfig({
   schema: './src/db/schema.ts',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    url: "postgresql://opendatarepository:opendatarepository@localhost:35432/opendatarepository",
   },
 });
