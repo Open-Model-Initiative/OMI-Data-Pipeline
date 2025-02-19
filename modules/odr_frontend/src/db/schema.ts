@@ -331,7 +331,7 @@ export const contents = pgTable("contents", {
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
 	// TODO: failed to parse database type 'bytea'
-	url: unknown("url"),
+	url: varchar(),
 }, (table) => [
 	index("ix_contents_hash").using("btree", table.hash.asc().nullsLast().op("text_ops")),
 	index("ix_contents_id").using("btree", table.id.asc().nullsLast().op("int4_ops")),
