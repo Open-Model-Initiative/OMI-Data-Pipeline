@@ -98,9 +98,10 @@ export const annotationEmbeddings = pgTable("annotation_embeddings", {
 	fromUserId: integer("from_user_id"),
 	fromTeamId: integer("from_team_id"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
-	embedding: vector({ dimensions: 384 }),
+	embedding: vector("embedding", { dimensions: 384 }),
 }, (table) => [
 	index("ix_annotation_embeddings_id").using("btree", table.id.asc().nullsLast().op("int4_ops")),
+	index("embedding_hnsw_idx").using("hnsw", table.embedding.op("vector_cosine_ops")),
 	foreignKey({
 			columns: [table.annotationId],
 			foreignColumns: [annotations.id],
@@ -131,9 +132,10 @@ export const contentEmbeddings = pgTable("content_embeddings", {
 	fromUserId: integer("from_user_id"),
 	fromTeamId: integer("from_team_id"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
-	embedding: vector({ dimensions: 512 }),
+	embedding: vector("embedding", { dimensions: 512 }),
 }, (table) => [
 	index("ix_content_embeddings_id").using("btree", table.id.asc().nullsLast().op("int4_ops")),
+	index("content_embedding_hnsw_idx").using("hnsw", table.embedding.op("vector_cosine_ops")),
 	foreignKey({
 			columns: [table.contentId],
 			foreignColumns: [contents.id],

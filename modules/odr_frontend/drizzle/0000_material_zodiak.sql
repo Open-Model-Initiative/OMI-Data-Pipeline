@@ -1,15 +1,13 @@
 -- Current sql file was generated after introspecting the database
 -- If you want to run this migration please uncomment this code before executing migrations
-/*
+CREATE EXTENSION IF NOT EXISTS vector;
 CREATE TYPE "public"."contentsourcetype" AS ENUM('URL', 'PATH', 'HUGGING_FACE');--> statement-breakpoint
 CREATE TYPE "public"."contentstatus" AS ENUM('PENDING', 'AVAILABLE', 'UNAVAILABLE', 'DELISTED');--> statement-breakpoint
 CREATE TYPE "public"."contenttype" AS ENUM('IMAGE', 'VIDEO', 'VOICE', 'MUSIC', 'TEXT');--> statement-breakpoint
 CREATE TYPE "public"."embeddingenginetype" AS ENUM('IMAGE', 'VIDEO', 'VOICE', 'MUSIC', 'TEXT');--> statement-breakpoint
 CREATE TYPE "public"."reportstatus" AS ENUM('PENDING', 'REVIEWED', 'RESOLVED');--> statement-breakpoint
 CREATE TYPE "public"."usertype" AS ENUM('user', 'bot');--> statement-breakpoint
-CREATE TABLE "alembic_version" (
-	"version_num" varchar(32) PRIMARY KEY NOT NULL
-);
+
 --> statement-breakpoint
 CREATE TABLE "teams" (
 	"id" serial PRIMARY KEY NOT NULL,
@@ -295,4 +293,3 @@ CREATE INDEX "ix_contents_hash" ON "contents" USING btree ("hash" text_ops);--> 
 CREATE INDEX "ix_contents_id" ON "contents" USING btree ("id" int4_ops);--> statement-breakpoint
 CREATE INDEX "ix_contents_phash" ON "contents" USING btree ("phash" text_ops);--> statement-breakpoint
 CREATE INDEX "ix_users_identity_provider" ON "users" USING btree ("identity_provider" text_ops);
-*/
