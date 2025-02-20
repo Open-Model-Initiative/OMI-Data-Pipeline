@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "CDK Synth",
+            "script": "cdk synth",
+            "cwd": "${workspaceRoot}",
+            "createTemporaryIntegratedConsole": true
+        }
+    ]
+}

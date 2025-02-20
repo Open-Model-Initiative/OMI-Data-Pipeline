@@ -1,0 +1,5 @@
+{
+    "python.analysis.diagnosticMode": "openFilesOnly",
+    "python.analysis.indexing": true,
+    "python.languageServer": "Pylance",
+}
