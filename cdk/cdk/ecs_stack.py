@@ -92,6 +92,7 @@ class EcsStack(Stack):
             "DEFAULT_SUPERUSER_PASSWORD": "",
             "DEFAULT_SUPERUSER_USERNAME": "opendatarepository",
             "TEST_POSTGRES_DB": "",
+            "AWS_S3_ENABLED": "true"
         }
 
         omi_sercret_arn = (
