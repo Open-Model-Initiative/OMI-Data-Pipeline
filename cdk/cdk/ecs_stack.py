@@ -179,8 +179,8 @@ class EcsStack(Stack):
         backend_task_definition = ecs.FargateTaskDefinition(
             self,
             "OmiBackendTaskDefiniton",
-            cpu=512,
-            memory_limit_mib=1024
+            cpu=1024,
+            memory_limit_mib=2048,
         )
 
         # Add S3 permissions to task role
@@ -218,8 +218,8 @@ class EcsStack(Stack):
         frontend_task_definition = ecs.FargateTaskDefinition(
             self,
             "OmiFrontendTaskDefiniton",
-            cpu=256,
-            memory_limit_mib=512
+            cpu=1024,
+            memory_limit_mib=2048,
         )
 
         # Add S3 permissions to task role
