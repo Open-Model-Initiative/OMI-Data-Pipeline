@@ -74,9 +74,7 @@ class EcsStack(Stack):
 
         default_policy = iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
-            actions=[
-                "logs:CreateLogGroup"
-            ],
+            actions=["logs:CreateLogGroup"],
             resources=["*"],
         )
 
@@ -92,7 +90,7 @@ class EcsStack(Stack):
             "DEFAULT_SUPERUSER_PASSWORD": "",
             "DEFAULT_SUPERUSER_USERNAME": "opendatarepository",
             "TEST_POSTGRES_DB": "",
-            "AWS_S3_ENABLED": "true"
+            "AWS_S3_ENABLED": "true",
         }
 
         omi_sercret_arn = (
@@ -229,7 +227,7 @@ class EcsStack(Stack):
         # Add permissions for mounting EFS and accessing secrets
         frontend_task_definition.add_to_task_role_policy(default_policy)
 
-        frontend_task_definition.add_container(
+        frontend_container = frontend_task_definition.add_container(
             "omi-frontend",
             image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository),
             container_name="omi-frontend",
@@ -237,7 +235,7 @@ class EcsStack(Stack):
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-frontend"),
             environment=default_environment
             | {
-                "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}:31100"
+                "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}:31100",
             },
             secrets=default_secrets,
         )
@@ -254,30 +252,55 @@ class EcsStack(Stack):
             service_name="omi-frontend",
         )
 
-        # update security group rules to be more restrictive
+        frontend_container.add_environment(
+            "AWS_HOSTNAME", self.frontend_service.load_balancer.load_balancer_dns_name
+        )
 
+        # Backend security group rules
+        # Allow inbound traffic only from frontend security group on backend port
         backend_sg.add_ingress_rule(
-            peer=ec2.Peer.any_ipv4(),
-            connection=ec2.Port.all_tcp(),
-            description="Allow all",
+            peer=frontend_sg,
+            connection=ec2.Port.tcp(31100),
+            description="Allow frontend to backend traffic",
         )
 
+        # Backend security group rules - only necessary egress rules
         backend_sg.add_egress_rule(
-            peer=ec2.Peer.any_ipv4(),
-            connection=ec2.Port.all_traffic(),
-            description="Allow all",
+            peer=database_stack.db_security_group,
+            connection=ec2.Port.tcp(5432),
+            description="Allow backend to RDS",
         )
 
+        # Frontend security group rules
+        # Allow inbound HTTP/HTTPS traffic from anywhere
         frontend_sg.add_ingress_rule(
             peer=ec2.Peer.any_ipv4(),
-            connection=ec2.Port.all_tcp(),
-            description="Allow all",
+            connection=ec2.Port.tcp(80),
+            description="Allow HTTP inbound",
+        )
+        frontend_sg.add_ingress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(443),
+            description="Allow HTTPS inbound",
         )
 
+        # Allow frontend to RDS communication
+        frontend_sg.add_egress_rule(
+            peer=database_stack.db_security_group,
+            connection=ec2.Port.tcp(5432),
+            description="Allow frontend to RDS",
+        )
+
+        # Allow outbound traffic to backend and for HTTPS
+        frontend_sg.add_egress_rule(
+            peer=backend_sg,
+            connection=ec2.Port.tcp(31100),
+            description="Allow frontend to backend traffic",
+        )
         frontend_sg.add_egress_rule(
             peer=ec2.Peer.any_ipv4(),
-            connection=ec2.Port.all_traffic(),
-            description="Allow all",
+            connection=ec2.Port.tcp(443),
+            description="Allow HTTPS outbound for external calls",
         )
 
         # Outputs
