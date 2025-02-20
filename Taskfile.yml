@@ -5,7 +5,6 @@ version: '3'
 includes:
   api: ./modules/odr_api/Taskfile.api.yml
   core: ./modules/odr_core/Taskfile.yml
-  data: ./modules/odr_datamodel/Taskfile.yml
   frontend: ./modules/odr_frontend/Taskfile.yml
   api-test: ./modules/odr_api/tests/Taskfile.api.test.yml
   monitoring: ./modules/odr_monitoring/Taskfile.yml

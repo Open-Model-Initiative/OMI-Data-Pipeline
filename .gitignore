@@ -85,3 +85,4 @@ models_cache/
 
 # Local uploads
 uploads/
+.local
