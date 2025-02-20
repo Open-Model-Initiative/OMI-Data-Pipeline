@@ -30,16 +30,10 @@ const API_BASE_URL = process.env.API_SERVICE_URL || 'http://odr-api:31100/api/v1
 
 let s3Client: S3Client | null = null;
 
-if (process.env.AWS_REGION && process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
-  s3Client = new S3Client({
-    region: process.env.AWS_REGION,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    },
-  });
+if (process.env.AWS_S3_ENABLED === 'true') {
+  s3Client = new S3Client();
 } else {
-  console.warn('AWS credentials not found in environment variables. S3 functionality will be disabled.');
+  console.warn('AWS S3 is not enabled');
 }
 
 async function makeApiCall(endpoint: string, file: Blob, filename: string) {

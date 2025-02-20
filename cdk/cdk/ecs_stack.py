@@ -61,36 +61,6 @@ class EcsStack(Stack):
             removal_policy=RemovalPolicy.RETAIN,
         )
 
-        # Create EFS Access Point
-        access_point = fs.add_access_point(
-            "OmiEfsAccessPoint",
-            create_acl=efs.Acl(owner_uid="1000", owner_gid="1000", permissions="750"),
-            path="/upload",
-            posix_user=efs.PosixUser(uid="1000", gid="1000"),
-        )
-
-        # Create volume configuration
-        efs_backend_volume = ecs.Volume(
-            name="omi-data-volume",
-            efs_volume_configuration=ecs.EfsVolumeConfiguration(
-                file_system_id=fs.file_system_id,
-                transit_encryption="ENABLED",
-                authorization_config=ecs.AuthorizationConfig(
-                    access_point_id=access_point.access_point_id, iam="ENABLED"
-                ),
-            ),
-        )
-        efs_frontend_volume = ecs.Volume(
-            name="omi-data-volume",
-            efs_volume_configuration=ecs.EfsVolumeConfiguration(
-                file_system_id=fs.file_system_id,
-                transit_encryption="ENABLED",
-                authorization_config=ecs.AuthorizationConfig(
-                    access_point_id=access_point.access_point_id, iam="ENABLED"
-                ),
-            ),
-        )
-
         s3_policy = iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             actions=[
@@ -105,12 +75,7 @@ class EcsStack(Stack):
         default_policy = iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             actions=[
-                "logs:CreateLogGroup",
-                "elasticfilesystem:ClientMount",
-                "elasticfilesystem:ClientWrite",
-                "elasticfilesystem:ClientRootAccess",
-                "elasticfilesystem:DescribeMountTargets",
-                "elasticfilesystem:DescribeFileSystems",
+                "logs:CreateLogGroup"
             ],
             resources=["*"],
         )
@@ -215,8 +180,7 @@ class EcsStack(Stack):
             self,
             "OmiBackendTaskDefiniton",
             cpu=512,
-            memory_limit_mib=1024,
-            volumes=[efs_backend_volume],
+            memory_limit_mib=1024
         )
 
         # Add S3 permissions to task role
@@ -225,7 +189,7 @@ class EcsStack(Stack):
         # Add permissions for mounting EFS and accessing secrets
         backend_task_definition.add_to_task_role_policy(default_policy)
 
-        backend_container = backend_task_definition.add_container(
+        backend_task_definition.add_container(
             "omi-backend",
             image=ecs.ContainerImage.from_ecr_repository(ecr_stack.backend_repository),
             container_name="omi-backend",
@@ -233,14 +197,6 @@ class EcsStack(Stack):
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-backend"),
             environment=default_environment,
             secrets=default_secrets,
-        )
-
-        backend_container.add_mount_points(
-            ecs.MountPoint(
-                container_path="/mnt/upload",
-                source_volume="omi-data-volume",
-                read_only=False,
-            )
         )
 
         # Backend Service
@@ -263,8 +219,7 @@ class EcsStack(Stack):
             self,
             "OmiFrontendTaskDefiniton",
             cpu=256,
-            memory_limit_mib=512,
-            volumes=[efs_frontend_volume],
+            memory_limit_mib=512
         )
 
         # Add S3 permissions to task role
@@ -273,7 +228,7 @@ class EcsStack(Stack):
         # Add permissions for mounting EFS and accessing secrets
         frontend_task_definition.add_to_task_role_policy(default_policy)
 
-        frontend_container = frontend_task_definition.add_container(
+        frontend_task_definition.add_container(
             "omi-frontend",
             image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository),
             container_name="omi-frontend",
@@ -284,14 +239,6 @@ class EcsStack(Stack):
                 "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}:31100"
             },
             secrets=default_secrets,
-        )
-
-        frontend_container.add_mount_points(
-            ecs.MountPoint(
-                container_path="/mnt/upload",
-                source_volume="omi-data-volume",
-                read_only=False,
-            )
         )
 
         # Frontend Service
