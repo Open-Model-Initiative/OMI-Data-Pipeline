@@ -15,6 +15,13 @@
       "when": 1739990090100,
       "tag": "0001_young_ravenous",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1740088605953,
+      "tag": "0002_blue_bulldozer",
+      "breakpoints": true
     }
   ]
 }
