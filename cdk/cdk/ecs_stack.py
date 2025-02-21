@@ -43,6 +43,7 @@ class EcsStack(Stack):
             vpc=vpc_stack.vpc,
             description="Security group for backend service",
             security_group_name="omi-backend-sg",
+            allow_all_outbound=False,
         )
 
         frontend_sg = ec2.SecurityGroup(
@@ -51,6 +52,7 @@ class EcsStack(Stack):
             vpc=vpc_stack.vpc,
             description="Security group for frontend service",
             security_group_name="omi-frontend-sg",
+            allow_all_outbound=False,
         )
 
         # Create EFS File System

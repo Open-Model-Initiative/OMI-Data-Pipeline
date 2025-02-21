@@ -25,6 +25,14 @@ class DatabaseStack(Stack):
             vpc=vpc_stack.vpc,
             description="Security group for RDS instance",
             security_group_name="omi-database-sg",
+            allow_all_outbound=False,
+        )
+
+        # Allow inbound PostgreSQL traffic from within VPC
+        self.db_security_group.add_ingress_rule(
+            peer=ec2.Peer.ipv4(vpc_stack.vpc.vpc_cidr_block),
+            connection=ec2.Port.tcp(5432),
+            description="Allow PostgreSQL access from within VPC",
         )
 
         self.db_name = "omidb"
