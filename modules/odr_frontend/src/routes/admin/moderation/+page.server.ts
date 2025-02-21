@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-import { readdir, readFile, rename } from 'fs/promises';
+import { mkdir, readdir, readFile, rename } from 'fs/promises';
 import { join } from 'path';
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
@@ -12,6 +12,7 @@ const UPLOAD_DIR = process.env.UPLOAD_DIR || './uploads';
 const PENDING_DIR = join(UPLOAD_DIR, 'pending');
 const ACCEPTED_DIR = join(UPLOAD_DIR, 'accepted');
 const REJECTED_DIR = join(UPLOAD_DIR, 'rejected');
+const FLAGGED_DIR = join(UPLOAD_DIR, 'flagged');
 const ITEMS_PER_PAGE = 10;
 
 let s3Client: S3Client | null = null;
@@ -49,7 +50,6 @@ async function getS3ObjectContent(key: string) {
   const response = await s3Client.send(command);
   return response.Body?.transformToString();
 }
-
 
 interface ImageData {
   filename: string;
@@ -108,6 +108,11 @@ export const load: PageServerLoad = async ({ url }) => {
     console.log(`Grabbed image data from S3`);
   } else {
     // Local file system logic
+    await mkdir(PENDING_DIR, { recursive: true });
+    await mkdir(ACCEPTED_DIR, { recursive: true });
+    await mkdir(REJECTED_DIR, { recursive: true });
+    await mkdir(FLAGGED_DIR, { recursive: true });
+
     const files = await readdir(PENDING_DIR);
     imageFiles = files.filter(file => file.endsWith('.jpg'));
     totalPages = Math.ceil(imageFiles.length / ITEMS_PER_PAGE);
@@ -144,65 +149,85 @@ export const load: PageServerLoad = async ({ url }) => {
 };
 
 export const actions = {
-    accept: async ({ request }) => {
-      const formData = await request.formData();
-      const filename = formData.get('filename');
-      if (typeof filename !== 'string') {
-        throw error(400, 'Invalid filename');
-      }
-      await moveFile(filename, 'accepted');
-      return { success: true };
-    },
-
-    reject: async ({ request }) => {
-      const formData = await request.formData();
-      const filename = formData.get('filename');
-      if (typeof filename !== 'string') {
-        throw error(400, 'Invalid filename');
-      }
-      await moveFile(filename, 'rejected');
-      return { success: true };
+  accept: async ({ request }) => {
+    const formData = await request.formData();
+    const filename = formData.get('filename');
+    if (typeof filename !== 'string') {
+      throw error(400, 'Invalid filename');
     }
-  };
+    await moveFile(filename, 'accepted');
+    return { success: true };
+  },
 
-  async function moveFile(filename: string, destFolder: string) {
-    if (process.env.NODE_ENV === 'production') {
-      // S3 move logic
-      if (!s3Client) {
-        throw new Error('S3 client is not initialized');
-      }
-
-      const sourceKey = `pending/${filename}`;
-      const destKey = `${destFolder}/${filename}`;
-
-      const fileExtensions = ['jpg', 'json', 'dng'];
-
-      await Promise.all(fileExtensions.map(async (ext) => {
-        const sourceKeyExt = sourceKey.replace(/\.[^.]+$/, `.${ext}`);
-        const destKeyExt = destKey.replace(/\.[^.]+$/, `.${ext}`);
-
-        await s3Client.send(new CopyObjectCommand({
-          Bucket: S3_BUCKET_NAME,
-          CopySource: `${S3_BUCKET_NAME}/${sourceKeyExt}`,
-          Key: destKeyExt,
-        }));
-
-        await s3Client.send(new DeleteObjectCommand({
-          Bucket: S3_BUCKET_NAME,
-          Key: sourceKeyExt,
-        }));
-      }));
-    } else {
-      // Local file system move logic
-      const sourcePath = join(PENDING_DIR, filename);
-      const destPath = join(destFolder === 'accepted' ? ACCEPTED_DIR : REJECTED_DIR, filename);
-      await rename(sourcePath, destPath);
-
-      // Move associated JSON and DNG files
-      ['json', 'dng'].forEach(async (ext) => {
-        const sourcePathExt = sourcePath.replace('.jpg', `.${ext}`);
-        const destPathExt = destPath.replace('.jpg', `.${ext}`);
-        await rename(sourcePathExt, destPathExt);
-      });
+  reject: async ({ request }) => {
+    const formData = await request.formData();
+    const filename = formData.get('filename');
+    if (typeof filename !== 'string') {
+      throw error(400, 'Invalid filename');
     }
+    await moveFile(filename, 'rejected');
+    return { success: true };
+  },
+
+  flag: async ({ request }) => {
+    const formData = await request.formData();
+    const filename = formData.get('filename');
+    if (typeof filename !== 'string') {
+      throw error(400, 'Invalid filename');
+    }
+    await moveFile(filename, 'flagged');
+    return { success: true };
   }
+};
+
+async function moveFile(filename: string, destFolder: string) {
+  if (process.env.NODE_ENV === 'production') {
+    // S3 move logic
+    if (!s3Client) {
+      throw new Error('S3 client is not initialized');
+    }
+
+    const sourceKey = `pending/${filename}`;
+    const destKey = `${destFolder}/${filename}`;
+
+    const fileExtensions = ['jpg', 'json', 'dng'];
+
+    await Promise.all(fileExtensions.map(async (ext) => {
+      const sourceKeyExt = sourceKey.replace(/\.[^.]+$/, `.${ext}`);
+      const destKeyExt = destKey.replace(/\.[^.]+$/, `.${ext}`);
+
+      await s3Client.send(new CopyObjectCommand({
+        Bucket: S3_BUCKET_NAME,
+        CopySource: `${S3_BUCKET_NAME}/${sourceKeyExt}`,
+        Key: destKeyExt,
+      }));
+
+      await s3Client.send(new DeleteObjectCommand({
+        Bucket: S3_BUCKET_NAME,
+        Key: sourceKeyExt,
+      }));
+    }));
+  } else {
+    // Local file system move logic
+    const sourcePath = join(PENDING_DIR, filename);
+    let destPath;
+    if (destFolder === 'accepted') {
+      destPath = join(ACCEPTED_DIR, filename)
+    } else if (destFolder === 'rejected') {
+      destPath = join(REJECTED_DIR, filename)
+    } else if (destFolder === 'flagged') {
+      destPath = join(FLAGGED_DIR, filename)
+    } else {
+      throw new Error(`Invalid destination folder: ${destFolder}`);
+    }
+
+    await rename(sourcePath, destPath);
+
+    // Move associated JSON and DNG files
+    ['json', 'dng'].forEach(async (ext) => {
+      const sourcePathExt = sourcePath.replace('.jpg', `.${ext}`);
+      const destPathExt = destPath.replace('.jpg', `.${ext}`);
+      await rename(sourcePathExt, destPathExt);
+    });
+  }
+}

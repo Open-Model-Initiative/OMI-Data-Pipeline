@@ -11,8 +11,7 @@ Contributions come in the form of code submissions, writing documentation, curat
 The Technical Steering Committee (the “TSC”) will be responsible for all technical oversight of the open source Project. TSC voting members are initially the Project’s Committers listed below:
 
 - Kent Keirsey - Invoke
-- comfyanonymous - Comfy Org
-- Justin Maier - Civitai
+- Nick Padgett - Spawning.ai
 
 The TSC may choose an alternative approach for determining the voting members of the TSC, and any such alternative approach will be documented in this file. Any meetings of the Technical Steering Committee are intended to be open to the public, and can be conducted electronically, via teleconference, Discord, or in person.
 
