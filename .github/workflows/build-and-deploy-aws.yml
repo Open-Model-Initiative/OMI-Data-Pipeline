@@ -1,0 +1,110 @@
+# SPDX-License-Identifier: Apache-2.0
+name: Build and Deploy to AWS
+
+on:
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      deployment_type:
+        description: 'What to deploy'
+        required: true
+        default: 'none'
+        type: choice
+        options:
+          - all           # Deploy all stacks
+          - app-only      # Deploy only ECS stack
+          - none         # Only build and push images
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY_FRONTEND: ecrstack-omifrontend1aeb9465-kxrvawsuoias
+  ECR_REPOSITORY_BACKEND: ecrstack-omibackend5b38cc6b-zwbfydtahfmp
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend_image: ${{ steps.build-frontend.outputs.image }}
+      backend_image: ${{ steps.build-backend.outputs.image }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::474668405283:role/omi-github-oidc
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build and push frontend image
+      id: build-frontend
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest -f modules/odr_frontend/docker/Dockerfile.frontend.dev modules/odr_frontend
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    - name: Build and push backend image
+      id: build-backend
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:latest -f modules/odr_api/docker/Dockerfile.api .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:latest
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.deployment_type != 'none'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::474668405283:role/omi-github-oidc
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Install CDK dependencies
+      working-directory: cdk
+      run: |
+        npm install -g aws-cdk
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+
+    - name: Deploy all stacks
+      if: github.event.inputs.deployment_type == 'all'
+      working-directory: cdk
+      run: |
+        cdk deploy --all --require-approval never
+
+    - name: Deploy app stack only
+      if: github.event.inputs.deployment_type == 'app-only'
+      working-directory: cdk
+      run: |
+        cdk deploy EcsStack --require-approval never
