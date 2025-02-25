@@ -17,16 +17,10 @@ const ITEMS_PER_PAGE = 10;
 
 let s3Client: S3Client | null = null;
 
-if (process.env.AWS_REGION && process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
-  s3Client = new S3Client({
-    region: process.env.AWS_REGION,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    },
-  });
+if (process.env.AWS_S3_ENABLED === 'true') {
+  s3Client = new S3Client();
 } else {
-  console.warn('AWS credentials not found in environment variables. S3 functionality will be disabled.');
+  console.warn('AWS S3 is not enabled');
 }
 
 const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
