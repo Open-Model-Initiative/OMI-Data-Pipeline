@@ -197,7 +197,7 @@ class EcsStack(Stack):
             port_mappings=[ecs.PortMapping(container_port=31100)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-backend"),
             environment=default_environment,
-            secrets=default_secrets,
+            secrets=default_secrets
         )
 
         # Backend Service
@@ -272,6 +272,16 @@ class EcsStack(Stack):
             connection=ec2.Port.tcp(5432),
             description="Allow backend to RDS",
         )
+        backend_sg.add_egress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(443),
+            description="Allow outbound HTTPS traffic for Secrets Manager and external calls",
+        )
+        backend_sg.add_egress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(80),
+            description="Allow outbound HTTP traffic for external calls",
+        )
 
         # Frontend security group rules
         # Allow inbound HTTP/HTTPS traffic from anywhere
@@ -286,14 +296,6 @@ class EcsStack(Stack):
             description="Allow HTTPS inbound",
         )
 
-        # Allow frontend to RDS communication
-        frontend_sg.add_egress_rule(
-            peer=database_stack.db_security_group,
-            connection=ec2.Port.tcp(5432),
-            description="Allow frontend to RDS",
-        )
-
-        # Allow outbound traffic to backend and for HTTPS
         frontend_sg.add_egress_rule(
             peer=backend_sg,
             connection=ec2.Port.tcp(31100),
@@ -301,8 +303,18 @@ class EcsStack(Stack):
         )
         frontend_sg.add_egress_rule(
             peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(80),
+            description="Allow HTTP outbound for external calls",
+        )
+        frontend_sg.add_egress_rule(
+            peer=ec2.Peer.any_ipv4(),
             connection=ec2.Port.tcp(443),
             description="Allow HTTPS outbound for external calls",
+        )
+        frontend_sg.add_egress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(5432),
+            description="Allow outbound traffic to RDS",
         )
 
         # Outputs
