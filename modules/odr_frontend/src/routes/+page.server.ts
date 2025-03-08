@@ -38,7 +38,7 @@ if (process.env.AWS_S3_ENABLED === 'true') {
   console.warn('AWS S3 is not enabled');
 }
 
-async function makeApiCall(endpoint: string, file: Blob, filename: string) {
+async function makeImageApiCall(endpoint: string, file: Blob, filename: string) {
 	const formData = new FormData();
     formData.append('file', file, filename);
 
@@ -46,6 +46,29 @@ async function makeApiCall(endpoint: string, file: Blob, filename: string) {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'POST',
             body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(`Error calling ${endpoint}:`, error);
+        throw new Error(`API error (${endpoint}): ${error instanceof Error ? error.message : String(error)}`);
+    }
+}
+
+async function makeJsonApiCall(endpoint: string, data: any) {
+    console.log(`Sending data to ${endpoint}:`, JSON.stringify(data, null, 2));
+
+	try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
         });
 
         if (!response.ok) {
@@ -80,7 +103,7 @@ export const actions = {
 			const uniqueFileName = `${userId}_${timestamp}.${fileExtension}`;
 
 			// Clean metadata
-			const cleanedData = await makeApiCall('/image/clean-metadata', file, uniqueFileName);
+			const cleanedData = await makeImageApiCall('/image/clean-metadata', file, uniqueFileName);
 			const cleaned_image_base64 = cleanedData.cleaned_image
 
 			// Convert base64 to Blob
@@ -95,11 +118,11 @@ export const actions = {
 			const cleanedBuffer = Buffer.from(byteArray);
 
 			// Calculate HDR stats and metadata
-			const statsData = await makeApiCall('/image/hdr-stats', cleanedBlob, uniqueFileName);
-			const metadataData = await makeApiCall('/image/metadata', cleanedBlob, uniqueFileName);
+			const statsData = await makeImageApiCall('/image/hdr-stats', cleanedBlob, uniqueFileName);
+			const metadataData = await makeImageApiCall('/image/metadata', cleanedBlob, uniqueFileName);
 
 			// Create JPG preview
-			const jpgData = await makeApiCall('/image/jpg-preview', cleanedBlob, uniqueFileName);
+			const jpgData = await makeImageApiCall('/image/jpg-preview', cleanedBlob, uniqueFileName);
 			const jpgBuffer = Buffer.from(jpgData.jpg_preview, 'base64');
 			const jpgFileName = `${userId}_${timestamp}.jpg`
 
@@ -153,6 +176,28 @@ export const actions = {
 				await writeFile(metadataFilePath, metadataContent);
 			}
 
+			const contentData = {
+                name: uniqueFileName,
+                type: "image",
+                hash: "", // Needs calculated elsewhere
+                phash: "", // Needs calculated elsewhere
+                width: metadataData.width || 0,
+                height: metadataData.height || 0,
+                url: [], // S3 URL?
+                format: fileExtension,
+                size: file.size,
+                status: "pending",
+                license: "CDLA-Permissive-2.0",
+                license_url: "https://cdla.dev/permissive-2-0/",
+                flags: 0,
+                meta: metadataData,
+                content_authors: [],
+                sources: []
+            };
+
+			const from_user_id = Number(userId) || 0
+            await makeJsonApiCall(`/content/?from_user_id=${from_user_id}`, contentData);
+
 			return { success: true, uniqueFileName };
 		} catch (error) {
 			console.error('Error uploading file:', error);
@@ -178,6 +223,58 @@ export const actions = {
 			const fileExtension = originalFilename.split('.').pop();
 			const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
 			const uniqueFileName = `${userId}_${timestamp}.${fileExtension}`;
+
+			const fileContent = await file.text();
+            const jsonlLines = fileContent.trim().split('\n');
+
+			const contentData = {
+                name: uniqueFileName,
+                type: "image",
+                hash: "", // Needs calculated elsewhere
+                phash: "", // Needs calculated elsewhere
+                width: 0, // Need image to calculate
+                height: 0, // Need image to calculate
+                url: [], // S3 URL?
+                format: fileExtension,
+                size: file.size,
+                status: "pending",
+                license: "CDLA-Permissive-2.0",
+                license_url: "https://cdla.dev/permissive-2-0/",
+                flags: 0,
+                meta: {},
+                content_authors: [],
+                sources: []
+            };
+
+			const from_user_id = Number(userId) || 0
+            const contentResponse = await makeJsonApiCall(`/content/?from_user_id=${from_user_id}`, contentData);
+
+
+			for (const line of jsonlLines) {
+                const jsonData = JSON.parse(line);
+				const parsed = jsonData.parsed;
+				const contentId = contentResponse.id
+
+                const tags = parsed.tags_list.map((tagObj: any) => tagObj.tag);
+
+				const annotations = {
+					'short_caption': parsed.short_caption,
+					'dense_caption': parsed.dense_caption,
+					'tags': tags
+				}
+
+                const annotationData = {
+                    annotation: annotations,
+                    manually_adjusted: false,
+                    overall_rating: 5,
+                    content_id: contentId,
+                    from_user_id: Number(userId) || 0,
+                    // from_team_id: 0,
+                    annotation_source_ids: []
+                };
+
+                await makeJsonApiCall('/annotations', annotationData);
+            }
 
 			if (process.env.NODE_ENV === 'production') {
 			  	// S3 upload for production
