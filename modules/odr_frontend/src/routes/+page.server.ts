@@ -22,12 +22,13 @@ export const load: PageServerLoad = async (event) => {
 	};
 };
 
-const UPLOAD_DIR = process.env.UPLOAD_DIR || './uploads';
+const UPLOAD_DIR = process.env.UPLOAD_DIR ?? './uploads';
 const PENDING_DIR = join(UPLOAD_DIR, 'pending');
 const ACCEPTED_DIR = join(UPLOAD_DIR, 'accepted');
 const REJECTED_DIR = join(UPLOAD_DIR, 'rejected');
 const FLAGGED_DIR = join(UPLOAD_DIR, 'flagged');
-const API_BASE_URL = process.env.API_SERVICE_URL || 'http://odr-api:31100/api/v1';
+const JSONL_DIR = join(UPLOAD_DIR, 'jsonl');
+const API_BASE_URL = process.env.API_SERVICE_URL ?? 'http://odr-api:31100/api/v1';
 
 let s3Client: S3Client | null = null;
 
@@ -59,7 +60,7 @@ async function makeApiCall(endpoint: string, file: Blob, filename: string) {
 }
 
 export const actions = {
-	upload: async ({ request }: RequestEvent) => {
+	uploadHDR: async ({ request }: RequestEvent) => {
 		const formData = await request.formData();
 		const file = formData.get('file');
 		const userId = formData.get('userId');
@@ -110,11 +111,6 @@ export const actions = {
 			}, null, 2);
 			const metadataFileName = `${userId}_${timestamp}.json`
 
-			await mkdir(PENDING_DIR, { recursive: true });
-			await mkdir(ACCEPTED_DIR, { recursive: true });
-			await mkdir(REJECTED_DIR, { recursive: true });
-			await mkdir(FLAGGED_DIR, { recursive: true });
-
 			if (process.env.NODE_ENV === 'production') {
 			  	// S3 upload for production
 				if (!s3Client) {
@@ -139,9 +135,14 @@ export const actions = {
 					Body: metadataContent,
 				}));
 
-				console.log(`File uploaded to S3: ${uniqueFileName}`);
+				console.log(`HDR Image uploaded to S3: ${uniqueFileName}`);
 			} else {
 				// Local file system for development
+				await mkdir(PENDING_DIR, { recursive: true });
+				await mkdir(ACCEPTED_DIR, { recursive: true });
+				await mkdir(REJECTED_DIR, { recursive: true });
+				await mkdir(FLAGGED_DIR, { recursive: true });
+
 				const cleanedFilePath = join(PENDING_DIR, uniqueFileName);
 				await writeFile(cleanedFilePath, new Uint8Array(cleanedBuffer));
 
@@ -150,6 +151,58 @@ export const actions = {
 
 				const metadataFilePath = join(PENDING_DIR, metadataFileName);
 				await writeFile(metadataFilePath, metadataContent);
+			}
+
+			return { success: true, uniqueFileName };
+		} catch (error) {
+			console.error('Error uploading file:', error);
+			return { success: false, error: 'Failed to upload file' };
+		}
+	},
+
+	uploadJSONL: async ({ request }: RequestEvent) => {
+		const formData = await request.formData();
+		const file = formData.get('file');
+		const userId = formData.get('userId');
+
+		if (!(file instanceof Blob)) {
+			return { success: false, error: 'No file uploaded' };
+		}
+
+		if (!userId || typeof userId !== 'string') {
+			return { success: false, error: 'No user ID provided' };
+		}
+
+		try {
+			const originalFilename = file.name;
+			const fileExtension = originalFilename.split('.').pop();
+			const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
+			const uniqueFileName = `${userId}_${timestamp}.${fileExtension}`;
+
+			if (process.env.NODE_ENV === 'production') {
+			  	// S3 upload for production
+				if (!s3Client) {
+					throw new Error('S3 client is not initialized');
+				}
+
+				const fileBuffer = await file.arrayBuffer();
+
+				await s3Client.send(new PutObjectCommand({
+					Bucket: process.env.S3_BUCKET_NAME,
+					Key: uniqueFileName,
+					Body: Buffer.from(fileBuffer),
+				}));
+
+				console.log(`JSONL file uploaded to S3: ${uniqueFileName}`);
+			} else {
+				// Local file system for development
+
+				await mkdir(JSONL_DIR, { recursive: true });
+
+				const filePath = join(JSONL_DIR, uniqueFileName);
+				const fileBuffer = await file.arrayBuffer();
+				await writeFile(filePath, new Uint8Array(fileBuffer));
+				console.log(`JSONL file saved locally: ${filePath}`);
 			}
 
 			return { success: true, uniqueFileName };
