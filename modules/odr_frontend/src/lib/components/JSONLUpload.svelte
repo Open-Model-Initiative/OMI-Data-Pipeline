@@ -89,9 +89,9 @@
         </figure>
       </svelte:fragment>
       <svelte:fragment slot="message">
-        {selectedFiles.length > 0 ? `${selectedFiles.length} file(s) selected` : 'Upload JSONL Files'}
+        {selectedFiles.length > 0 ? `${selectedFiles.length} file(s) selected` : 'Upload Annotation Files'}
       </svelte:fragment>
-      <svelte:fragment slot="meta">Currently only accepting .JSONL files</svelte:fragment>
+      <svelte:fragment slot="meta">Currently only accepting .JSONL files from graphcap</svelte:fragment>
     </FileDropzone>
     <div class="grid place-items-center mt-4">
         <button on:click={uploadFiles} class="mt-4 btn btn-sm variant-outline-primary" disabled={selectedFiles.length === 0}>
