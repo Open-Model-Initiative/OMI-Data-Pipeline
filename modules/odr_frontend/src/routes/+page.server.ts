@@ -235,8 +235,8 @@ export const actions = {
                 width: 0, // Need image to calculate
                 height: 0, // Need image to calculate
                 url: [], // S3 URL?
-                format: fileExtension,
-                size: file.size,
+                format: fileExtension, // This is currently jsonl for all images.
+                size: file.size, // This is currently the jsonL size without the image.
                 status: "pending",
                 license: "CDLA-Permissive-2.0",
                 license_url: "https://cdla.dev/permissive-2-0/",
