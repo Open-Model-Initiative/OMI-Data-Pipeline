@@ -16,5 +16,9 @@
     ],
     "python.analysis.extraPaths": [
         "./modules/odr_core"
-    ]
+    ],
+    "sonarlint.connectedMode.project": {
+        "connectionId": "open-model-initiative",
+        "projectKey": "Open-Model-Initiative_OMI-Data-Pipeline"
+    }
 }

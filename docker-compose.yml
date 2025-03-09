@@ -74,6 +74,22 @@ services:
           ignore:
             - node_modules/
             - .pnpm-store/
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_LISTEN_ADDRESS: 0.0.0.0
+    entrypoint: /bin/sh -c "chmod 600 /pgpass; /entrypoint.sh;"
+    user: root
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-35050}:80"
+    networks:
+      - omi-network
+    depends_on:
+      - postgres
 
 volumes:
   postgres_data:
