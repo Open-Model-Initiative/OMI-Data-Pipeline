@@ -2,7 +2,7 @@
 import { db, handleError, jsonHeaders } from '../../db';
 import { teams } from '../../../../db/schemas/teams';
 import { userTeams } from '../../../../db/schemas/userTeams';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { json } from '@sveltejs/kit';
 
 /**
