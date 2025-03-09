@@ -82,26 +82,58 @@ async function makeJsonApiCall(endpoint: string, data: any) {
     }
 }
 
+function handleFileUpload(file: File, timestamp: string, userId: string): { uniqueFileName: string, fileExtension: string } {
+    if (!(file instanceof File)) {
+		throw new Error('No file uploaded')
+    }
+
+    if (!userId || typeof userId !== 'string') {
+		throw new Error('No user ID provided')
+    }
+
+    const originalFilename = file.name;
+    const fileExtension = originalFilename.split('.').pop() ?? '';
+    const uniqueFileName = `${userId}_${timestamp}.${fileExtension}`;
+
+    return { uniqueFileName, fileExtension };
+}
+
+async function uploadToS3(key: string, body: Buffer | string) {
+    if (!s3Client) {
+        throw new Error('S3 client is not initialized');
+    }
+
+    await s3Client.send(new PutObjectCommand({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: key,
+        Body: body,
+    }));
+
+    console.log(`File uploaded to S3: ${key}`);
+}
+
+async function saveFileLocally(directory: string, fileName: string, content: Buffer | ArrayBuffer | string) {
+    await mkdir(directory, { recursive: true });
+    const filePath = join(directory, fileName);
+	if (Buffer.isBuffer(content) || content instanceof ArrayBuffer) {
+		await writeFile(filePath, new Uint8Array(content));
+	} else {
+		await writeFile(filePath, content);
+	}
+
+    console.log(`File saved locally: ${filePath}`);
+}
+
 export const actions = {
 	uploadHDR: async ({ request }: RequestEvent) => {
 		const formData = await request.formData();
-		const file = formData.get('file');
-		const userId = formData.get('userId');
+		const file = formData.get('file') as File;
+		const userId = formData.get('userId') as string;
+		const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
 
-		if (!(file instanceof Blob)) {
-			return { success: false, error: 'No file uploaded' };
-		}
-
-		if (!userId || typeof userId !== 'string') {
-			return { success: false, error: 'No user ID provided' };
-		}
+		const { uniqueFileName, fileExtension } = handleFileUpload(file, timestamp, userId);
 
 		try {
-			const originalFilename = file.name;
-			const fileExtension = originalFilename.split('.').pop();
-			const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
-			const uniqueFileName = `${userId}_${timestamp}.${fileExtension}`;
-
 			// Clean metadata
 			const cleanedData = await makeImageApiCall('/image/clean-metadata', file, uniqueFileName);
 			const cleaned_image_base64 = cleanedData.cleaned_image
@@ -136,44 +168,19 @@ export const actions = {
 
 			if (process.env.NODE_ENV === 'production') {
 			  	// S3 upload for production
-				if (!s3Client) {
-					throw new Error('S3 client is not initialized');
-				}
 
-				await s3Client.send(new PutObjectCommand({
-					Bucket: process.env.S3_BUCKET_NAME,
-					Key: uniqueFileName,
-					Body: cleanedBuffer,
-				}));
-
-				await s3Client.send(new PutObjectCommand({
-					Bucket: process.env.S3_BUCKET_NAME,
-					Key: jpgFileName,
-					Body: jpgBuffer,
-				}));
-
-				await s3Client.send(new PutObjectCommand({
-					Bucket: process.env.S3_BUCKET_NAME,
-					Key: metadataFileName,
-					Body: metadataContent,
-				}));
-
-				console.log(`HDR Image uploaded to S3: ${uniqueFileName}`);
+				await uploadToS3(uniqueFileName, cleanedBuffer);
+				await uploadToS3(jpgFileName, jpgBuffer);
+            	await uploadToS3(metadataFileName, metadataContent);
 			} else {
 				// Local file system for development
-				await mkdir(PENDING_DIR, { recursive: true });
 				await mkdir(ACCEPTED_DIR, { recursive: true });
 				await mkdir(REJECTED_DIR, { recursive: true });
 				await mkdir(FLAGGED_DIR, { recursive: true });
 
-				const cleanedFilePath = join(PENDING_DIR, uniqueFileName);
-				await writeFile(cleanedFilePath, new Uint8Array(cleanedBuffer));
-
-				const jpgFilePath = join(PENDING_DIR, jpgFileName);
-				await writeFile(jpgFilePath, new Uint8Array(jpgBuffer));
-
-				const metadataFilePath = join(PENDING_DIR, metadataFileName);
-				await writeFile(metadataFilePath, metadataContent);
+				await saveFileLocally(PENDING_DIR, uniqueFileName, cleanedBuffer);
+				await saveFileLocally(PENDING_DIR, jpgFileName, jpgBuffer);
+				await saveFileLocally(PENDING_DIR, metadataFileName, metadataContent);
 			}
 
 			const contentData = {
@@ -207,23 +214,13 @@ export const actions = {
 
 	uploadJSONL: async ({ request }: RequestEvent) => {
 		const formData = await request.formData();
-		const file = formData.get('file');
-		const userId = formData.get('userId');
+		const file = formData.get('file') as File;
+		const userId = formData.get('userId') as string;
+		const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
 
-		if (!(file instanceof Blob)) {
-			return { success: false, error: 'No file uploaded' };
-		}
-
-		if (!userId || typeof userId !== 'string') {
-			return { success: false, error: 'No user ID provided' };
-		}
+		const { uniqueFileName, fileExtension } = handleFileUpload(file, timestamp, userId);
 
 		try {
-			const originalFilename = file.name;
-			const fileExtension = originalFilename.split('.').pop();
-			const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
-			const uniqueFileName = `${userId}_${timestamp}.${fileExtension}`;
-
 			const fileContent = await file.text();
             const jsonlLines = fileContent.trim().split('\n');
 
@@ -278,28 +275,12 @@ export const actions = {
 
 			if (process.env.NODE_ENV === 'production') {
 			  	// S3 upload for production
-				if (!s3Client) {
-					throw new Error('S3 client is not initialized');
-				}
-
 				const fileBuffer = await file.arrayBuffer();
-
-				await s3Client.send(new PutObjectCommand({
-					Bucket: process.env.S3_BUCKET_NAME,
-					Key: uniqueFileName,
-					Body: Buffer.from(fileBuffer),
-				}));
-
-				console.log(`JSONL file uploaded to S3: ${uniqueFileName}`);
+				await uploadToS3(uniqueFileName, Buffer.from(fileBuffer));
 			} else {
 				// Local file system for development
-
-				await mkdir(JSONL_DIR, { recursive: true });
-
-				const filePath = join(JSONL_DIR, uniqueFileName);
 				const fileBuffer = await file.arrayBuffer();
-				await writeFile(filePath, new Uint8Array(fileBuffer));
-				console.log(`JSONL file saved locally: ${filePath}`);
+				await saveFileLocally(JSONL_DIR, uniqueFileName, fileBuffer);
 			}
 
 			return { success: true, uniqueFileName };
