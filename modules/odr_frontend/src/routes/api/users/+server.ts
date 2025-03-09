@@ -13,17 +13,19 @@ export async function GET({ url }) {
     const offset = Number(url.searchParams.get('offset') || '0');
     const email = url.searchParams.get('email');
 
-    let query = db.select().from(users);
-
-    // Apply filters if provided
+    // Build conditions array
+    const conditions = [];
     if (email) {
-      query = query.where(eq(users.email, email));
+      conditions.push(eq(users.email, email));
     }
 
-    // Apply pagination
-    query = query.limit(limit).offset(offset);
+    // Execute query with all conditions at once
+    const data = await db.select()
+      .from(users)
+      .where(conditions.length ? conditions[0] : undefined)
+      .limit(limit)
+      .offset(offset);
 
-    const data = await query;
     return json({ data, count: data.length });
   } catch (error) {
     return handleError(error);
@@ -48,11 +50,9 @@ export async function POST({ request }) {
     // Insert new user
     const newUser = await db.insert(users).values({
       email: userData.email,
-      hashedPassword: userData.hashedPassword,
       name: userData.name,
       isActive: userData.isActive ?? true,
       isSuperuser: userData.isSuperuser ?? false,
-      identityProvider: userData.identityProvider,
       dcoAccepted: userData.dcoAccepted ?? false,
     }).returning();
 

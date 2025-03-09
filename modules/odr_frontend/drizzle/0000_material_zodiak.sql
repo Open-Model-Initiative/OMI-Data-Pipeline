@@ -11,7 +11,7 @@ CREATE TYPE "public"."usertype" AS ENUM('user', 'bot');--> statement-breakpoint
 --> statement-breakpoint
 CREATE TABLE "teams" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar,
+	"name" varchar2(255),
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone DEFAULT now(),
 	CONSTRAINT "unique_team_name" UNIQUE("name")
@@ -19,8 +19,8 @@ CREATE TABLE "teams" (
 --> statement-breakpoint
 CREATE TABLE "content_authors" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar,
-	"url" varchar,
+	"name" varchar2(255),
+	"url" varchar2(1024),
 	"content_id" integer,
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone
@@ -28,12 +28,12 @@ CREATE TABLE "content_authors" (
 --> statement-breakpoint
 CREATE TABLE "annotation_sources" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar,
-	"ecosystem" varchar,
-	"type" varchar,
+	"name" varchar2(255),
+	"ecosystem" varchar2(255),
+	"type" varchar2(255),
 	"annotation_schema" json,
-	"license" varchar,
-	"license_url" varchar,
+	"license" varchar2(255),
+	"license_url" varchar2(1024),
 	"added_by_id" integer,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL
@@ -75,9 +75,9 @@ CREATE TABLE "content_embeddings" (
 --> statement-breakpoint
 CREATE TABLE "embedding_engines" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar,
-	"description" varchar,
-	"version" varchar,
+	"name" varchar2(255),
+	"description" varchar2(1024),
+	"version" varchar2(100),
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone NOT NULL,
 	"type" "embeddingenginetype",
@@ -89,7 +89,7 @@ CREATE TABLE "annotation_ratings" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"annotation_id" integer NOT NULL,
 	"rating" integer NOT NULL,
-	"reason" varchar,
+	"reason" varchar2(1024),
 	"rated_by_id" integer,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL
@@ -98,22 +98,22 @@ CREATE TABLE "annotation_ratings" (
 CREATE TABLE "accounts" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"userId" integer NOT NULL,
-	"type" varchar(255) NOT NULL,
-	"provider" varchar(255) NOT NULL,
-	"providerAccountId" varchar(255) NOT NULL,
-	"refresh_token" varchar,
-	"access_token" varchar,
+	"type" varchar2(255) NOT NULL,
+	"provider" varchar2(255) NOT NULL,
+	"providerAccountId" varchar2(255) NOT NULL,
+	"refresh_token" varchar2(2048),
+	"access_token" varchar2(2048),
 	"expires_at" bigint,
-	"id_token" varchar,
-	"scope" varchar,
-	"session_state" varchar,
-	"token_type" varchar
+	"id_token" varchar2(2048),
+	"scope" varchar2(255),
+	"session_state" varchar2(255),
+	"token_type" varchar2(255)
 );
 --> statement-breakpoint
 CREATE TABLE "content_sets" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar NOT NULL,
-	"description" varchar,
+	"name" varchar2(255) NOT NULL,
+	"description" varchar2(1024),
 	"created_by_id" integer NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
@@ -124,7 +124,7 @@ CREATE TABLE "content_events" (
 	"content_id" integer NOT NULL,
 	"status" "contentstatus" NOT NULL,
 	"set_by" integer NOT NULL,
-	"note" varchar,
+	"note" varchar2(1024),
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone
 );
@@ -133,8 +133,8 @@ CREATE TABLE "content_reports" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"content_id" integer NOT NULL,
 	"reporter_id" integer NOT NULL,
-	"reason" varchar NOT NULL,
-	"description" varchar,
+	"reason" varchar2(255) NOT NULL,
+	"description" varchar2(1024),
 	"status" "reportstatus",
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
@@ -143,19 +143,19 @@ CREATE TABLE "content_reports" (
 CREATE TABLE "annotation_reports" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"annotation_id" integer,
-	"type" varchar NOT NULL,
+	"type" varchar2(255) NOT NULL,
 	"reported_by_id" integer,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
-	"description" varchar
+	"description" varchar2(1024)
 );
 --> statement-breakpoint
 CREATE TABLE "content_sources" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"content_id" integer,
 	"type" "contentsourcetype",
-	"value" varchar,
-	"source_metadata" varchar,
+	"value" varchar2(1024),
+	"source_metadata" varchar2(2048),
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone,
 	CONSTRAINT "content_sources_value_key" UNIQUE("value")
@@ -163,17 +163,17 @@ CREATE TABLE "content_sources" (
 --> statement-breakpoint
 CREATE TABLE "contents" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar,
+	"name" varchar2(255),
 	"type" "contenttype",
-	"hash" varchar,
-	"phash" varchar,
+	"hash" varchar2(255),
+	"phash" varchar2(255),
 	"width" integer,
 	"height" integer,
-	"format" varchar,
+	"format" varchar2(100),
 	"size" integer,
 	"status" "contentstatus",
-	"license" varchar,
-	"license_url" varchar,
+	"license" varchar2(255),
+	"license_url" varchar2(1024),
 	"flags" integer,
 	"meta" json,
 	"from_user_id" integer,
@@ -186,28 +186,25 @@ CREATE TABLE "contents" (
 CREATE TABLE "sessions" (
 	"userId" integer NOT NULL,
 	"expires" timestamp with time zone NOT NULL,
-	"sessionToken" varchar(255) NOT NULL,
+	"sessionToken" varchar2(255) NOT NULL,
 	"id" serial NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"email" varchar,
-	"hashed_password" varchar,
+	"email" varchar2(255),
 	"is_active" boolean DEFAULT true NOT NULL,
 	"is_superuser" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone,
-	"identity_provider" varchar,
 	"dco_accepted" boolean DEFAULT false NOT NULL,
-	"name" varchar(255),
-	"emailVerified" timestamp with time zone,
-	"image" varchar
+	"name" varchar2(255),
+	"image" varchar2(1024)
 );
 --> statement-breakpoint
 CREATE TABLE "feature_toggles" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"feature_name" varchar(255) NOT NULL,
+	"feature_name" varchar2(255) NOT NULL,
 	"is_enabled" boolean NOT NULL,
 	"default_state" boolean NOT NULL,
 	CONSTRAINT "feature_toggles_feature_name_key" UNIQUE("feature_name")
@@ -220,8 +217,8 @@ CREATE TABLE "annotation_sources_link" (
 );
 --> statement-breakpoint
 CREATE TABLE "verification_token" (
-	"identifier" varchar NOT NULL,
-	"token" varchar NOT NULL,
+	"identifier" varchar2(255) NOT NULL,
+	"token" varchar2(255) NOT NULL,
 	"expires" timestamp with time zone NOT NULL,
 	CONSTRAINT "verification_token_pkey" PRIMARY KEY("identifier","token")
 );
@@ -236,7 +233,7 @@ CREATE TABLE "content_set_items" (
 CREATE TABLE "user_teams" (
 	"user_id" integer NOT NULL,
 	"team_id" integer NOT NULL,
-	"role" varchar,
+	"role" varchar2(255),
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone DEFAULT now(),
 	CONSTRAINT "user_teams_pkey" PRIMARY KEY("user_id","team_id")
@@ -291,5 +288,4 @@ CREATE INDEX "ix_annotation_reports_id" ON "annotation_reports" USING btree ("id
 CREATE INDEX "ix_content_sources_id" ON "content_sources" USING btree ("id" int4_ops);--> statement-breakpoint
 CREATE INDEX "ix_contents_hash" ON "contents" USING btree ("hash" text_ops);--> statement-breakpoint
 CREATE INDEX "ix_contents_id" ON "contents" USING btree ("id" int4_ops);--> statement-breakpoint
-CREATE INDEX "ix_contents_phash" ON "contents" USING btree ("phash" text_ops);--> statement-breakpoint
-CREATE INDEX "ix_users_identity_provider" ON "users" USING btree ("identity_provider" text_ops);
+CREATE INDEX "ix_contents_phash" ON "contents" USING btree ("phash" text_ops);
