@@ -5,7 +5,6 @@ version: '3'
 includes:
   api: ./modules/odr_api/Taskfile.api.yml
   core: ./modules/odr_core/Taskfile.yml
-  data: ./modules/odr_datamodel/Taskfile.yml
   frontend: ./modules/odr_frontend/Taskfile.yml
   api-test: ./modules/odr_api/tests/Taskfile.api.test.yml
   monitoring: ./modules/odr_monitoring/Taskfile.yml
@@ -103,7 +102,8 @@ tasks:
   dev:
     desc: Start development environment with odr-api in watch mode and databases headless
     cmds:
-      - docker compose up -d postgres pgadmin
-      - |
-        docker compose up --watch odr-api --build &
-        docker compose up --watch odr-frontend --build
+      - docker compose up --watch --build
+  dev:migrate:
+    desc: Start development environment with database migrations enabled
+    cmds:
+      - RUN_MIGRATIONS=true docker compose up --watch --build
