@@ -50,7 +50,6 @@ services:
       dockerfile: docker/Dockerfile.frontend.dev
     volumes:
       - ./modules/odr_frontend:/app
-      - ./modules/odr_frontend/docker/entrypoint.sh:/app/docker/entrypoint.sh
       - odr_frontend_node_modules:/app/node_modules
       - odr_frontend_pnpm_store:/app/.pnpm-store
       - ${UPLOAD_DIR:-./uploads}:/app/uploads
@@ -60,6 +59,7 @@ services:
       NODE_ENV: ${NODE_ENV:-development}
       API_SERVICE_URL: http://odr-api:31100/api/v1
       UPLOAD_DIR: /app/uploads
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-false}
     env_file:
       - ./modules/odr_frontend/.env
     networks:

@@ -103,3 +103,7 @@ tasks:
     desc: Start development environment with odr-api in watch mode and databases headless
     cmds:
       - docker compose up --watch --build
+  dev:migrate:
+    desc: Start development environment with database migrations enabled
+    cmds:
+      - RUN_MIGRATIONS=true docker compose up --watch --build
