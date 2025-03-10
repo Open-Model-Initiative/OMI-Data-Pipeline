@@ -119,4 +119,4 @@ For issues with migrations:
 1. Check the `Drizzle documentation <https://orm.drizzle.team/docs/migrations>`_
 2. Review our issue tracker
 3. Contact the development team
-4. Join our Discord community
+4. Ask for help in our Discord community `here <https://discord.gg/vANKjzDDkQ>`_
