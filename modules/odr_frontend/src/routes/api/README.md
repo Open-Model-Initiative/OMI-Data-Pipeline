@@ -13,10 +13,10 @@ This directory contains the API layer for data access in the Svelte backend, bui
 
 - `POST /api/users` - Create a new user
   - Required fields: `email`
-  - Optional fields: `name`, `isActive`, `isSuperuser`, `dcoAccepted`
+  - Optional fields: `name`, `isActive`, `isSuperuser`, `dcoAccepted`, `emailVerified`
 
 - `PUT /api/users/:id` - Update a user
-  - Optional fields: `email`, `name`, `isActive`, `isSuperuser`, `dcoAccepted`
+  - Optional fields: `email`, `name`, `isActive`, `isSuperuser`, `dcoAccepted`, `emailVerified`
 
 - `DELETE /api/users/:id` - Delete a user
 

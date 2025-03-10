@@ -199,6 +199,7 @@ CREATE TABLE "users" (
 	"updated_at" timestamp with time zone,
 	"dco_accepted" boolean DEFAULT false NOT NULL,
 	"name" varchar2(255),
+	"emailVerified" timestamp with time zone,
 	"image" varchar2(1024)
 );
 --> statement-breakpoint

@@ -54,6 +54,7 @@ export async function POST({ request }) {
       isActive: userData.isActive ?? true,
       isSuperuser: userData.isSuperuser ?? false,
       dcoAccepted: userData.dcoAccepted ?? false,
+      emailVerified: userData.emailVerified,
     }).returning();
 
     return json(newUser[0], { status: 201 });

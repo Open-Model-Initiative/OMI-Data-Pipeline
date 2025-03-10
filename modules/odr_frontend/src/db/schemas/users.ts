@@ -10,6 +10,7 @@ export const users = pgTable('users', {
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }),
 	dcoAccepted: boolean('dco_accepted').default(false).notNull(),
 	name: varchar({ length: 255 }),
+	emailVerified: timestamp('emailVerified', { withTimezone: true, mode: 'string' }),
 	image: varchar({ length: 1024 })
 });
 
