@@ -8,4 +8,7 @@ set -eo pipefail
 echo "Running database migrations..."
 pnpm drizzle-kit push:pg
 
-echo "Migrations completed successfully."
+echo "Seeding feature toggles..."
+pnpm run db:seed-feature-toggles
+
+echo "Migrations and seeding completed successfully."

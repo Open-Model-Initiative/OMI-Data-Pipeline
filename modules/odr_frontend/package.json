@@ -17,7 +17,8 @@
 		"db:push": "drizzle-kit push",
 		"db:studio": "drizzle-kit studio",
 		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate"
+		"db:migrate": "drizzle-kit migrate",
+		"db:seed-feature-toggles": "tsx scripts/seed-feature-toggles.ts"
 	},
 	"devDependencies": {
 		"@playwright/test": "1.50.1",

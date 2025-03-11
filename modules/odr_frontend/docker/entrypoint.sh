@@ -41,6 +41,15 @@ if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
   while [ $retries -lt $max_retries ]; do
     if pnpm drizzle-kit push 2>/dev/null; then
       echo "Migrations completed successfully."
+
+      # Seed feature toggles
+      echo "Seeding feature toggles..."
+      if pnpm run db:seed-feature-toggles; then
+        echo "Feature toggles seeded successfully."
+      else
+        echo "WARNING: Failed to seed feature toggles. You may need to run this manually."
+      fi
+
       break
     else
       retries=$((retries+1))
