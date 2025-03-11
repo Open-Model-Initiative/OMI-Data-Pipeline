@@ -11,7 +11,7 @@ import { contenttype } from '../../../../db/schemas/enums';
  */
 export async function GET({ params }: RequestEvent) {
   try {
-    const id = params.id || '';
+    const id = params.id ?? '';
     const contentId = parseInt(id);
 
     if (isNaN(contentId)) {
@@ -41,7 +41,7 @@ export async function GET({ params }: RequestEvent) {
  */
 export async function PUT({ params, request }: RequestEvent) {
   try {
-    const id = params.id || '';
+    const id = params.id ?? '';
     const contentId = parseInt(id);
     const contentData = await request.json();
 
@@ -88,7 +88,7 @@ export async function PUT({ params, request }: RequestEvent) {
         licenseUrl: contentData.licenseUrl,
         flags: contentData.flags,
         meta: contentData.meta,
-        url: contentData.url,
+        url: [...(contentData.url ? [contentData.url] : [])],
         updatedAt: new Date().toISOString()
       })
       .where(eq(contents.id, contentId))
@@ -105,7 +105,7 @@ export async function PUT({ params, request }: RequestEvent) {
  */
 export async function DELETE({ params }: RequestEvent) {
   try {
-    const id = params.id || '';
+    const id = params.id ?? '';
     const contentId = parseInt(id);
 
     if (isNaN(contentId)) {

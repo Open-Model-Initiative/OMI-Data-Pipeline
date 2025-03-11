@@ -11,13 +11,13 @@ import { contenttype, contentstatus } from '../../../db/schemas/enums';
  */
 export async function GET({ url }: RequestEvent) {
   try {
-    const limit = Number(url.searchParams.get('limit') || '50');
-    const offset = Number(url.searchParams.get('offset') || '0');
+    const limit = Number(url.searchParams.get('limit') ?? '50');
+    const offset = Number(url.searchParams.get('offset') ?? '0');
     const name = url.searchParams.get('name');
     const typeParam = url.searchParams.get('type');
     const statusParam = url.searchParams.get('status');
 
-    let query = db.select().from(contents);
+    let query = db.select().from(contents) as any;
 
     // Apply filters if provided
     if (name) {
@@ -90,14 +90,14 @@ export async function POST({ request }: RequestEvent) {
       height: contentData.height,
       format: contentData.format,
       size: contentData.size,
-      status: contentData.status || 'PENDING', // Default status
+      status: contentData.status ?? 'PENDING', // Default status
       license: contentData.license,
       licenseUrl: contentData.licenseUrl,
       flags: contentData.flags,
       meta: contentData.meta,
       fromUserId: contentData.fromUserId,
       fromTeamId: contentData.fromTeamId,
-      url: contentData.url,
+      url: [...(contentData.url ? [contentData.url] : [])],
       updatedAt: new Date().toISOString()
     }).returning();
 

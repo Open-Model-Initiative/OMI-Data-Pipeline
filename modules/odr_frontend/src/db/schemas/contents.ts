@@ -9,7 +9,8 @@ import {
 	index,
 	foreignKey,
 	unique,
-	primaryKey
+	primaryKey,
+	text
 } from 'drizzle-orm/pg-core';
 import { contentstatus, contenttype, contentsourcetype, reportstatus } from './enums';
 import { teams } from './teams';
@@ -36,7 +37,7 @@ export const contents = pgTable(
 		fromTeamId: integer('from_team_id'),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
 		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }),
-		url: varchar()
+		url: text().array()
 	},
 	(table) => [
 		index('ix_contents_hash').using('btree', table.hash.asc().nullsLast().op('text_ops')),
