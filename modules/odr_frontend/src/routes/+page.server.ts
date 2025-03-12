@@ -231,9 +231,9 @@ export const actions = {
                 phash: "", // Needs calculated elsewhere
                 width: 0, // Need image to calculate
                 height: 0, // Need image to calculate
-                url: [], // S3 URL?
-                format: fileExtension, // This is currently jsonl for all images.
-                size: file.size, // This is currently the jsonL size without the image.
+                url: [],
+                format: fileExtension,
+                size: file.size,
                 status: "pending",
                 license: "CDLA-Permissive-2.0",
                 license_url: "https://cdla.dev/permissive-2-0/",
