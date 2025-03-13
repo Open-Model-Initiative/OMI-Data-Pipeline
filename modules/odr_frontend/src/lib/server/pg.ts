@@ -11,7 +11,7 @@ export interface IDBUser {
 	updated_at: Date | null;
 	user_type: 'user' | 'admin';
 	name: string;
-	emailVerified: boolean;
+	emailVerified: Date | null;
 	image: string | null;
 }
 

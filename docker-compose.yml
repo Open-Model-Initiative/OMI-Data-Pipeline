@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
-name: omi-postgres
+name: odr
 services:
   postgres:
-    image: pgvector/pgvector:pg16
+    image: pgvector/pgvector:pg17
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -15,23 +15,6 @@ services:
       - 35432:5432
     networks:
       - omi-network
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_LISTEN_ADDRESS: 0.0.0.0
-    entrypoint: /bin/sh -c "chmod 600 /pgpass; /entrypoint.sh;"
-    user: root
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    ports:
-      - "${PGADMIN_PORT:-35050}:80"
-    networks:
-      - omi-network
-    depends_on:
-      - postgres
 
   odr-api:
     build:
@@ -67,7 +50,6 @@ services:
       dockerfile: docker/Dockerfile.frontend.dev
     volumes:
       - ./modules/odr_frontend:/app
-      - ./modules/odr_frontend/docker/entrypoint.sh:/app/docker/entrypoint.sh
       - odr_frontend_node_modules:/app/node_modules
       - odr_frontend_pnpm_store:/app/.pnpm-store
       - ${UPLOAD_DIR:-./uploads}:/app/uploads
@@ -77,10 +59,13 @@ services:
       NODE_ENV: ${NODE_ENV:-development}
       API_SERVICE_URL: http://odr-api:31100/api/v1
       UPLOAD_DIR: /app/uploads
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-false}
     env_file:
       - ./modules/odr_frontend/.env
     networks:
       - omi-network
+    depends_on:
+      - postgres
     develop:
       watch:
         - action: sync
@@ -89,6 +74,22 @@ services:
           ignore:
             - node_modules/
             - .pnpm-store/
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_LISTEN_ADDRESS: 0.0.0.0
+    entrypoint: /bin/sh -c "chmod 600 /pgpass; /entrypoint.sh;"
+    user: root
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-35050}:80"
+    networks:
+      - omi-network
+    depends_on:
+      - postgres
 
 volumes:
   postgres_data:

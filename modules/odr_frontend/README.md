@@ -10,6 +10,8 @@
 - Install dependencies with `pnpm install`
 - Run the development server with `pnpm run dev`
 
+To run with migrations utilize `task dev:migrate`
+
 The app is built on the [Skeleton UI Toolkit](https://www.skeleton.dev/) which uses [tailwindcss])(https://tailwindcss.com/) under the hood.
 
 ## Building

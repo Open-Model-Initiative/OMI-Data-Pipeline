@@ -192,7 +192,7 @@ class EcsStack(Stack):
             health_check=ecs.HealthCheck(
                 command=[
                     "CMD-SHELL",
-                    "curl -f http://localhost:31100/health || exit 1",
+                    "curl -f http://localhost:31100/api/v1/health || exit 1",
                 ],
                 interval=Duration.seconds(60),
                 timeout=Duration.seconds(15),
