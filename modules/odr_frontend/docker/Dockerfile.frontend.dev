@@ -5,14 +5,10 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm
 
-# Install aws-cli
-RUN apk add --no-cache aws-cli
+# Install aws-cli and curl
+RUN apk add --no-cache aws-cli curl
 
 RUN apk add --no-cache efs-utils
-
-# Prepare for the AWS
-RUN mkdir -p /mnt/upload
-RUN mkdir -p /mnt/models
 
 # Copy package.json and pnpm-lock.yaml (if you have one)
 COPY package.json pnpm-lock.yaml* ./

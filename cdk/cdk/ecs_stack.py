@@ -4,12 +4,10 @@ from aws_cdk import (
     aws_ec2 as ec2,
     aws_ecs as ecs,
     aws_ecs_patterns as ecs_patterns,
-    aws_elasticloadbalancingv2 as elbv2,
-    aws_efs as efs,
     aws_iam as iam,
     aws_secretsmanager as secretsmanager,
-    RemovalPolicy,
     CfnOutput,
+    Duration,
 )
 from constructs import Construct
 from .vpc_stack import VpcStack
@@ -53,14 +51,6 @@ class EcsStack(Stack):
             description="Security group for frontend service",
             security_group_name="omi-frontend-sg",
             allow_all_outbound=False,
-        )
-
-        # Create EFS File System
-        fs = efs.FileSystem(
-            self,
-            "OmiFileSystem",
-            vpc=vpc_stack.vpc,
-            removal_policy=RemovalPolicy.RETAIN,
         )
 
         s3_policy = iam.PolicyStatement(
@@ -184,10 +174,7 @@ class EcsStack(Stack):
             memory_limit_mib=2048,
         )
 
-        # Add S3 permissions to task role
         backend_task_definition.add_to_task_role_policy(s3_policy)
-
-        # Add permissions for mounting EFS and accessing secrets
         backend_task_definition.add_to_task_role_policy(default_policy)
 
         backend_task_definition.add_container(
@@ -197,7 +184,17 @@ class EcsStack(Stack):
             port_mappings=[ecs.PortMapping(container_port=31100)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-backend"),
             environment=default_environment,
-            secrets=default_secrets
+            secrets=default_secrets,
+            health_check=ecs.HealthCheck(
+                command=[
+                    "CMD-SHELL",
+                    "curl -f http://localhost:31100/health || exit 1",
+                ],
+                interval=Duration.seconds(60),
+                timeout=Duration.seconds(15),
+                retries=3,
+                start_period=Duration.seconds(120),
+            ),
         )
 
         # Backend Service
@@ -210,10 +207,17 @@ class EcsStack(Stack):
             public_load_balancer=False,
             security_groups=[backend_sg],
             service_name="omi-backend",
+            force_new_deployment=True,
+            health_check_grace_period=ecs.Duration.seconds(120),
+            target_group_attributes={
+                "deregistration_delay.timeout_seconds": "30",
+                "health_check.path": "/health",
+                "health_check.timeout_seconds": "5",
+                "health_check.interval_seconds": "30",
+                "health_check.healthy_threshold_count": "2",
+                "health_check.unhealthy_threshold_count": "3",
+            },
         )
-
-        # Allow EFS access
-        fs.connections.allow_default_port_from(self.backend_service.service.connections)
 
         # Frontend Service Task Definition
         frontend_task_definition = ecs.FargateTaskDefinition(
@@ -223,13 +227,10 @@ class EcsStack(Stack):
             memory_limit_mib=2048,
         )
 
-        # Add S3 permissions to task role
         frontend_task_definition.add_to_task_role_policy(s3_policy)
-
-        # Add permissions for mounting EFS and accessing secrets
         frontend_task_definition.add_to_task_role_policy(default_policy)
 
-        frontend_container = frontend_task_definition.add_container(
+        frontend_task_definition.add_container(
             "omi-frontend",
             image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository),
             container_name="omi-frontend",
@@ -238,8 +239,16 @@ class EcsStack(Stack):
             environment=default_environment
             | {
                 "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}:31100",
+                "AWS_HOSTNAME": self.frontend_service.load_balancer.load_balancer_dns_name,
             },
             secrets=default_secrets,
+            health_check=ecs.HealthCheck(
+                command=["CMD-SHELL", "curl -f http://localhost:5173/health || exit 1"],
+                interval=Duration.seconds(60),
+                timeout=Duration.seconds(15),
+                retries=3,
+                start_period=Duration.seconds(120),
+            ),
         )
 
         # Frontend Service
@@ -252,10 +261,16 @@ class EcsStack(Stack):
             public_load_balancer=True,
             security_groups=[frontend_sg],
             service_name="omi-frontend",
-        )
-
-        frontend_container.add_environment(
-            "AWS_HOSTNAME", self.frontend_service.load_balancer.load_balancer_dns_name
+            force_new_deployment=True,
+            health_check_grace_period=ecs.Duration.seconds(120),
+            target_group_attributes={
+                "deregistration_delay.timeout_seconds": "30",
+                "health_check.path": "/",
+                "health_check.timeout_seconds": "5",
+                "health_check.interval_seconds": "30",
+                "health_check.healthy_threshold_count": "2",
+                "health_check.unhealthy_threshold_count": "3",
+            },
         )
 
         # Backend security group rules
