@@ -29,6 +29,10 @@ class EcsStack(Stack):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        # Get image tags from context or use "latest" as default
+        backend_image_tag = self.node.try_get_context("backendImageTag") or "latest"
+        frontend_image_tag = self.node.try_get_context("frontendImageTag") or "latest"
+
         # Create ECS Cluster
         self.cluster = ecs.Cluster(
             self, "OmiCluster", vpc=vpc_stack.vpc, cluster_name="omi-cluster"
@@ -179,7 +183,7 @@ class EcsStack(Stack):
 
         backend_task_definition.add_container(
             "omi-backend",
-            image=ecs.ContainerImage.from_ecr_repository(ecr_stack.backend_repository),
+            image=ecs.ContainerImage.from_ecr_repository(ecr_stack.backend_repository, tag=backend_image_tag),
             container_name="omi-backend",
             port_mappings=[ecs.PortMapping(container_port=31100)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-backend"),
@@ -207,7 +211,6 @@ class EcsStack(Stack):
             public_load_balancer=False,
             security_groups=[backend_sg],
             service_name="omi-backend",
-            force_new_deployment=True,
             health_check_grace_period=Duration.seconds(120),
             target_group_attributes={
                 "deregistration_delay.timeout_seconds": "30",
@@ -232,7 +235,7 @@ class EcsStack(Stack):
 
         frontend_task_definition.add_container(
             "omi-frontend",
-            image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository),
+            image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository, tag=frontend_image_tag),
             container_name="omi-frontend",
             port_mappings=[ecs.PortMapping(container_port=5173)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-frontend"),
@@ -261,7 +264,6 @@ class EcsStack(Stack):
             public_load_balancer=True,
             security_groups=[frontend_sg],
             service_name="omi-frontend",
-            force_new_deployment=True,
             health_check_grace_period=Duration.seconds(120),
             target_group_attributes={
                 "deregistration_delay.timeout_seconds": "30",

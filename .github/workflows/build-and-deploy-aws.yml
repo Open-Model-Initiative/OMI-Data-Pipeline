@@ -101,10 +101,10 @@ jobs:
       if: github.event.inputs.deployment_type == 'all'
       working-directory: cdk
       run: |
-        cdk deploy --all --require-approval never
+        cdk deploy --all --require-approval never --context backendImageTag=${{ github.sha }} --context frontendImageTag=${{ github.sha }}
 
     - name: Deploy app stack only
       if: github.event.inputs.deployment_type == 'app-only'
       working-directory: cdk
       run: |
-        cdk deploy EcsStack --require-approval never
+        cdk deploy EcsStack --require-approval never --context backendImageTag=${{ github.sha }} --context frontendImageTag=${{ github.sha }}
