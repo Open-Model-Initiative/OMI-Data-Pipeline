@@ -233,7 +233,6 @@ class EcsStack(Stack):
             environment=default_environment
             | {
                 "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}:31100",
-                "AWS_HOSTNAME": self.frontend_service.load_balancer.load_balancer_dns_name,
             },
             secrets=default_secrets,
             health_check=ecs.HealthCheck(
@@ -255,6 +254,10 @@ class EcsStack(Stack):
             public_load_balancer=True,
             security_groups=[frontend_sg],
             service_name="omi-frontend"
+        )
+
+        frontend_task_definition.default_container.add_environment(
+            "AWS_HOSTNAME", self.frontend_service.load_balancer.load_balancer_dns_name
         )
 
         # Backend security group rules
