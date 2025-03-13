@@ -9,18 +9,30 @@ RUN npm install -g pnpm && \
 
 
 # Copy package.json and pnpm-lock.yaml (if you have one)
-COPY package.json pnpm-lock.yaml* ./
+COPY modules/odr_frontend/package.json modules/odr_frontend/pnpm-lock.yaml* ./
 # Install dependencies at build time
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy the entrypoint script
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY modules/odr_frontend/docker/entrypoint.sh /entrypoint.sh
+# Ensure the entrypoint script has the correct line endings and is executable
+RUN sed -i 's/\r$//' /entrypoint.sh && \
+    chmod +x /entrypoint.sh
 # Copy drizzle migration files
-COPY drizzle/ /app/drizzle/
-COPY src/db/ /app/src/db/
+COPY modules/odr_frontend/drizzle/ /app/drizzle/
+COPY modules/odr_frontend/src/db/ /app/src/db/
 
-# COPY .env.template /app/.env
+# Copy the application source code
+COPY modules/odr_frontend/src/ /app/src/
+COPY modules/odr_frontend/static/ /app/static/
+COPY modules/odr_frontend/.env.template /app/.env.template
+COPY modules/odr_frontend/svelte.config.js /app/svelte.config.js
+COPY modules/odr_frontend/vite.config.ts /app/vite.config.ts
+COPY modules/odr_frontend/tailwind.config.ts /app/tailwind.config.ts
+COPY modules/odr_frontend/postcss.config.cjs /app/postcss.config.cjs
+COPY modules/odr_frontend/tsconfig.json /app/tsconfig.json
+COPY modules/odr_frontend/omi-theme.ts /app/omi-theme.ts
+
 
 EXPOSE 5173
 
