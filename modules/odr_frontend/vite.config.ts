@@ -13,7 +13,7 @@ export default defineConfig({
 		allowedHosts: (() => {
 			const hosts = ['localhost'];
 			if (process.env.AWS_HOSTNAME) {
-				hosts.push(process.env.AWS_HOSTNAME);
+				hosts.push(process.env.AWS_HOSTNAME.toLowerCase());
 			}
 			console.log('Allowed hosts:', hosts);
 			return hosts;

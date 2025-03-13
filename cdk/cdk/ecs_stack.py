@@ -233,6 +233,7 @@ class EcsStack(Stack):
             environment=default_environment
             | {
                 "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}:31100",
+                "RUN_MIGRATIONS": "true",
             },
             secrets=default_secrets,
             health_check=ecs.HealthCheck(
@@ -258,6 +259,9 @@ class EcsStack(Stack):
 
         frontend_task_definition.default_container.add_environment(
             "AWS_HOSTNAME", self.frontend_service.load_balancer.load_balancer_dns_name
+        )
+        frontend_task_definition.default_container.add_environment(
+            "PUBLIC_API_BASE_URL", f"https://{self.frontend_service.load_balancer.load_balancer_dns_name}"
         )
 
         # Backend security group rules
