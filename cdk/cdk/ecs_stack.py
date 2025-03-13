@@ -97,7 +97,17 @@ class EcsStack(Stack):
             "arn:aws:secretsmanager:us-east-1:474668405283:secret:huggingface-0L3S0w"
         )
 
+        auth_secret = secretsmanager.Secret(
+            self,
+            "OmiAuthSecret",
+            description="Secret for OMI authentication",
+            generate_secret_string=secretsmanager.SecretStringGenerator(
+                password_length=32, exclude_punctuation=True
+            ),
+        )
+
         default_secrets = {
+            "AUTH_SECRET": ecs.Secret.from_secrets_manager(auth_secret),
             "HF_TOKEN": ecs.Secret.from_secrets_manager(
                 secret=secretsmanager.Secret.from_secret_complete_arn(
                     self,
@@ -183,7 +193,9 @@ class EcsStack(Stack):
 
         backend_task_definition.add_container(
             "omi-backend",
-            image=ecs.ContainerImage.from_ecr_repository(ecr_stack.backend_repository, tag=backend_image_tag),
+            image=ecs.ContainerImage.from_ecr_repository(
+                ecr_stack.backend_repository, tag=backend_image_tag
+            ),
             container_name="omi-backend",
             port_mappings=[ecs.PortMapping(container_port=31100)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-backend"),
@@ -210,7 +222,7 @@ class EcsStack(Stack):
             desired_count=1,
             public_load_balancer=False,
             security_groups=[backend_sg],
-            service_name="omi-backend"
+            service_name="omi-backend",
         )
 
         # Frontend Service Task Definition
@@ -226,7 +238,9 @@ class EcsStack(Stack):
 
         frontend_task_definition.add_container(
             "omi-frontend",
-            image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository, tag=frontend_image_tag),
+            image=ecs.ContainerImage.from_ecr_repository(
+                ecr_stack.frontend_repository, tag=frontend_image_tag
+            ),
             container_name="omi-frontend",
             port_mappings=[ecs.PortMapping(container_port=5173)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-frontend"),
@@ -254,14 +268,15 @@ class EcsStack(Stack):
             desired_count=1,
             public_load_balancer=True,
             security_groups=[frontend_sg],
-            service_name="omi-frontend"
+            service_name="omi-frontend",
         )
 
         frontend_task_definition.default_container.add_environment(
             "AWS_HOSTNAME", self.frontend_service.load_balancer.load_balancer_dns_name
         )
         frontend_task_definition.default_container.add_environment(
-            "PUBLIC_API_BASE_URL", f"https://{self.frontend_service.load_balancer.load_balancer_dns_name}"
+            "PUBLIC_API_BASE_URL",
+            f"https://{self.frontend_service.load_balancer.load_balancer_dns_name}",
         )
 
         # Backend security group rules
