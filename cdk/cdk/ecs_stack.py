@@ -210,16 +210,7 @@ class EcsStack(Stack):
             desired_count=1,
             public_load_balancer=False,
             security_groups=[backend_sg],
-            service_name="omi-backend",
-            health_check_grace_period=Duration.seconds(120),
-            target_group_attributes={
-                "deregistration_delay.timeout_seconds": "30",
-                "health_check.path": "/health",
-                "health_check.timeout_seconds": "15",
-                "health_check.interval_seconds": "60",
-                "health_check.healthy_threshold_count": "2",
-                "health_check.unhealthy_threshold_count": "4",
-            },
+            service_name="omi-backend"
         )
 
         # Frontend Service Task Definition
@@ -263,16 +254,7 @@ class EcsStack(Stack):
             desired_count=1,
             public_load_balancer=True,
             security_groups=[frontend_sg],
-            service_name="omi-frontend",
-            health_check_grace_period=Duration.seconds(120),
-            target_group_attributes={
-                "deregistration_delay.timeout_seconds": "30",
-                "health_check.path": "/health",
-                "health_check.timeout_seconds": "15",
-                "health_check.interval_seconds": "60",
-                "health_check.healthy_threshold_count": "2",
-                "health_check.unhealthy_threshold_count": "4",
-            },
+            service_name="omi-frontend"
         )
 
         # Backend security group rules
