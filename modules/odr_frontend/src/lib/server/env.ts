@@ -28,3 +28,10 @@ export const POSTGRES_DB = getEnvironmentVariable('POSTGRES_DB');
 
 console.log('Environment variables:', ENV);
 console.log('Using API URL:', API_URL);
+
+// Call the API /health endpoint and print the response
+// Check API health on startup
+fetch(`${API_URL}/health`)
+	.then(response => response.text())
+	.then(data => console.log('API Health Check:', data))
+	.catch(error => console.error('API Health Check failed:', error));

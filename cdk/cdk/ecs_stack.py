@@ -246,7 +246,8 @@ class EcsStack(Stack):
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-frontend"),
             environment=default_environment
             | {
-                "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}:31100",
+                "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}/api/v1",
+                "PUBLIC_API_BASE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}/api/v1",
                 "RUN_MIGRATIONS": "true",
             },
             secrets=default_secrets,
@@ -274,10 +275,6 @@ class EcsStack(Stack):
         frontend_task_definition.default_container.add_environment(
             "AWS_HOSTNAME", self.frontend_service.load_balancer.load_balancer_dns_name
         )
-        frontend_task_definition.default_container.add_environment(
-            "PUBLIC_API_BASE_URL",
-            f"https://{self.frontend_service.load_balancer.load_balancer_dns_name}",
-        )
 
         # Backend security group rules
         # Allow inbound traffic only from frontend security group on backend port
@@ -285,6 +282,16 @@ class EcsStack(Stack):
             peer=frontend_sg,
             connection=ec2.Port.tcp(31100),
             description="Allow frontend to backend traffic",
+        )
+        backend_sg.add_ingress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(80),
+            description="Allow inbound HTTP traffic for external calls",
+        )
+        backend_sg.add_ingress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(443),
+            description="Allow inbound HTTPS traffic for external calls",
         )
 
         # Backend security group rules - only necessary egress rules
