@@ -5,14 +5,10 @@ import { PG_API } from '$lib/server/pg';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import fs from 'fs';
-import path from 'path';
 
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { db } from '../db';
-import { contents, contentSources } from '../db/schemas/contents';
-import { annotations } from '../db/schemas/annotations';
-import { contenttype, contentstatus, contentsourcetype } from '../db/schemas/enums';
-import { eq } from 'drizzle-orm';
+import { contents } from '../db/schemas/contents';
 
 export const load: PageServerLoad = async (event) => {
 	const session = await event.locals.auth();
