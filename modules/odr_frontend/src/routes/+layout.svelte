@@ -20,7 +20,9 @@
 	<!-- App Bar -->
 	<AppBar>
 		<svelte:fragment slot="lead">
-			<strong class="text-xl uppercase"><a href="/">OMI DATA PIPELINE</a></strong>
+			<a href="/">
+				<img src="/omi_logo_banner.webp" alt="Open Model Initiative" class="h-12 w-auto">
+			</a>
 		</svelte:fragment>
 		<svelte:fragment slot="trail">
 			{#if !$page.data.session?.user}
@@ -29,26 +31,28 @@
 					class="btn btn-sm"
 					on:click={() => {
 						signIn('github');
-					}}><GithubIcon color="currentColor" /></button
-				>
+					}}><GithubIcon color="currentColor" />
+				</button>
 				<button
 					class="btn btn-sm"
 					on:click={() => {
 						signIn('discord');
-					}}><DiscordIcon /></button
-				>
+					}}><DiscordIcon />
+				</button>
 			{:else}
 				{#if $page.data.session.user.is_superuser}
 					<!-- TODO: Extend user type -->
-					<a href="/admin" class="btn btn-sm variant-outline-primary" data-sveltekit-reload>Admin</a
-					>
+					<a href="/admin"
+						class="btn btn-sm variant-outline-primary"
+						data-sveltekit-reload>Admin
+					</a>
 				{/if}
 				<button
 					class="btn btn-sm"
 					on:click={() => {
 						signOut();
-					}}>Sign Out</button
-				>
+					}}>Sign Out
+				</button>
 			{/if}
 		</svelte:fragment>
 	</AppBar>
