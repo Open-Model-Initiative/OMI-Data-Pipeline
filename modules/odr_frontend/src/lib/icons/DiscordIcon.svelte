@@ -1,5 +1,5 @@
 <script lang="ts">
-	export const color: string = '#5865F2'; //Official Discord Brand Color as per https://discord.com/branding
+	export const color: string = '#FFFFFF';
 </script>
 
 <svg

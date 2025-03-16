@@ -26,7 +26,7 @@
 		</svelte:fragment>
 		<svelte:fragment slot="trail">
 			{#if !$page.data.session?.user}
-				<span class="btn btn-sm">Sign In:</span>
+				<span>Sign In:</span>
 				<button
 					class="btn btn-sm"
 					on:click={() => {
