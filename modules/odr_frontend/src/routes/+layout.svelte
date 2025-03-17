@@ -1,3 +1,6 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+-->
 <script lang="ts">
 	import '../app.postcss';
 
@@ -5,11 +8,12 @@
 	import { AppBar, storePopup, initializeStores, Modal, Toast } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 	import { signIn, signOut } from '@auth/sveltekit/client';
+	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
+	import DiscordIcon from '$lib/icons/DiscordIcon.svelte';
+
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	initializeStores();
-	import GithubIcon from '$lib/icons/GithubIcon.svelte';
-	import DiscordIcon from '$lib/icons/DiscordIcon.svelte';
 </script>
 
 <Toast />
@@ -21,23 +25,23 @@
 	<AppBar>
 		<svelte:fragment slot="lead">
 			<a href="/">
-				<img src="/omi_logo_banner.webp" alt="Open Model Initiative" class="h-12 w-auto">
+				<img src="/omi_logo_banner.webp" alt="Open Model Initiative" class="h-8 w-auto">
 			</a>
 		</svelte:fragment>
 		<svelte:fragment slot="trail">
 			{#if !$page.data.session?.user}
 				<span>Sign In:</span>
 				<button
-					class="btn btn-sm"
+					class="btn btn-sm hover:text-blue-600"
 					on:click={() => {
 						signIn('github');
-					}}><GithubIcon color="currentColor" />
+					}}><GitHubIcon color="currentColor" />
 				</button>
 				<button
-					class="btn btn-sm"
+					class="btn btn-sm hover:text-blue-600"
 					on:click={() => {
 						signIn('discord');
-					}}><DiscordIcon />
+					}}><DiscordIcon color="currentColor" />
 				</button>
 			{:else}
 				{#if $page.data.session.user.is_superuser}
@@ -48,7 +52,7 @@
 					</a>
 				{/if}
 				<button
-					class="btn btn-sm"
+					class="btn btn-sm hover:bg-blue-600"
 					on:click={() => {
 						signOut();
 					}}>Sign Out
@@ -59,13 +63,13 @@
 	<slot />
 	<footer class="sticky bottom-0 flex flex-row justify-center bg-surface-800">
 		<a
-			class="btn btn-sm !bg-transparent"
+			class="btn btn-sm !bg-transparent group"
 			href="https://discord.gg/swYY5RVHft"
 			target="_blank"
 			rel="noreferrer"
 		>
 			<svg
-				class="w-6 h-6 text-gray-800 dark:text-white"
+				class="w-6 h-6 text-gray-800 dark:text-white group-hover:text-blue-600"
 				aria-hidden="true"
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
@@ -79,13 +83,13 @@
 			</svg>
 		</a>
 		<a
-			class="btn btn-sm !bg-transparent"
+			class="btn btn-sm !bg-transparent group"
 			href="https://github.com/Open-Model-Initiative/OMI-Data-Pipeline"
 			target="_blank"
 			rel="noreferrer"
 		>
 			<svg
-				class="w-6 h-6 text-gray-800 dark:text-white"
+				class="w-6 h-6 text-gray-800 dark:text-white group-hover:text-blue-600"
 				aria-hidden="true"
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"

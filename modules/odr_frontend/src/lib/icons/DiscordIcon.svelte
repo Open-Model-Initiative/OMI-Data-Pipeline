@@ -1,11 +1,14 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+-->
 <script lang="ts">
-	export const color: string = '#FFFFFF';
+	export let color: string = '#5865F2'; //Official Discord Brand Color as per https://discord.com/branding
 </script>
 
 <svg
 	role="img"
 	viewBox="0 0 24 24"
-	class="w-8 h-8 fill"
+	class="w-8 h-8"
 	xmlns="http://www.w3.org/2000/svg"
 	style="fill: {color};"
 	><title>Discord</title><path
