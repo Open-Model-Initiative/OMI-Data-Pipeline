@@ -19,7 +19,7 @@
 <div class="flex flex-col items-center justify-center -mt-16">
 	<h1 class="text-4xl font-bold mb-8 text-center">Data Pipeline Application</h1>
 
-	<main class="flex flex-col w-1/5 min-w-[300px] bg-surface-500 p-8">
+	<main class="flex flex-col w-1/5 min-w-[400px] bg-surface-500 p-8">
 		<h2 class="text-3xl mb-4">Sign In</h2>
 		<nav>
 			<div class="actions flex flex-col gap-2 justify-center p-4 w-full">
