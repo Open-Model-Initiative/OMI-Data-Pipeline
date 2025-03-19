@@ -1,3 +1,6 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+-->
 <div class="flex flex-row gap-4">
 	<nav class="list-nav text-primary-300 font-extrabold flex flex-row bg-surface-700 w-32">
 		<ul class="w-full">

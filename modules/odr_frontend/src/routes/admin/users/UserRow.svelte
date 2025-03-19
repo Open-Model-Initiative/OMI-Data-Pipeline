@@ -1,3 +1,6 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+-->
 <script lang="ts">
 	import SuperUserToggle from '$lib/admin/SuperUserToggle.svelte';
 	import ActiveToggle from '$lib/admin/ActiveToggle.svelte';

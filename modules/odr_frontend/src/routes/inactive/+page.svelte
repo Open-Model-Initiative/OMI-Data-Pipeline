@@ -1,3 +1,6 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+-->
 <svelte:head>
 	<title>Inactive User | OMI Data Pipeline</title>
 </svelte:head>
