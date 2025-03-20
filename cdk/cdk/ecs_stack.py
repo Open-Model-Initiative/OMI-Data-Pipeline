@@ -229,8 +229,8 @@ class EcsStack(Stack):
         frontend_task_definition = ecs.FargateTaskDefinition(
             self,
             "OmiFrontendTaskDefiniton",
-            cpu=1024,
-            memory_limit_mib=2048,
+            cpu=2048,
+            memory_limit_mib=4096,
         )
 
         frontend_task_definition.add_to_task_role_policy(s3_policy)
