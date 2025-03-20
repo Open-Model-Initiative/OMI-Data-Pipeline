@@ -251,13 +251,13 @@ class EcsStack(Stack):
                 "RUN_MIGRATIONS": "true",
             },
             secrets=default_secrets,
-            health_check=ecs.HealthCheck(
-                command=["CMD-SHELL", "curl -f http://localhost:5173/health || exit 1"],
-                interval=Duration.seconds(60),
-                timeout=Duration.seconds(15),
-                retries=3,
-                start_period=Duration.seconds(120),
-            ),
+            # health_check=ecs.HealthCheck(
+            #     command=["CMD-SHELL", "curl -f http://localhost:5173/health || exit 1"],
+            #     interval=Duration.seconds(60),
+            #     timeout=Duration.seconds(15),
+            #     retries=3,
+            #     start_period=Duration.seconds(120),
+            # ),
         )
 
         # Frontend Service
