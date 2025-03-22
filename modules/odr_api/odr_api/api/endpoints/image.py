@@ -226,6 +226,9 @@ def remove_metadata_with_exiftool(input_bytes):
             '-PreviewColorSpace',
             '-IFD0',
             '-ICC_Profile:all',
+            '-Transparency',
+            '-ColorSpace',
+            '-Compression',
             temp_input_filename,
             '-o', temp_output_filename
         ]
