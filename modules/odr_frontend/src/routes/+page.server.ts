@@ -26,7 +26,7 @@ export const load: PageServerLoad = async (event) => {
 };
 
 const UPLOAD_DIR = join(process.cwd(), 'uploads');
-const IMAGE_DIR = join(UPLOAD_DIR, 'images');
+const PENDING_DIR = join(UPLOAD_DIR, 'pending');
 const REJECTED_DIR = join(UPLOAD_DIR, 'rejected');
 const FLAGGED_DIR = join(UPLOAD_DIR, 'flagged');
 const JSONL_DIR = join(UPLOAD_DIR, 'jsonl');
@@ -130,8 +130,8 @@ async function saveFileLocally(directory: string, fileName: string, content: Buf
 if (!fs.existsSync(UPLOAD_DIR)) {
     fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
-if (!fs.existsSync(IMAGE_DIR)) {
-    fs.mkdirSync(IMAGE_DIR, { recursive: true });
+if (!fs.existsSync(PENDING_DIR)) {
+    fs.mkdirSync(PENDING_DIR, { recursive: true });
 }
 if (!fs.existsSync(REJECTED_DIR)) {
     fs.mkdirSync(REJECTED_DIR, { recursive: true });
@@ -185,7 +185,7 @@ export const actions = {
 			}, null, 2);
 			const metadataFileName = `${userId}_${timestamp}.json`
 
-			if (process.env.NODE_ENV === 'production') {
+			if (process.env.NODE_ENV === 'production' && process.env.AWS_S3_BUCKET) {
 			  	// S3 upload for production
 
 				await uploadToS3(uniqueFileName, cleanedBuffer);
@@ -196,32 +196,33 @@ export const actions = {
 				await mkdir(REJECTED_DIR, { recursive: true });
 				await mkdir(FLAGGED_DIR, { recursive: true });
 
-				await saveFileLocally(IMAGE_DIR, uniqueFileName, cleanedBuffer);
-				await saveFileLocally(IMAGE_DIR, jpgFileName, jpgBuffer);
-				await saveFileLocally(IMAGE_DIR, metadataFileName, metadataContent);
+				await saveFileLocally(PENDING_DIR, uniqueFileName, cleanedBuffer);
+				await saveFileLocally(PENDING_DIR, jpgFileName, jpgBuffer);
+				await saveFileLocally(PENDING_DIR, metadataFileName, metadataContent);
 			}
 
-			const contentData = {
+            // Create a content record for this image
+            const newContent = await db.insert(contents).values({
                 name: uniqueFileName,
-                type: "image",
+                type: 'IMAGE',
                 hash: "", // Needs calculated elsewhere
                 phash: "", // Needs calculated elsewhere
                 width: metadataData.width || 0,
                 height: metadataData.height || 0,
-                url: [], // S3 URL?
+                url: [],
                 format: fileExtension,
                 size: file.size,
-                status: "pending",
+                status: 'PENDING',
                 license: "CDLA-Permissive-2.0",
-                license_url: "https://cdla.dev/permissive-2-0/",
+                licenseUrl: "https://cdla.dev/permissive-2-0/",
                 flags: 0,
                 meta: metadataData,
-                content_authors: [],
-                sources: []
-            };
+                fromUserId: Number(userId) || 1,
+                updatedAt: new Date().toISOString()
+            }).returning();
 
-			const from_user_id = Number(userId) || 0
-            await makeJsonApiCall(`/content/?from_user_id=${from_user_id}`, contentData);
+            const contentRecord = newContent[0];
+            console.log(`Created content record for ${uniqueFileName}:`, contentRecord.id);
 
 			return { success: true, uniqueFileName };
 		} catch (error) {
