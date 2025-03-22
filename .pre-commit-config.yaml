@@ -19,5 +19,5 @@ repos:
         name: Check SPDX License Headers
         entry: python ./scripts/check_spdx.py
         language: python
-        types_or: [python, javascript, jsx, ts, tsx, shell, batch, html, xml, yaml]
-        files: \.(py|js|ts|sh|bat|cmd|html|xml|yaml|yml)$
+        types_or: [python, javascript, jsx, ts, tsx, shell, svelte, batch, html, xml, yaml]
+        files: \.(py|js|ts|sh|svelte|bat|cmd|html|xml|yaml|yml)$

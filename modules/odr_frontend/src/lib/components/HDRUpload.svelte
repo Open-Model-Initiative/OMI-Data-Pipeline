@@ -1,3 +1,6 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+-->
 <script lang="ts">
     import UploadIcon from '$lib/icons/UploadIcon.svelte';
     import { FileDropzone } from '@skeletonlabs/skeleton';

@@ -1,3 +1,6 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+-->
 <main>
 	<div class="container flex flex-col h-full justify-center items-center gap-4">
 		<h2 class="h2">Import Data</h2>

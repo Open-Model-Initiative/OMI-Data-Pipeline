@@ -1,3 +1,6 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+-->
 <script lang="ts">
 	import { Autocomplete, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings, AutocompleteOption, ToastSettings } from '@skeletonlabs/skeleton';
