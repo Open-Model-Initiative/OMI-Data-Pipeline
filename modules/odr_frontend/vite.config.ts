@@ -10,6 +10,13 @@ export default defineConfig({
 		fs: {
 			allow: ['/app/uploads']
 		},
-		allowedHosts: [process.env.AWS_HOSTAME || 'localhost']
+		allowedHosts: (() => {
+			const hosts = ['localhost'];
+			if (process.env.AWS_HOSTNAME) {
+				hosts.push(process.env.AWS_HOSTNAME.toLowerCase());
+			}
+			console.log('Allowed hosts:', hosts);
+			return hosts;
+		})()
 	}
 });

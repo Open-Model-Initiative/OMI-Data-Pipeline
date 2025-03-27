@@ -54,7 +54,7 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest -f modules/odr_frontend/docker/Dockerfile.frontend.dev modules/odr_frontend
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest -f modules/odr_frontend/docker/Dockerfile.frontend.dev .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG" >> $GITHUB_OUTPUT
@@ -101,10 +101,10 @@ jobs:
       if: github.event.inputs.deployment_type == 'all'
       working-directory: cdk
       run: |
-        cdk deploy --all --require-approval never
+        cdk deploy --all --require-approval never --context backendImageTag=${{ github.sha }} --context frontendImageTag=${{ github.sha }}
 
     - name: Deploy app stack only
       if: github.event.inputs.deployment_type == 'app-only'
       working-directory: cdk
       run: |
-        cdk deploy EcsStack --require-approval never
+        cdk deploy EcsStack --require-approval never --context backendImageTag=${{ github.sha }} --context frontendImageTag=${{ github.sha }}

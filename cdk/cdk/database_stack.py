@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-from aws_cdk import Duration, Stack, aws_ec2 as ec2, aws_rds as rds, RemovalPolicy
+from aws_cdk import Duration, Stack, aws_ec2 as ec2, aws_rds as rds, RemovalPolicy, CfnOutput
 from constructs import Construct
 from .vpc_stack import VpcStack
 
@@ -37,6 +37,21 @@ class DatabaseStack(Stack):
 
         self.db_name = "omidb"
 
+        # Create a custom parameter group for PostgreSQL
+        # TODO: Setup certificate for connection to the DB
+        self.db_parameter_group = rds.ParameterGroup(
+            self,
+            "OmiDbParameterGroup",
+            engine=rds.DatabaseInstanceEngine.postgres(
+                version=rds.PostgresEngineVersion.VER_17_2
+            ),
+            description="Parameter group for OMI PostgreSQL database",
+            parameters={
+                # Disable SSL requirement
+                "rds.force_ssl": "0"
+            }
+        )
+
         # Create RDS instance
         self.db_instance = rds.DatabaseInstance(
             self,
@@ -60,4 +75,13 @@ class DatabaseStack(Stack):
             backup_retention=Duration.days(7),
             instance_identifier="omi-database",
             multi_az=False,
+            parameter_group=self.db_parameter_group,  # Use the custom parameter group
+        )
+
+        # Output the database endpoint
+        CfnOutput(
+            self,
+            "DatabaseEndpoint",
+            value=self.db_instance.db_instance_endpoint_address,
+            description="Database endpoint address"
         )

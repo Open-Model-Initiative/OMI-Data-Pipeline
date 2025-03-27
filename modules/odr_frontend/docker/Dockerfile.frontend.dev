@@ -7,19 +7,19 @@ RUN npm install -g pnpm && \
     apk add --no-cache aws-cli efs-utils postgresql-client && \
     mkdir -p /mnt/upload /mnt/models
 
+
 # Copy package.json and pnpm-lock.yaml (if you have one)
-COPY package.json pnpm-lock.yaml* ./
+COPY modules/odr_frontend/package.json modules/odr_frontend/pnpm-lock.yaml* ./
 # Install dependencies at build time
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy the entrypoint script
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-# Copy drizzle migration files
-COPY drizzle/ /app/drizzle/
-COPY src/db/ /app/src/db/
+COPY modules/odr_frontend/docker/entrypoint.sh /entrypoint.sh
+# Ensure the entrypoint script has the correct line endings and is executable
+RUN sed -i 's/\r$//' /entrypoint.sh && \
+    chmod +x /entrypoint.sh
 
-# COPY .env.template /app/.env
+COPY modules/odr_frontend/ /app/
 
 EXPOSE 5173
 

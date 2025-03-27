@@ -4,12 +4,10 @@ from aws_cdk import (
     aws_ec2 as ec2,
     aws_ecs as ecs,
     aws_ecs_patterns as ecs_patterns,
-    aws_elasticloadbalancingv2 as elbv2,
-    aws_efs as efs,
     aws_iam as iam,
     aws_secretsmanager as secretsmanager,
-    RemovalPolicy,
     CfnOutput,
+    Duration,
 )
 from constructs import Construct
 from .vpc_stack import VpcStack
@@ -30,6 +28,10 @@ class EcsStack(Stack):
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        # Get image tags from context or use "latest" as default
+        backend_image_tag = self.node.try_get_context("backendImageTag") or "latest"
+        frontend_image_tag = self.node.try_get_context("frontendImageTag") or "latest"
 
         # Create ECS Cluster
         self.cluster = ecs.Cluster(
@@ -53,14 +55,6 @@ class EcsStack(Stack):
             description="Security group for frontend service",
             security_group_name="omi-frontend-sg",
             allow_all_outbound=False,
-        )
-
-        # Create EFS File System
-        fs = efs.FileSystem(
-            self,
-            "OmiFileSystem",
-            vpc=vpc_stack.vpc,
-            removal_policy=RemovalPolicy.RETAIN,
         )
 
         s3_policy = iam.PolicyStatement(
@@ -103,7 +97,17 @@ class EcsStack(Stack):
             "arn:aws:secretsmanager:us-east-1:474668405283:secret:huggingface-0L3S0w"
         )
 
+        auth_secret = secretsmanager.Secret(
+            self,
+            "OmiAuthSecret",
+            description="Secret for OMI authentication",
+            generate_secret_string=secretsmanager.SecretStringGenerator(
+                password_length=32, exclude_punctuation=True
+            ),
+        )
+
         default_secrets = {
+            "AUTH_SECRET": ecs.Secret.from_secrets_manager(auth_secret),
             "HF_TOKEN": ecs.Secret.from_secrets_manager(
                 secret=secretsmanager.Secret.from_secret_complete_arn(
                     self,
@@ -184,20 +188,29 @@ class EcsStack(Stack):
             memory_limit_mib=2048,
         )
 
-        # Add S3 permissions to task role
         backend_task_definition.add_to_task_role_policy(s3_policy)
-
-        # Add permissions for mounting EFS and accessing secrets
         backend_task_definition.add_to_task_role_policy(default_policy)
 
         backend_task_definition.add_container(
             "omi-backend",
-            image=ecs.ContainerImage.from_ecr_repository(ecr_stack.backend_repository),
+            image=ecs.ContainerImage.from_ecr_repository(
+                ecr_stack.backend_repository, tag=backend_image_tag
+            ),
             container_name="omi-backend",
             port_mappings=[ecs.PortMapping(container_port=31100)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-backend"),
             environment=default_environment,
             secrets=default_secrets,
+            health_check=ecs.HealthCheck(
+                command=[
+                    "CMD-SHELL",
+                    "curl -f http://localhost:31100/api/v1/health || exit 1",
+                ],
+                interval=Duration.seconds(60),
+                timeout=Duration.seconds(15),
+                retries=3,
+                start_period=Duration.seconds(120),
+            ),
         )
 
         # Backend Service
@@ -212,34 +225,39 @@ class EcsStack(Stack):
             service_name="omi-backend",
         )
 
-        # Allow EFS access
-        fs.connections.allow_default_port_from(self.backend_service.service.connections)
-
         # Frontend Service Task Definition
         frontend_task_definition = ecs.FargateTaskDefinition(
             self,
             "OmiFrontendTaskDefiniton",
-            cpu=1024,
-            memory_limit_mib=2048,
+            cpu=2048,
+            memory_limit_mib=4096,
         )
 
-        # Add S3 permissions to task role
         frontend_task_definition.add_to_task_role_policy(s3_policy)
-
-        # Add permissions for mounting EFS and accessing secrets
         frontend_task_definition.add_to_task_role_policy(default_policy)
 
-        frontend_container = frontend_task_definition.add_container(
+        frontend_task_definition.add_container(
             "omi-frontend",
-            image=ecs.ContainerImage.from_ecr_repository(ecr_stack.frontend_repository),
+            image=ecs.ContainerImage.from_ecr_repository(
+                ecr_stack.frontend_repository, tag=frontend_image_tag
+            ),
             container_name="omi-frontend",
             port_mappings=[ecs.PortMapping(container_port=5173)],
             logging=ecs.LogDriver.aws_logs(stream_prefix="omi-frontend"),
             environment=default_environment
             | {
-                "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}:31100",
+                "API_SERVICE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}/api/v1",
+                "PUBLIC_API_BASE_URL": f"http://{self.backend_service.load_balancer.load_balancer_dns_name}/api/v1",
+                "RUN_MIGRATIONS": "true",
             },
             secrets=default_secrets,
+            # health_check=ecs.HealthCheck(
+            #     command=["CMD-SHELL", "curl -f http://localhost:5173/health || exit 1"],
+            #     interval=Duration.seconds(60),
+            #     timeout=Duration.seconds(15),
+            #     retries=3,
+            #     start_period=Duration.seconds(120),
+            # ),
         )
 
         # Frontend Service
@@ -254,7 +272,7 @@ class EcsStack(Stack):
             service_name="omi-frontend",
         )
 
-        frontend_container.add_environment(
+        frontend_task_definition.default_container.add_environment(
             "AWS_HOSTNAME", self.frontend_service.load_balancer.load_balancer_dns_name
         )
 
@@ -265,12 +283,32 @@ class EcsStack(Stack):
             connection=ec2.Port.tcp(31100),
             description="Allow frontend to backend traffic",
         )
+        backend_sg.add_ingress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(80),
+            description="Allow inbound HTTP traffic for external calls",
+        )
+        backend_sg.add_ingress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(443),
+            description="Allow inbound HTTPS traffic for external calls",
+        )
 
         # Backend security group rules - only necessary egress rules
         backend_sg.add_egress_rule(
             peer=database_stack.db_security_group,
             connection=ec2.Port.tcp(5432),
             description="Allow backend to RDS",
+        )
+        backend_sg.add_egress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(443),
+            description="Allow outbound HTTPS traffic for Secrets Manager and external calls",
+        )
+        backend_sg.add_egress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(80),
+            description="Allow outbound HTTP traffic for external calls",
         )
 
         # Frontend security group rules
@@ -286,14 +324,6 @@ class EcsStack(Stack):
             description="Allow HTTPS inbound",
         )
 
-        # Allow frontend to RDS communication
-        frontend_sg.add_egress_rule(
-            peer=database_stack.db_security_group,
-            connection=ec2.Port.tcp(5432),
-            description="Allow frontend to RDS",
-        )
-
-        # Allow outbound traffic to backend and for HTTPS
         frontend_sg.add_egress_rule(
             peer=backend_sg,
             connection=ec2.Port.tcp(31100),
@@ -301,8 +331,18 @@ class EcsStack(Stack):
         )
         frontend_sg.add_egress_rule(
             peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(80),
+            description="Allow HTTP outbound for external calls",
+        )
+        frontend_sg.add_egress_rule(
+            peer=ec2.Peer.any_ipv4(),
             connection=ec2.Port.tcp(443),
             description="Allow HTTPS outbound for external calls",
+        )
+        frontend_sg.add_egress_rule(
+            peer=ec2.Peer.any_ipv4(),
+            connection=ec2.Port.tcp(5432),
+            description="Allow outbound traffic to RDS",
         )
 
         # Outputs
