@@ -1,3 +1,6 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+-->
 <script lang="ts">
 	export let color: string = '#181717'; //Official GitHub Brand Color as per
 </script>

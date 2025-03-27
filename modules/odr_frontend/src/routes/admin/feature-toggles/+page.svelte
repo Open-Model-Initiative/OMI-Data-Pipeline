@@ -1,3 +1,6 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+-->
 <script lang="ts">
     import type { PageData } from './$types';
 	import FeatureToggle from '$lib/admin/FeatureToggle.svelte';

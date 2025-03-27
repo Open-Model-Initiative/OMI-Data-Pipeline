@@ -22,16 +22,20 @@ from loguru import logger
 from datetime import datetime, timezone
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
+import json
 
 
 def create_content_source(
     db: Session, content_id: int, source: ContentSourceCreate
 ) -> ContentSource:
+    # Convert source_metadata dict to JSON string if it exists
+    metadata_json = json.dumps(source.source_metadata) if source.source_metadata else None
+
     db_source = ContentSource(
         content_id=content_id,
         type=ContentSourceType(source.type.value),
         value=source.value,
-        metadata=source.source_metadata or {},  # Ensure metadata is a dictionary
+        source_metadata=metadata_json,  # Store as JSON string
         created_at=datetime.now(timezone.utc),
         updated_at=datetime.now(timezone.utc),
     )
