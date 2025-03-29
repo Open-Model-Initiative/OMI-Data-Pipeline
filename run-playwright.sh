@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 set -e
 
-task dev &
+task dev:migrate &
 echo "Waiting for services to start..."
 
 # Maximum wait time in seconds
