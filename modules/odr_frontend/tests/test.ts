@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 
 test('Auth page has expected home link', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.getByRole('link', { name: 'OMI DATA PIPELINE' })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'Open Model Initiative' })).toBeVisible();
 });
 
 test('Auth page has expected sign in options', async ({ page }) => {
