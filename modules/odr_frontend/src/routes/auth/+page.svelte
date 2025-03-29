@@ -16,7 +16,7 @@
 	});
 </script>
 
-<div class="flex flex-col items-center justify-center -mt-16">
+<div class="flex flex-col items-center justify-center -mt-16 passthrough-div">
 	<h1 class="text-4xl font-bold mb-8 text-center">Data Pipeline Application</h1>
 
 	<main class="flex flex-col w-1/5 min-w-[400px] bg-surface-500 p-8">
