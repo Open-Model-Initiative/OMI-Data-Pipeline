@@ -91,8 +91,6 @@ def generate_image_filename(data):
 
 def try_downloading_image(data: dict, local_image_dir: Path) -> tuple[bool, Image.Image | None]:
     def try_hugging_face(meta, image_column):
-        global datasets
-
         try:
             dataset_name = meta.get('hf-dataset-name')
             split = meta.get('hf-dataset-split')
