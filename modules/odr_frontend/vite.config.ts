@@ -11,7 +11,11 @@ export default defineConfig({
 			allow: ['/app/uploads']
 		},
 		allowedHosts: (() => {
-			const hosts = ['localhost'];
+			const hosts = [
+				'localhost',
+				'app.openmodel.foundation'
+			];
+
 			if (process.env.AWS_HOSTNAME) {
 				hosts.push(process.env.AWS_HOSTNAME.toLowerCase());
 			}
