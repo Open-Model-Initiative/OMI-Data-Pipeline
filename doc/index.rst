@@ -1,5 +1,5 @@
-# Open Model Initiative - Data Pipeline
-
+========================================
+Open Model Initiative - Data Pipeline
 ========================================
 
 .. |OpenSSF Best Practices| image:: https://www.bestpractices.dev/projects/9549/badge
