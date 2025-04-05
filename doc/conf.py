@@ -7,8 +7,8 @@
 # -----------------------------------------------------------------------------
 
 # -- Project information -----------------------------------------------------
-project = "Open Model Intitiative - Data Repository"
-copyright = "2025, Open Model Intitiative Contributors"
+project = "Open Model Intitiative - Data Pipeline"
+copyright = "The Linux Foundation®. All rights reserved."
 author = "Open Model Intitiative"
 release = "0.1"
 
@@ -17,6 +17,8 @@ extensions = ["myst_parser"]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+
+pygments_style = 'sphinx'
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = "pydata_sphinx_theme"
