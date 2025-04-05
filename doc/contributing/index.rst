@@ -7,3 +7,4 @@ Contributing
 
    getting_started
    issues
+   documentation_work
