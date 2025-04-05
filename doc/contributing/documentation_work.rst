@@ -23,9 +23,17 @@ Making Changes
 
 - Remove the current documentation build if present:
 
+On Linux/Mac use:
+
 .. code-block:: bash
 
-    rm -rf _build
+    ./make.sh clean
+
+On Windows use:
+
+.. code-block:: bash
+
+    ./make.bat clean
 
 - Make your changes.
 
