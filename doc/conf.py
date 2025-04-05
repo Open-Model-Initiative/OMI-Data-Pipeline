@@ -8,7 +8,7 @@
 
 # -- Project information -----------------------------------------------------
 project = "Open Model Intitiative - Data Pipeline"
-copyright = "The Linux Foundation®. All rights reserved."
+copyright = "2025, Open Model Intitiative Contributors"
 author = "Open Model Intitiative"
 release = "0.1"
 
