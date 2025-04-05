@@ -1,6 +1,14 @@
-========================================
+=====================================
 Open Model Initiative - Data Pipeline
-========================================
+=====================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   deployment
+   datamodel/index
+   contributing/index
 
 .. |OpenSSF Best Practices| image:: https://www.bestpractices.dev/projects/9549/badge
    :target: https://www.bestpractices.dev/projects/9549

@@ -1,16 +1,16 @@
-=================
+===============
 Creating Issues
-=================
+===============
 
 This guide explains how to create issues and understand the different issue categories available in our issue tracker.
 
 Issue Categories
-===============
+================
 
 We have several issue templates to help organize different types of requests and problems:
 
 Bug Reports
-----------
+-----------
 Use the bug report template when you encounter something that isn't working as expected. When filing a bug report, please include:
 
 - Clear description of the problem
@@ -20,7 +20,7 @@ Use the bug report template when you encounter something that isn't working as e
 - Screenshots if applicable
 
 Feature Requests
---------------
+----------------
 For suggesting new features or improvements, use the feature request template. Include:
 
 - Description of the problem the feature would solve
@@ -29,7 +29,7 @@ For suggesting new features or improvements, use the feature request template. I
 - Additional context or examples
 
 Documentation Issues
-------------------
+--------------------
 If you find problems in the documentation or want to suggest improvements, use the documentation issue template. Include:
 
 - Location of the issue (URL or file path)
@@ -38,7 +38,7 @@ If you find problems in the documentation or want to suggest improvements, use t
 - Any additional context
 
 Design/UX Enhancements
----------------------
+----------------------
 For suggesting improvements to the user interface or experience, use the design/UX template. Include:
 
 - Description of the current design issue
@@ -47,7 +47,7 @@ For suggesting improvements to the user interface or experience, use the design/
 - Mockups or examples if available
 
 Security Issues
--------------
+---------------
 For reporting security vulnerabilities, use the security issue template. Include:
 
 - Clear description of the vulnerability
@@ -56,7 +56,7 @@ For reporting security vulnerabilities, use the security issue template. Include
 - Any suggested fixes
 
 Support Requests
---------------
+----------------
 If you need help using the software, use the support request template. Include:
 
 - Clear description of what you're trying to do
@@ -65,7 +65,7 @@ If you need help using the software, use the support request template. Include:
 - Any relevant error messages or screenshots
 
 Task/Management
--------------
+---------------
 For project management and general tasks, use the task template. Include:
 
 - Clear task description
@@ -75,7 +75,7 @@ For project management and general tasks, use the task template. Include:
 - Required resources
 
 CI/CD Issues
------------
+------------
 For issues related to continuous integration or deployment, use the CI/CD template. Include:
 
 - Affected workflow or pipeline
@@ -85,7 +85,7 @@ For issues related to continuous integration or deployment, use the CI/CD templa
 - Proposed changes
 
 Best Practices
-=============
+==============
 
 When creating an issue:
 
@@ -102,7 +102,7 @@ When creating an issue:
 6. **Labels**: Pay attention to the automatically applied labels, and add additional ones if needed.
 
 Issue Labels
-===========
+============
 
 Common labels you might see on issues:
 
@@ -116,7 +116,7 @@ Common labels you might see on issues:
 - ``ci-cd``: Continuous Integration/Deployment related
 
 Updating Issues
-==============
+===============
 
 When working on or following up on an issue:
 
@@ -127,7 +127,7 @@ When working on or following up on an issue:
 5. Use reactions (👍, etc.) to show agreement rather than writing "+1" comments
 
 Getting Help
-===========
+============
 
 If you're unsure which template to use or need help creating an issue:
 

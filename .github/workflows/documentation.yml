@@ -1,7 +1,4 @@
 # SPDX-License-Identifier: Apache-2.0
-# .github/workflows/documentation.yml
-# -----------------------------------------------------------------------------
-
 name: documentation
 on:
   workflow_dispatch:

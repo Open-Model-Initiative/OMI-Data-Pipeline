@@ -1,23 +1,23 @@
-=================
+===============
 Data Migrations
-=================
+===============
 
 The Open Data Repository uses Drizzle ORM for database management and migrations. This document outlines our migration system and database schema management approach.
 
 Migration System Overview
-========================
+=========================
 
 We use Drizzle Kit for handling database migrations, which provides a type-safe and declarative way to manage database schemas in TypeScript.
 
 Key Components
--------------
+--------------
 
 - **Schema Definition**: Located in ``src/db/schemas/``
 - **Migration Files**: Generated in ``drizzle/`` directory
 - **Configuration**: Managed via ``drizzle.config.ts``
 
 Available Commands
-----------------
+------------------
 
 .. code-block:: bash
 
@@ -37,11 +37,11 @@ Available Commands
    pnpm run db:studio
 
 Schema Structure
-===============
+================
 
 
 Best Practices
-=============
+==============
 
 1. **Schema Changes**
 
@@ -62,7 +62,7 @@ Best Practices
    - Document breaking changes
 
 Migration Workflow
-================
+==================
 
 1. **Development Phase**
 
@@ -88,10 +88,10 @@ Migration Workflow
    - Verify application functionality
 
 Troubleshooting
-==============
+===============
 
 Common Issues
-------------
+-------------
 
 1. **Migration Conflicts**
 
@@ -112,7 +112,7 @@ Common Issues
    - Consider batching large changes
 
 Getting Help
-===========
+============
 
 For issues with migrations:
 

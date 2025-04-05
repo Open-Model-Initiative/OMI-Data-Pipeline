@@ -1,11 +1,9 @@
-# doc/conf.py
 # -----------------------------------------------------------------------------
 # Configuration file for the Sphinx documentation builder.
 # For the full list of built-in configuration values, see:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 #
 # SPDX-License-Identifier: Apache-2.0
-# graphcap.module.doc.conf.py
 # -----------------------------------------------------------------------------
 
 # -- Project information -----------------------------------------------------
@@ -21,14 +19,16 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # -- Options for HTML output -------------------------------------------------
-# Update the theme to use pydata-sphinx-theme
 html_theme = "pydata_sphinx_theme"
-
-# Optional: Add pydata-sphinx-theme specific options
 html_theme_options = {
+    "navbar_align": "content",
+    "navbar_center": ["navbar-nav"],
+    "use_edit_page_button": False,
+    "show_toc_level": 2,
     "navbar_start": ["navbar-logo"],
     "navbar_end": ["navbar-icon-links"],
-    # Add additional customization options here as needed.
 }
+
+html_title = "OMI Data Repository"
 
 html_static_path = ["_static"]
