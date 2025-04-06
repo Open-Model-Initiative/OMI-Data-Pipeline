@@ -2,18 +2,21 @@
 Open Model Initiative - Data Pipeline
 =====================================
 
+|OpenSSF Best Practices| |License|
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   deployment
-   datamodel/index
    contributing/index
+   datamodel/index
+   deployment
 
 .. |OpenSSF Best Practices| image:: https://www.bestpractices.dev/projects/9549/badge
    :target: https://www.bestpractices.dev/projects/9549
 .. |License| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
-   :target: LICENSE
+   :target: https://github.com/Open-Model-Initiative/OMI-Data-Pipeline/blob/main/LICENSE
 
 Welcome to the Open Model Initiative Data Pipeline repository!
 
@@ -24,8 +27,8 @@ About the Project
 
 The Open Model Initiative Data Pipeline is a collaborative effort to create and maintain high-quality, openly licensed baseline AI models, and provide tooling to maintain and curate datasets for large training projects. Our goal is to empower individuals and organizations to leverage and build upon these models for their own solutions, and to allow creatives the capacity to utilize these emerging tools for their own creative pursuits.
 
-Key goals:
-----------
+Key goals
+---------
 
 - Effective captioning management and curation tools for large datasets
 - Standardized metadata format for utilizing datasets across applications
@@ -34,7 +37,7 @@ Key goals:
 Contributing
 ------------
 
-We welcome contributions from the community! Whether you're fixing bugs, improving documentation, or proposing new features, your input is valuable. Please read our `Contribution <CONTRIBUTING.md>`_ Guidelines and our `Getting Started Guide <GETTING_STARTED.md>`_ for more information on how to get started.
+We welcome contributions from the community! Whether you're fixing bugs, improving documentation, or proposing new features, your input is valuable. Please read our `Contribution Guidelines <https://github.com/Open-Model-Initiative/OMI-Data-Pipeline/blob/main/CONTRIBUTING.md>`_ and our `Contribution Guide <contributing/index.html>`_ for more information on how to get started.
 
 License
 -------
