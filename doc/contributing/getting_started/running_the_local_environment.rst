@@ -26,3 +26,5 @@ By default, you will have the following:
     Name the DB something like omi-database, then switch to the connection tab
 
     The host name/address will be 'postgres', the username will be your .env POSTGRES_USER, and the password will be your .env POSTGRES_PASSWORD
+
+    Leave the port as '5432' and click save.
