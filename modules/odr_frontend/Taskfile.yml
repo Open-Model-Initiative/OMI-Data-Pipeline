@@ -12,6 +12,7 @@ tasks:
     desc: Install development dependencies
     dir: '{{.ROOT_DIR}}/modules/odr_frontend'
     cmds:
+      - pnpm install --dev
       - pnpm exec playwright install
   test:
     desc: Run unit and integration tests

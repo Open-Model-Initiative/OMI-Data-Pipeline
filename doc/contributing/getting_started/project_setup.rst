@@ -43,14 +43,14 @@ To setup your environment run ``task setup``
 Along with installing the necessary components, this will copy the ``.env.template`` setup into a ``.env`` file.
 
 You can update this file if you'd like to change any of the default values for your development environment. You will at minimum need to provide a valid ID and SECRET for at least one authentication method.
-See the following 'Setup an Oauth Test Application' section for information on how to set these up.
+See the following 'Setup an OAuth2 Test Application' section for information on how to set these up.
 
-You will also need to manually copy the ``.env.template`` file in ``modules/odr_frontend`` to a ``.env`` file in the same folder, and make matching updates.
+You will also need to make matching updates in the frontends .env in ``./modules/frontend/.env``
 
-Setup an Oauth Test Application
--------------------------------
+Setup an OAuth2 Test Application
+--------------------------------
 
-The OMI Data Pipeline only supports authentication through Discord and GitHub Oauth at this time.
+The OMI Data Pipeline only supports authentication through Discord and GitHub OAuth2 at this time.
 
 In order to develop locally, you will need to setup at least one method as a test application in order to authenticate locally.
 
