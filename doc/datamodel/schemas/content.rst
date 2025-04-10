@@ -1,11 +1,11 @@
-================
+==============
 Content Schema
-================
+==============
 
 The content schema manages digital assets and their metadata.
 
 Core Content
------------
+------------
 
 .. code-block:: typescript
 
@@ -32,7 +32,7 @@ Core Content
    }
 
 Content Metadata
---------------
+----------------
 
 .. code-block:: typescript
 
@@ -56,7 +56,7 @@ Content Metadata
    }
 
 Content Organization
-------------------
+--------------------
 
 .. code-block:: typescript
 
@@ -77,7 +77,7 @@ Content Organization
    }
 
 Content Status Tracking
----------------------
+-----------------------
 
 .. code-block:: typescript
 

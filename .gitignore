@@ -86,3 +86,6 @@ models_cache/
 # Local uploads
 uploads/
 .local
+
+# Documentation
+_build/

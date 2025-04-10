@@ -21,13 +21,15 @@ This workflow automates the following tasks:
 - **Deployment:**
   - The workflow is triggered manually via ``workflow_dispatch``.
   - It accepts an input parameter ``deployment_type`` with three options:
+
     - ``all``: Deploy all AWS stacks.
     - ``app-only``: Deploy only the ECS (Elastic Container Service) stack.
     - ``none``: Only build and push the Docker images.
+
   - Depending on the selected option, the workflow sets up Node.js, installs AWS CDK dependencies, and executes the appropriate CDK deployment commands.
 
 AWS CDK Project Structure
---------------------------
+-------------------------
 Our CDK project, located under the ``cdk/`` directory, uses Python to define our cloud infrastructure. Key files include:
 
 - **README.rst:**

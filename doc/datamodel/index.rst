@@ -1,6 +1,6 @@
-=================
+==========
 Data Model
-=================
+==========
 
 This section documents the database schema and data migration system used in the Open Data Repository.
 
@@ -23,7 +23,7 @@ The Open Data Repository uses a PostgreSQL database with the following key featu
 - Comprehensive content and annotation tracking
 
 Key Components
--------------
+--------------
 
 1. **Authentication System**
    - User management

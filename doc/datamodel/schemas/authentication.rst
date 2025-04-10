@@ -1,6 +1,6 @@
-======================
+=====================
 Authentication Schema
-======================
+=====================
 
 The authentication schema handles user accounts, sessions, and external provider authentication.
 
@@ -27,7 +27,7 @@ Users
 The users table is central to authentication and stores core user information.
 
 Sessions & Accounts
-------------------
+-------------------
 
 .. code-block:: typescript
 
@@ -56,7 +56,7 @@ Sessions & Accounts
 These tables manage authentication state and external provider connections.
 
 Verification
------------
+------------
 
 .. code-block:: typescript
 

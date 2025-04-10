@@ -1,11 +1,11 @@
-==================
+=================
 Annotation Schema
-==================
+=================
 
 The annotation schema manages content annotations and their embeddings.
 
 Annotation Sources
-----------------
+------------------
 
 .. code-block:: typescript
 
@@ -23,7 +23,7 @@ Annotation Sources
    }
 
 Core Annotations
---------------
+----------------
 
 .. code-block:: typescript
 
@@ -40,7 +40,7 @@ Core Annotations
    }
 
 Annotation Metadata
------------------
+-------------------
 
 .. code-block:: typescript
 
@@ -65,7 +65,7 @@ Annotation Metadata
    }
 
 Annotation Embeddings
--------------------
+---------------------
 
 .. code-block:: typescript
 
@@ -80,7 +80,7 @@ Annotation Embeddings
    }
 
 Source Linking
-------------
+--------------
 
 .. code-block:: typescript
 

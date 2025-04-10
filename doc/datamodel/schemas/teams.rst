@@ -1,6 +1,6 @@
-=============
+===========
 Team Schema
-=============
+===========
 
 The team schema manages team organization and membership.
 
@@ -17,7 +17,7 @@ Teams
    }
 
 Team Membership
--------------
+---------------
 
 .. code-block:: typescript
 

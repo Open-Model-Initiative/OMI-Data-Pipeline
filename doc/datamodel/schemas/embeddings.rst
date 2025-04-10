@@ -1,11 +1,11 @@
-==================
+================
 Embedding Schema
-==================
+================
 
 The embedding schema manages vector embeddings for content and annotations.
 
 Embedding Engines
----------------
+-----------------
 
 .. code-block:: typescript
 
@@ -21,7 +21,7 @@ Embedding Engines
    }
 
 Content Embeddings
-----------------
+------------------
 
 .. code-block:: typescript
 

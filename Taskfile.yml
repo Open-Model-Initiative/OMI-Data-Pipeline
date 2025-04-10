@@ -30,8 +30,28 @@ tasks:
       - cmd: ./scripts/setup.sh
         platforms: [linux, darwin]
       - cmd: docker network inspect omi-network >/dev/null 2>&1 || docker network create omi-network
+      - task: reload-env
       - cmd: task setup-venv
       - cmd: task frontend:install-dev
+
+  reload-env:
+    cmds:
+      - echo "Reloading environment variables"
+    vars:
+      ROOT_DIR:
+        sh: echo ${ROOT_DIR}
+      ENV_FILE:
+        sh: echo ${ROOT_DIR}/.env
+      DOTENV:
+        sh: |
+          if [ -f ${ROOT_DIR}/.env ]; then
+            set -o allexport
+            source ${ROOT_DIR}/.env
+            set +o allexport
+            echo "Sourced .env file"
+          else
+            echo "No .env file found"
+          fi
 
   setup-venv:
     desc: Setup the virtual environment
@@ -86,6 +106,11 @@ tasks:
     desc: Run smoke tests for the API
     cmds:
       - task api-test:health-check
+
+  playwright-tests:
+    desc: Run smoke tests using Playwright
+    cmds:
+      - task frontend:test-integration
 
   build-all:
     desc: Build all services

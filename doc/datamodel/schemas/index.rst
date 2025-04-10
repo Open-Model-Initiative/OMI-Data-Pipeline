@@ -1,6 +1,6 @@
-=================
+================
 Database Schemas
-=================
+================
 
 This section provides detailed documentation for each schema component in the Open Data Repository database.
 
@@ -15,32 +15,32 @@ This section provides detailed documentation for each schema component in the Op
    teams
 
 Schema Overview
-==============
+===============
 
 The database schema is organized into several logical components:
 
 Authentication Schema
--------------------
+---------------------
 Handles user accounts, sessions, and authentication providers. See :doc:`authentication` for details.
 
 Content Schema
-------------
+--------------
 Manages digital assets and their metadata. See :doc:`content` for details.
 
 Annotation Schema
---------------
+-----------------
 Controls content annotations and their metadata. See :doc:`annotations` for details.
 
 Embedding Schema
--------------
+----------------
 Manages vector embeddings for search and similarity. See :doc:`embeddings` for details.
 
 Team Schema
----------
+-----------
 Handles team organization and membership. See :doc:`teams` for details.
 
 Relationships
-============
+=============
 
 The schemas are interconnected through foreign key relationships:
 
