@@ -6,6 +6,7 @@ from aws_cdk import (
     aws_ecs_patterns as ecs_patterns,
     aws_iam as iam,
     aws_secretsmanager as secretsmanager,
+    aws_certificatemanager as acm,
     CfnOutput,
     Duration,
 )
@@ -75,6 +76,7 @@ class EcsStack(Stack):
         )
 
         default_environment = {
+            "ORIGIN": "https://app.openmodel.foundation",
             "ROOT_DIR": ".",
             "MODEL_CACHE_DIR": "/mnt/models",
             "S3_BUCKET": s3_stack.bucket.bucket_name,
@@ -225,6 +227,13 @@ class EcsStack(Stack):
             service_name="omi-backend",
         )
 
+        # Use an existing ACM certificate for the frontend domain
+        certificate = acm.Certificate.from_certificate_arn(
+            self,
+            "FrontendCertificate",
+            certificate_arn="arn:aws:acm:us-east-1:474668405283:certificate/bc2c1296-8bf1-4ba5-b810-9b6f0e2b0bf5"
+        )
+
         # Frontend Service Task Definition
         frontend_task_definition = ecs.FargateTaskDefinition(
             self,
@@ -270,6 +279,9 @@ class EcsStack(Stack):
             public_load_balancer=True,
             security_groups=[frontend_sg],
             service_name="omi-frontend",
+            certificate=certificate,
+            redirect_http=True,
+            protocol=ecs_patterns.ApplicationLoadBalancedServiceProtocol.HTTPS
         )
 
         frontend_task_definition.default_container.add_environment(
@@ -361,6 +373,6 @@ class EcsStack(Stack):
         CfnOutput(
             self,
             "FrontendServiceUrl",
-            value=f"http://{self.frontend_service.load_balancer.load_balancer_dns_name}",
+            value=f"https://{self.frontend_service.load_balancer.load_balancer_dns_name}",
             description="URL of the frontend service",
         )
