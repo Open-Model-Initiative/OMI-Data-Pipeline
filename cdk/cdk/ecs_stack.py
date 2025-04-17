@@ -7,6 +7,7 @@ from aws_cdk import (
     aws_iam as iam,
     aws_secretsmanager as secretsmanager,
     aws_certificatemanager as acm,
+    aws_elasticloadbalancingv2 as elbv2,
     CfnOutput,
     Duration,
 )
@@ -281,7 +282,7 @@ class EcsStack(Stack):
             service_name="omi-frontend",
             certificate=certificate,
             redirect_http=True,
-            protocol=ecs_patterns.ApplicationLoadBalancedServiceProtocol.HTTPS
+            protocol=elbv2.ApplicationProtocol.HTTPS,
         )
 
         frontend_task_definition.default_container.add_environment(
