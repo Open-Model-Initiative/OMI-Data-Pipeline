@@ -67,67 +67,23 @@ tasks:
         platforms: [linux, darwin]
       - cmd: "${ROOT_DIR}/venv/Scripts/activate"
         platforms: [windows]
-  ## Macro
-  start-all:
-    desc: Start all services
-    cmds:
-      - echo "Starting all services..."
-      - |
-        task start-containers
-        wait
-      - echo "All services started"
-  stop-all:
-    desc: Stop all services
-    cmds:
-      - echo "Stopping all services..."
-      - |
-        task stop-containers
-      - echo "All services stopped"
 
   test-all:
-    desc: Run all tests
+    desc: Run all tests against the running docker container setup
     cmds:
       - echo "Starting all tests ..."
-      - |
-        task core:test &
-        task core:test-db &
-        task api-test:test-all &
-        task monitoring:test &
-        wait
+      - task: core:test
+      - task: api-test:test-all
+      - task: monitoring:test
+      - task: frontend:test-unit
+      - task: frontend:test-integration
       - echo "All testing complete"
 
-  watch-all-logs:
-    desc: Watch all service logs
-    cmds:
-      - echo "Watching all logs..."
-      - docker compose logs -f
-
-  smoke_tests:
-    desc: Run smoke tests for the API
-    cmds:
-      - task api-test:health-check
-
-  playwright-tests:
-    desc: Run smoke tests using Playwright
-    cmds:
-      - task frontend:test-integration
-
-  build-all:
-    desc: Build all services
-    cmds:
-      - docker compose build
-  start-containers:
-    desc: Start all services
-    cmds:
-      - docker compose up -d
-  stop-containers:
-    desc: Stop all running containers
-    cmds:
-      - docker compose down
   dev:
     desc: Start development environment with odr-api in watch mode and databases headless
     cmds:
       - docker compose up --watch --build
+
   dev:migrate:
     desc: Start development environment with database migrations enabled
     cmds:

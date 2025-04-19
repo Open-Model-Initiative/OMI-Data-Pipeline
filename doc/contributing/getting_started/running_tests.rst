@@ -5,4 +5,4 @@ Before committing any changes, ensure you run all tests to be sure existing beha
 
 To run all tests, run ``task test-all``. Note this is not working at the moment and needs some work but some tests are run via the pipeline automatically.
 
-To run our playwright tests, run ``task playwright-tests`` which should all pass at this time.
+To run our playwright tests, run ``task frontend:test-integration`` which should all pass at this time.

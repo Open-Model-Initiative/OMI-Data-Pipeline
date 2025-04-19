@@ -7,18 +7,10 @@ tasks:
     cmds:
       - task --list
 
-  install:
-    desc: Install the package in editable mode
-    dir: modules/odr_monitoring
-    cmds:
-      - pip install -e .
-
   test:
     desc: Run tests for the monitoring module
-    deps: [install]
-    dir: modules/odr_monitoring
     cmds:
-      - python -m pytest tests
+      - docker compose exec odr-api python -m pytest modules/odr_monitoring/tests
 
   coverage:
     desc: Run tests with coverage report

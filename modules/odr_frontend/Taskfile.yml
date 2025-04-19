@@ -3,33 +3,22 @@
 version: 3
 
 tasks:
-  install:
-    desc: Install npm dependencies
-    dir: '{{.ROOT_DIR}}/modules/odr_frontend'
-    cmds:
-      - pnpm install
-  install-dev:
-    desc: Install development dependencies
-    dir: '{{.ROOT_DIR}}/modules/odr_frontend'
-    cmds:
-      - pnpm install --dev
-      - pnpm exec playwright install
   test:
     desc: Run unit and integration tests
     cmds:
-      - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend test
+      - task: test-unit
+      - task: test-integration
+
   test-unit:
-    desc: Run run unit-tests using vitest
+    desc: Run unit tests using vitest
     cmds:
-      - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend test:unit
+      - docker compose exec odr-frontend pnpm test:unit
+
   test-integration:
     desc: Run integration tests using playwright
     cmds:
       - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend run test:integration
-  dev:
-    desc: Run the frontend during development
-    cmds:
-      - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend run dev
+
   check:
     desc: Run svelte checks
     cmds:
@@ -38,10 +27,7 @@ tasks:
     desc: Run svelte-checks and --watch
     cmds:
       - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend run check:watch
-  build:
-    desc: Build the frontend for deployment
-    cmds:
-      - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend run build
+
   lint:
     desc: Run prettier checks and eslint
     cmds:

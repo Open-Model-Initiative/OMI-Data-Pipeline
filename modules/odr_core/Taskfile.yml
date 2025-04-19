@@ -15,19 +15,10 @@ tasks:
 
   test:
     desc: Run tests for the core module
-    deps: [install]
-    dir: modules/odr_core
     cmds:
-      - python -m pytest tests
+      - docker compose exec odr-api python -m pytest modules/odr_core/tests
 
   coverage:
     desc: Run tests with coverage report
-    deps: [install]
-    dir: modules/odr_core
     cmds:
-      - python -m pytest --cov=odr_core --cov-report=term-missing --cov-report=xml tests
-
-  test-db:
-    desc: Run tests for the database manager
-    cmds:
-      - echo "Database manager testing not implemented yet"
+      - docker compose exec odr-api python -m pytest --cov=odr_core --cov-report=term-missing --cov-report=xml tests modules/odr_core/tests
