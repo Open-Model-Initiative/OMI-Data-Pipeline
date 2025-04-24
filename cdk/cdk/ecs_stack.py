@@ -280,9 +280,7 @@ class EcsStack(Stack):
             public_load_balancer=True,
             security_groups=[frontend_sg],
             service_name="omi-frontend",
-            certificate=certificate,
-            redirect_http=True,
-            protocol=elbv2.ApplicationProtocol.HTTPS,
+            certificate=certificate
         )
 
         frontend_task_definition.default_container.add_environment(
