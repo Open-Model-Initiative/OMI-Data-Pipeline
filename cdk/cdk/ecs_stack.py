@@ -281,7 +281,6 @@ class EcsStack(Stack):
             security_groups=[frontend_sg],
             service_name="omi-frontend",
             certificate=certificate,
-            domain_name="app.openmodel.foundation",
             protocol=elbv2.ApplicationProtocol.HTTPS,
         )
 
