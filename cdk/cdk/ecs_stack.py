@@ -280,7 +280,9 @@ class EcsStack(Stack):
             public_load_balancer=True,
             security_groups=[frontend_sg],
             service_name="omi-frontend",
-            certificate=certificate
+            certificate=certificate,
+            domain_name="app.openmodel.foundation",
+            protocol=elbv2.ApplicationProtocol.HTTPS,
         )
 
         frontend_task_definition.default_container.add_environment(
