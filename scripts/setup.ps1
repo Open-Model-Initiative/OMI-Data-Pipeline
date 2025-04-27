@@ -13,10 +13,10 @@ if (Test-Path -Path ".env") {
 Copy-Item -Path ".env.template" -Destination ".env"
 
 # Check if the frontend .env file exists
-if (Test-Path -Path "./modules/frontend/.env") {
+if (Test-Path -Path "./modules/odr_frontend/.env") {
     $choice = Read-Host "The frontend .env file already exists. Do you want to replace it? (Y/N)"
     if ($choice -eq "Y" -or $choice -eq "y") {
-        Remove-Item -Path "./modules/frontend/.env"
+        Remove-Item -Path "./modules/odr_frontend/.env"
     } else {
         Write-Host "Keeping existing .env file. Exiting."
         exit
@@ -24,7 +24,7 @@ if (Test-Path -Path "./modules/frontend/.env") {
 }
 
 # Copy the frontend .env.template to .env
-Copy-Item -Path "./modules/frontend/.env.template" -Destination "./modules/frontend/.env"
+Copy-Item -Path "./modules/odr_frontend/.env.template" -Destination "./modules/odr_frontend/.env"
 
 # Ask user for root directory
 $rootDir = Read-Host "Please enter the root directory path"
