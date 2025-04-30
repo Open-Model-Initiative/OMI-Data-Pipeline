@@ -1,7 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
-version: "3"
+# TODO: This is all not working currently and will need dealt with separately.
+version: '3'
 
 tasks:
+  default:
+    desc: List all the tasks
+    cmds:
+      # - task --list
+      - echo 'This is all not working currently and will need dealt with separately.'
+
   test-integration:
     desc: Run integration tests
     dir: "{{.ROOT_DIR}}"

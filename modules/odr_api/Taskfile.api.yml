@@ -1,7 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
-version: 3
+version: '3'
 
 tasks:
+  default:
+    desc: List all the tasks
+    cmds:
+      - task --list
+
   test-all:
     desc: Run all API tests
     cmds:

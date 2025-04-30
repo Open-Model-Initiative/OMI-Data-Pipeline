@@ -1,13 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 version: '3'
 
-
 includes:
   api: ./modules/odr_api/Taskfile.api.yml
-  core: ./modules/odr_core/Taskfile.yml
-  frontend: ./modules/odr_frontend/Taskfile.yml
   api-test: ./modules/odr_api/tests/Taskfile.api.test.yml
-  monitoring: ./modules/odr_monitoring/Taskfile.yml
+  core: ./modules/odr_core/Taskfile.core.yml
+  frontend: ./modules/odr_frontend/Taskfile.frontend.yml
+  monitoring: ./modules/odr_monitoring/Taskfile.monitoring.yml
 
 dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
 vars:
@@ -60,6 +59,7 @@ tasks:
         platforms: [linux, darwin]
       - cmd: powershell -ExecutionPolicy ByPass -File ./scripts/setup_virt_env.ps1
         platforms: [windows]
+
   activate-venv:
     desc: Activate the virtual environment
     cmds:
@@ -67,6 +67,16 @@ tasks:
         platforms: [linux, darwin]
       - cmd: "${ROOT_DIR}/venv/Scripts/activate"
         platforms: [windows]
+
+  dev:
+    desc: Start development environment with odr-api in watch mode and databases headless
+    cmds:
+      - docker compose up --watch --build
+
+  dev:migrate:
+    desc: Start development environment with database migrations enabled
+    cmds:
+      - RUN_MIGRATIONS=true docker compose up --watch --build
 
   test-all:
     desc: Run all tests against the running docker container setup
@@ -78,13 +88,3 @@ tasks:
       - task: frontend:test-unit
       - task: frontend:test-integration
       - echo "All testing complete"
-
-  dev:
-    desc: Start development environment with odr-api in watch mode and databases headless
-    cmds:
-      - docker compose up --watch --build
-
-  dev:migrate:
-    desc: Start development environment with database migrations enabled
-    cmds:
-      - RUN_MIGRATIONS=true docker compose up --watch --build

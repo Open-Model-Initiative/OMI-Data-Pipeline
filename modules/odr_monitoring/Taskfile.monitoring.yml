@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-version: "3"
+version: '3'
 
 tasks:
   default:
@@ -14,10 +14,8 @@ tasks:
 
   coverage:
     desc: Run tests with coverage report
-    deps: [install]
-    dir: modules/odr_monitoring
     cmds:
-      - python -m pytest --cov=odr_monitoring --cov-report=term-missing --cov-report=xml tests
+      - docker compose exec odr-api python -m pytest --cov=odr_monitoring --cov-report=term-missing --cov-report=xml tests modules/odr_monitoring/tests
 
   lint:
     desc: Run linter on the monitoring module
@@ -35,7 +33,6 @@ tasks:
     desc: Run all checks (tests, lint, format)
     dir: modules/odr_monitoring
     cmds:
-      - task: install
       - task: test
       - task: lint
       - task: format

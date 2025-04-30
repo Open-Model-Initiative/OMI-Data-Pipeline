@@ -1,8 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
-# ODR Frontend Taskfile
-version: 3
+version: '3'
 
 tasks:
+  default:
+    desc: List all the tasks
+    cmds:
+      - task --list
+
   test:
     desc: Run unit and integration tests
     cmds:
@@ -16,23 +20,30 @@ tasks:
 
   test-integration:
     desc: Run integration tests using playwright
+    dir: modules/odr_frontend
     cmds:
-      - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend run test:integration
+      - pnpm run test:integration
 
   check:
     desc: Run svelte checks
+    dir: modules/odr_frontend
     cmds:
       - pnpm run check
+
   check-watch:
     desc: Run svelte-checks and --watch
+    dir: modules/odr_frontend
     cmds:
-      - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend run check:watch
+      - pnpm run check:watch
 
   lint:
     desc: Run prettier checks and eslint
+    dir: modules/odr_frontend
     cmds:
-      - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend run lint
+      - pnpm run lint
+
   format:
     desc: Run prettier with the --write flag
+    dir: modules/odr_frontend
     cmds:
-      - pnpm -C {{.ROOT_DIR}}/modules/odr_frontend run format
+      - pnpm run format
