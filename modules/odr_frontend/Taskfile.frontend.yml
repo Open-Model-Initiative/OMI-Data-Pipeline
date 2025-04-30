@@ -7,7 +7,14 @@ tasks:
     cmds:
       - task --list
 
-  test:
+  install-dev:
+    desc: Install development dependencies
+    dir: modules/odr_frontend
+    cmds:
+      - pnpm install --dev
+      - pnpm exec playwright install
+
+  test-all:
     desc: Run unit and integration tests
     cmds:
       - task: test-unit

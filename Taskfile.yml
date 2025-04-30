@@ -60,14 +60,6 @@ tasks:
       - cmd: powershell -ExecutionPolicy ByPass -File ./scripts/setup_virt_env.ps1
         platforms: [windows]
 
-  activate-venv:
-    desc: Activate the virtual environment
-    cmds:
-      - cmd: source ${ROOT_DIR}/venv/bin/activate
-        platforms: [linux, darwin]
-      - cmd: "${ROOT_DIR}/venv/Scripts/activate"
-        platforms: [windows]
-
   dev:
     desc: Start development environment with odr-api in watch mode and databases headless
     cmds:

@@ -21,13 +21,13 @@ tasks:
     desc: Run linter on the monitoring module
     dir: modules/odr_monitoring
     cmds:
-      - flake8 .
+      - python -m flake8 .
 
   format:
     desc: Format the code using black
     dir: modules/odr_monitoring
     cmds:
-      - black .
+      - python -m black .
 
   check:
     desc: Run all checks (tests, lint, format)
