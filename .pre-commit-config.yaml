@@ -21,3 +21,9 @@ repos:
         language: python
         types_or: [python, javascript, jsx, ts, tsx, shell, svelte, batch, html, xml, yaml]
         files: \.(py|js|ts|sh|svelte|bat|cmd|html|xml|yaml|yml)$
+    -   id: check-dco
+        name: Check DCO Sign-off
+        entry: python ./scripts/check_dco.py
+        language: python
+        stages: [commit-msg]
+        pass_filenames: true
