@@ -8,6 +8,7 @@ Getting Started
    contribution_guidelines
    project_setup
    running_the_local_environment
+   running_linting
    running_tests
    committing_changes
    tearing_down_the_environment

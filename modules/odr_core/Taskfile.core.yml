@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+version: '3'
+
+tasks:
+  default:
+    desc: List all the tasks
+    cmds:
+      - task --list
+
+  test:
+    desc: Run tests for the core module
+    cmds:
+      - docker compose exec odr-api python -m pytest modules/odr_core/tests
+
+  coverage:
+    desc: Run tests with coverage report
+    cmds:
+      - docker compose exec odr-api python -m pytest --cov=odr_core --cov-report=term-missing --cov-report=xml tests modules/odr_core/tests

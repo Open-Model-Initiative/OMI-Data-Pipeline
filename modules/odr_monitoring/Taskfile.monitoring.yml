@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-version: "3"
+version: '3'
 
 tasks:
   default:
@@ -7,43 +7,32 @@ tasks:
     cmds:
       - task --list
 
-  install:
-    desc: Install the package in editable mode
-    dir: modules/odr_monitoring
-    cmds:
-      - pip install -e .
-
   test:
     desc: Run tests for the monitoring module
-    deps: [install]
-    dir: modules/odr_monitoring
     cmds:
-      - python -m pytest tests
+      - docker compose exec odr-api python -m pytest modules/odr_monitoring/tests
 
   coverage:
     desc: Run tests with coverage report
-    deps: [install]
-    dir: modules/odr_monitoring
     cmds:
-      - python -m pytest --cov=odr_monitoring --cov-report=term-missing --cov-report=xml tests
+      - docker compose exec odr-api python -m pytest --cov=odr_monitoring --cov-report=term-missing --cov-report=xml tests modules/odr_monitoring/tests
 
   lint:
     desc: Run linter on the monitoring module
     dir: modules/odr_monitoring
     cmds:
-      - flake8 .
+      - python -m flake8 .
 
   format:
     desc: Format the code using black
     dir: modules/odr_monitoring
     cmds:
-      - black .
+      - python -m black .
 
   check:
     desc: Run all checks (tests, lint, format)
     dir: modules/odr_monitoring
     cmds:
-      - task: install
       - task: test
       - task: lint
       - task: format

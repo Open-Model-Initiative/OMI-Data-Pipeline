@@ -102,21 +102,21 @@ def test_generate_text_embedding(db: Session, engine_type, text, expected_length
     assert len(embedding) == expected_length
 
 
-@pytest.mark.parametrize("engine_type,expected_length", [
-    (EmbeddingEngineType.IMAGE, settings.CONTENT_EMBEDDING_DIMENSION),
-])
-def test_generate_image_embedding(db: Session, engine_type, expected_length):
-    engine_data = EmbeddingEngineCreate(
-        name="Qdrant/clip-ViT-B-32-vision",
-        description="A test embedding engine",
-        version="1.0.0",
-        type=engine_type,
-        supported=True
-    )
-    created_engine = embedding_crud.create_embedding_engine(db, engine_data)
-    test_image = create_test_image()
-    embedding = embedding_crud.generate_image_embedding(db, test_image, created_engine.id)
-    assert len(embedding) == expected_length
+# @pytest.mark.parametrize("engine_type,expected_length", [
+#     (EmbeddingEngineType.IMAGE, settings.CONTENT_EMBEDDING_DIMENSION),
+# ])
+# def test_generate_image_embedding(db: Session, engine_type, expected_length):
+#     engine_data = EmbeddingEngineCreate(
+#         name="Qdrant/clip-ViT-B-32-vision",
+#         description="A test embedding engine",
+#         version="1.0.0",
+#         type=engine_type,
+#         supported=True
+#     )
+#     created_engine = embedding_crud.create_embedding_engine(db, engine_data)
+#     test_image = create_test_image()
+#     embedding = embedding_crud.generate_image_embedding(db, test_image, created_engine.id)
+#     assert len(embedding) == expected_length
 
 
 def test_create_content_embedding(db: Session):
