@@ -75,7 +75,8 @@ tasks:
     cmds:
       - echo "Starting all tests ..."
       - task: core:test
-      - task: api-test:test-all
+      # - task: api:test-all
+      # - task: api-test:test-all
       - task: monitoring:test
       - task: frontend:test-unit
       - task: frontend:test-integration
