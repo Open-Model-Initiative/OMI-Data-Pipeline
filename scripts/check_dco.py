@@ -11,18 +11,20 @@ def check_dco():
     with open(commit_msg_file, 'r') as f:
         commit_msg = f.read()
 
-    # Check for DCO sign-off using a non-backtracking pattern
+    # Check for DCO sign-off using a ReDoS-safe pattern
     # Pattern breakdown:
     # ^ - start of line
     # Signed-off-by: - literal text
-    # [^<]+ - one or more non-< characters (name)
-    # <[^>]+@[^>]+\.[^>]+> - email in angle brackets
+    # [^<]{1,100} - 1 to 100 non-< characters (name, with reasonable length limit)
+    # <[^>@]{1,64}@ - local part of email (limited to 64 chars per RFC 5321)
+    # [^>\.]{1,255}\. - domain part before dot (limited to 255 chars per RFC 5321)
+    # [^>]{1,255}> - domain part after dot (limited to 255 chars per RFC 5321)
     # $ - end of line
-    dco_pattern = r'^Signed-off-by: [^<]+ <[^>]+@[^>]+\.[^>]+>$'
+    dco_pattern = r'^Signed-off-by:\s[^<]{1,100}<[^>@]{1,64}@[^>\.]{1,255}\.[^>]{1,255}>$'
 
     # Check each line for the DCO pattern
     for line in commit_msg.splitlines():
-        if re.match(dco_pattern, line.strip()):
+        if re.match(dco_pattern, line.strip(), re.ASCII):
             return
 
     print("Error: No DCO sign-off found in commit message.")
