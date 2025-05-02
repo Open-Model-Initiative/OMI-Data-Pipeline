@@ -64,7 +64,7 @@
 		"drizzle-orm": "^0.39.3",
 		"highlight.js": "11.10.0",
 		"pg": "^8.13.3",
-		"pnpm": "^9.15.5",
+		"pnpm": "^10.0.0",
 		"svelte-awesome-icons": "^1.2.1"
 	}
 }
