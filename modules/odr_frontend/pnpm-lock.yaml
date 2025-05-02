@@ -33,8 +33,8 @@ importers:
         specifier: ^8.13.3
         version: 8.13.3
       pnpm:
-        specifier: ^9.15.5
-        version: 9.15.5
+        specifier: ^10.0.0
+        version: 10.0.0
       svelte-awesome-icons:
         specifier: ^1.2.1
         version: 1.2.1(svelte@4.2.19)
@@ -2610,8 +2610,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  pnpm@9.15.5:
-    resolution: {integrity: sha512-hFGWAmqrHMPwmKBHS2TfurKv56G06R3YaJXY5Koyp6bQMEni0K13C75N4COnEi+2jBodbg0DPHB2CF+dXUgA1A==}
+  pnpm@10.0.0:
+    resolution: {integrity: sha512-uP71SUvT/ky9Ttq9B0XfLuW+PksLiwj6ZDqj5MZwLMwPANaPqKjJhYpzWgAySFpEmQ7SgQUmyHXkFvABsX3xKw==}
     engines: {node: '>=18.12'}
     hasBin: true
 
@@ -5749,7 +5749,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.2
 
-  pnpm@9.15.5: {}
+  pnpm@10.0.0: {}
 
   postcss-import@15.1.0(postcss@8.4.41):
     dependencies:
