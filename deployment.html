@@ -1,0 +1,574 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>CDK Stack Documentation &#8212; OMI Data Repository</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=2709fde1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'deployment';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Team Schema" href="datamodel/schemas/teams.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">OMI Data Repository</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="datamodel/index.html">
+    Data Model
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    CDK Stack Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="datamodel/index.html">
+    Data Model
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    CDK Stack Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">CDK Stack Documentation</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="cdk-stack-documentation">
+<h1>CDK Stack Documentation<a class="headerlink" href="#cdk-stack-documentation" title="Link to this heading">#</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>This document provides an introduction to our AWS Cloud Development Kit (CDK) stack.
+It explains the various elements that make up our cloud infrastructure, the GitHub Actions workflow
+used to deploy it, and the key AWS services that are configured.</p>
+</section>
+<section id="github-actions-workflow">
+<h2>GitHub Actions Workflow<a class="headerlink" href="#github-actions-workflow" title="Link to this heading">#</a></h2>
+<p>The repository includes a GitHub Actions workflow defined in <code class="docutils literal notranslate"><span class="pre">.github/workflows/build-and-deploy-aws.yml</span></code>.
+This workflow automates the following tasks:</p>
+<ul>
+<li><p><strong>Build and Push Docker Images:</strong>
+- Checks out the repository.
+- Configures AWS credentials by assuming a dedicated IAM role.
+- Builds Docker images for both the frontend and backend using their respective Dockerfiles.
+- Pushes these images to Amazon ECR (Elastic Container Registry).</p></li>
+<li><p><strong>Deployment:</strong>
+- The workflow is triggered manually via <code class="docutils literal notranslate"><span class="pre">workflow_dispatch</span></code>.
+- It accepts an input parameter <code class="docutils literal notranslate"><span class="pre">deployment_type</span></code> with three options:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">all</span></code>: Deploy all AWS stacks.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">app-only</span></code>: Deploy only the ECS (Elastic Container Service) stack.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">none</span></code>: Only build and push the Docker images.</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Depending on the selected option, the workflow sets up Node.js, installs AWS CDK dependencies, and executes the appropriate CDK deployment commands.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="aws-cdk-project-structure">
+<h2>AWS CDK Project Structure<a class="headerlink" href="#aws-cdk-project-structure" title="Link to this heading">#</a></h2>
+<p>Our CDK project, located under the <code class="docutils literal notranslate"><span class="pre">cdk/</span></code> directory, uses Python to define our cloud infrastructure. Key files include:</p>
+<ul class="simple">
+<li><p><strong>README.rst:</strong>
+Provides instructions on how to set up the virtual environment, install dependencies, and use the CDK CLI.</p></li>
+<li><p><strong>cdk.json:</strong>
+Instructs the CDK Toolkit on how to execute the application (e.g., by running <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">app.py</span></code>).</p></li>
+<li><p><strong>app.py:</strong>
+The main entry point for the CDK application. It instantiates several stacks (see below) that represent different parts of our infrastructure.</p></li>
+<li><p><strong>requirements.txt / requirements-dev.txt:</strong>
+These files list the Python dependencies necessary for the CDK project.</p></li>
+<li><p><strong>.gitignore:</strong>
+Specifies files and directories to be excluded from version control (e.g. virtual environments, temporary files).</p></li>
+</ul>
+</section>
+<section id="cdk-stacks">
+<h2>CDK Stacks<a class="headerlink" href="#cdk-stacks" title="Link to this heading">#</a></h2>
+<p>Our infrastructure is divided into multiple modular stacks. Each stack is responsible for provisioning a set of related AWS resources.</p>
+<section id="vpcstack">
+<h3>VpcStack<a class="headerlink" href="#vpcstack" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Purpose:</strong>
+Creates a Virtual Private Cloud (VPC), which is an isolated network environment in AWS.</p></li>
+<li><p><strong>Key Elements:</strong>
+- Custom IP address range.
+- Creation of public, private, and isolated subnets.
+- An interface endpoint for AWS Secrets Manager to securely access secrets without leaving the VPC.</p></li>
+</ul>
+</section>
+<section id="databasestack">
+<h3>DatabaseStack<a class="headerlink" href="#databasestack" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Purpose:</strong>
+Provisions a managed PostgreSQL database using Amazon RDS.</p></li>
+<li><p><strong>Key Elements:</strong>
+- Creates an RDS instance with PostgreSQL.
+- Configures a security group to control access to the database.
+- Sets up an AWS Secrets Manager secret to securely store database credentials.
+- Defines policies (e.g., backup retention and removal policy) suitable for testing environments.</p></li>
+</ul>
+</section>
+<section id="ecrstack">
+<h3>EcrStack<a class="headerlink" href="#ecrstack" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Purpose:</strong>
+Establishes container registries using Amazon ECR.</p></li>
+<li><p><strong>Key Elements:</strong>
+- Creates separate repositories for the frontend and backend Docker images.
+- Configures lifecycle rules to automatically remove old images (keeping only the latest 10).
+- Enables image scanning to help identify vulnerabilities.</p></li>
+</ul>
+</section>
+<section id="ecsstack">
+<h3>EcsStack<a class="headerlink" href="#ecsstack" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Purpose:</strong>
+Deploys the application containers using Amazon ECS with Fargate.</p></li>
+<li><p><strong>Key Elements:</strong>
+- Creates an ECS cluster within the VPC.
+- Defines Fargate task definitions for both backend and frontend services.
+- Configures Application Load Balancers to distribute incoming traffic.
+- Sets up security groups and assigns IAM policies so that the containers can access necessary AWS resources (such as S3 and Secrets Manager).
+- Injects environment variables and secrets into the container tasks.</p></li>
+</ul>
+</section>
+<section id="s3stack">
+<h3>S3Stack<a class="headerlink" href="#s3stack" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Purpose:</strong>
+Creates an S3 bucket for object storage.</p></li>
+<li><p><strong>Key Elements:</strong>
+- Configures versioning and encryption.
+- Applies lifecycle rules to transition older objects to a cost-effective storage class.
+- Blocks public access by default.</p></li>
+</ul>
+</section>
+<section id="wafstack">
+<h3>WafStack<a class="headerlink" href="#wafstack" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Purpose:</strong>
+Implements a Web Application Firewall (WAF) to protect the application.</p></li>
+<li><p><strong>Key Elements:</strong>
+- Creates a WAF WebACL (Access Control List) with rules for rate limiting, SQL injection protection, and mitigating common vulnerabilities.
+- Associates the WAF with the frontend Application Load Balancer to monitor and filter incoming traffic.</p></li>
+</ul>
+</section>
+</section>
+<section id="dockerfiles">
+<h2>Dockerfiles<a class="headerlink" href="#dockerfiles" title="Link to this heading">#</a></h2>
+<p>Dockerfiles define the process of building Docker images for our application components:</p>
+<ul class="simple">
+<li><p><strong>Frontend Dockerfile (``modules/odr_frontend/docker/Dockerfile.frontend.dev``):</strong>
+Specifies the instructions to build the frontend application image.</p></li>
+<li><p><strong>Backend Dockerfile (``modules/odr_api/docker/Dockerfile.api``):</strong>
+Specifies the instructions to build the backend API image.</p></li>
+</ul>
+<p>These Docker images are built in the GitHub Actions workflow and pushed to the ECR repositories, from where they are deployed by the ECS stack.</p>
+</section>
+<section id="overall-workflow">
+<h2>Overall Workflow<a class="headerlink" href="#overall-workflow" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Development:</strong>
+Code changes are made locally and pushed to the repository.</p></li>
+<li><p><strong>CI/CD Pipeline:</strong>
+The GitHub Actions workflow automatically:
+- Builds the Docker images.
+- Pushes the images to AWS ECR.
+- Deploys or updates the cloud infrastructure via AWS CDK (based on the selected deployment mode).</p></li>
+<li><p><strong>Production Deployment:</strong>
+The application runs on AWS using a combination of managed services (ECS for containers,
+RDS for databases, S3 for storage, etc.), with the infrastructure defined and maintained
+through code.</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="datamodel/schemas/teams.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Team Schema</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#github-actions-workflow">GitHub Actions Workflow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aws-cdk-project-structure">AWS CDK Project Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cdk-stacks">CDK Stacks</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vpcstack">VpcStack</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#databasestack">DatabaseStack</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ecrstack">EcrStack</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ecsstack">EcsStack</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#s3stack">S3Stack</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wafstack">WafStack</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dockerfiles">Dockerfiles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overall-workflow">Overall Workflow</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/deployment.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Open Model Intitiative Contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
