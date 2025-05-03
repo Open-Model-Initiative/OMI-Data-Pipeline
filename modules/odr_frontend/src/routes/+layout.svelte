@@ -4,17 +4,12 @@
 <script lang="ts">
 	import '../app.css';
 
-	// import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { AppBar, Modal, Toaster } from '@skeletonlabs/skeleton-svelte'
 	import { toaster } from '$lib/toaster-svelte';
 	import { page } from '$app/state';
 	import { signIn, signOut } from '@auth/sveltekit/client';
 	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
 	import DiscordIcon from '$lib/icons/DiscordIcon.svelte';
-
-	// storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
-
-	// initializeStores();
 </script>
 
 <Toaster {toaster}></Toaster>

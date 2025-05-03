@@ -2,9 +2,11 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
+	import { page } from '$app/state';
+
 	import UserRow from './UserRow.svelte';
-	export let data;
-	const users = data.users;
+
+	const users = $derived(page.data.users ?? []);
 </script>
 
 <h1>USERS</h1>
