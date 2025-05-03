@@ -75,7 +75,7 @@
 			<td>
 				<button
 					class="image-preview-button"
-					on:click={() => openPreview(image.previewUrl)}
+					onclick={() => openPreview(image.previewUrl)}
 				>
 					<img
 						src={image.previewUrl}
@@ -92,21 +92,21 @@
 				<div class="button-group">
 				  <button
 					class="btn btn-sm preset-filled-success-500"
-					on:click={() => handleAction('accept', image.filename)}
+					onclick={() => handleAction('accept', image.filename)}
 					title="Accept the image"
 				  >
 					Accept
 				  </button>
 				  <button
 					class="btn btn-sm preset-filled-error-500"
-					on:click={() => handleAction('reject', image.filename)}
+					onclick={() => handleAction('reject', image.filename)}
 					title="Reject the image"
 				  >
 					Reject
 				  </button>
 				  <button
 					class="btn btn-sm preset-filled-warning-500 flag-button"
-					on:click={() => handleAction('flag', image.filename)}
+					onclick={() => handleAction('flag', image.filename)}
 					title="Flag suspected illegal content"
 				  >
 					<TriangleExclamationSolid size="23" />
@@ -121,7 +121,7 @@
 
 {#if showPreview}
 	<div class="modal-overlay">
-		<button class="close-button" on:click={closePreview}>×</button>
+		<button class="close-button" onclick={closePreview}>×</button>
 		<div class="modal-content">
 		<img src={previewImageUrl} alt="Large Preview" />
 		</div>
@@ -131,13 +131,13 @@
 
   <div class="pagination">
 	{#if currentPage > 1}
-	  <button class='btn btn-sm variant-outline-primary' on:click={() => goToPage(currentPage - 1)}>Previous</button>
+	  <button class='btn btn-sm variant-outline-primary' onclick={() => goToPage(currentPage - 1)}>Previous</button>
 	{/if}
 
 	<span>Page {currentPage} of {totalPages}</span>
 
 	{#if currentPage < totalPages}
-	  <button class='btn btn-sm variant-outline-primary' on:click={() => goToPage(currentPage + 1)}>Next</button>
+	  <button class='btn btn-sm variant-outline-primary' onclick={() => goToPage(currentPage + 1)}>Next</button>
 	{/if}
   </div>
 </div>

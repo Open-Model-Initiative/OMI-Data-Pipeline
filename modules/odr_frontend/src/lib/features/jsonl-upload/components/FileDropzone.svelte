@@ -11,7 +11,7 @@
 
   // Bind to the files in the store
   let {
-    files: FileList = $bindable()
+    files = $bindable<FileList>()
   } = $props();
 
   $effect(() => {
@@ -23,12 +23,15 @@
 </script>
 
 <FileUpload
-  classes="container h-3/4 mx-auto"
   name="files"
-  bind:files
   accept={ACCEPTED_FILE_TYPES.JSONL}
-  multiple
+  maxFiles={10}
+  subtext="Currently only accepting .JSONL files from graphcap"
+  onFileChange={console.log}
+  onFileReject={console.error}
+  classes="container h-3/4 mx-auto"
 >
+
   <figure class="flex items-center justify-center">
     <UploadIcon />
   </figure>
@@ -37,5 +40,5 @@
     ? `${selectedFiles.length} file(s) selected`
     : 'Upload Annotation Files'}
 
-  Currently only accepting .JSONL files from graphcap
+
 </FileUpload>

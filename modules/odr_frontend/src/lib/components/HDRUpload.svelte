@@ -6,15 +6,17 @@
   import { FileUpload } from '@skeletonlabs/skeleton-svelte';
 
   const acceptedFileTypes: Array<string> = ['.dng'];
-  let uploadStatus: string = '';
-  let uploadProgress: number = 0;
-  let {
-    files: FileList = $bindable(),
-    user: any
-  } = $props();
-  let errorArray: string[] = [];
+  let uploadStatus: string = $state('');
+  let uploadProgress: number = $state(0);
 
-  let selectedFiles = $derived(files ? Array.from(files) : []);
+  let {
+    files = $bindable<FileList>(),
+    user = <any>(undefined)
+  } = $props();
+
+  let errorArray: string[] = $state([]);
+
+  let selectedFiles: Array<File> = $derived(files ? Array.from(files) : []);
 
   async function uploadFiles() {
       const totalFiles = selectedFiles.length;
@@ -81,21 +83,24 @@
 
 <div class="card preset-filled-surface-500">
   <FileUpload
-    classes="container h-3/4 mx-auto"
     name="files"
-    bind:files
     accept={acceptedFileTypes.join(',')}
-    multiple
+    maxFiles={10}
+    subtext="Currently only accepting RAW images in .DNG"
+    onFileChange={console.log}
+    onFileReject={console.error}
+    classes="container h-3/4 mx-auto"
   >
+
     <figure class="flex items-center justify-center">
         <UploadIcon />
     </figure>
-    {selectedFiles.length > 0 ? `${selectedFiles.length} file(s) selected` : 'Upload Images'}
-    Currently only accepting RAW images in .DNG
+    <!-- {selectedFiles.length > 0 ? `${selectedFiles.length} file(s) selected` : 'Upload Images'}
+    Currently only accepting RAW images in .DNG -->
   </FileUpload>
 
   <div class="grid place-items-center mt-4">
-    <button on:click={uploadFiles} class="mt-4 btn btn-sm variant-outline-primary" disabled={selectedFiles.length === 0}>
+    <button onclick={uploadFiles} class="mt-4 btn btn-sm variant-outline-primary" disabled={selectedFiles.length === 0}>
       Upload {selectedFiles.length} file(s)
     </button>
   </div>

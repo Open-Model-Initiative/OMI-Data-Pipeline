@@ -8,7 +8,7 @@
 
 <button
     class="github-signin-button"
-    on:click={() => signIn('github')}
+    onclick={() => signIn('github')}
 >
     <GitHubIcon />
     <span>Sign in with GitHub</span>

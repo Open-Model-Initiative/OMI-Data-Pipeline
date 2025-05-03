@@ -20,7 +20,7 @@
 
 <div class="grid place-items-center mt-4">
   <button
-    on:click={handleUpload}
+    onclick={handleUpload}
     class="mt-4 btn btn-sm variant-outline-primary"
     disabled={selectedFiles.length === 0 || isUploading}
   >
