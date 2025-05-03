@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: Apache-2.0
-import { get } from 'http';
 import pg from 'pg';
 
 export interface IDBUser {

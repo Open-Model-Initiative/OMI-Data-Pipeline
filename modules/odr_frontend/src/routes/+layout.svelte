@@ -5,7 +5,8 @@
 	import '../app.postcss';
 
 	// import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-	import { AppBar, ToastProvider } from '@skeletonlabs/skeleton-svelte'
+	import { AppBar, Modal, Toaster } from '@skeletonlabs/skeleton-svelte'
+	import { toaster } from '$lib/toaster-svelte';
 	import { page } from '$app/state';
 	import { signIn, signOut } from '@auth/sveltekit/client';
 	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
@@ -16,49 +17,45 @@
 	// initializeStores();
 </script>
 
-<ToastProvider />
-<!-- <Modal /> -->
+<Toaster {toaster}></Toaster>
+<Modal />
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
 	<!-- Header -->
 	<!-- App Bar -->
 	<AppBar>
-		<svelte:fragment slot="lead">
-			<a href="/">
-				<img src="/omi_logo_banner.webp" alt="Open Model Initiative" class="h-8 w-auto">
-			</a>
-		</svelte:fragment>
-		<svelte:fragment slot="trail">
-			{#if !page.data.session?.user}
-				<span>Sign In:</span>
-				<button
-					class="btn btn-sm hover:text-blue-600"
-					on:click={() => {
-						signIn('github');
-					}}><GitHubIcon color="currentColor" />
-				</button>
-				<button
-					class="btn btn-sm hover:text-blue-600"
-					on:click={() => {
-						signIn('discord');
-					}}><DiscordIcon color="currentColor" />
-				</button>
-			{:else}
-				{#if page.data.session.user.is_superuser}
-					<!-- TODO: Extend user type -->
-					<a href="/admin"
-						class="btn btn-sm variant-outline-primary"
-						data-sveltekit-reload>Admin
-					</a>
-				{/if}
-				<button
-					class="btn btn-sm hover:bg-blue-600"
-					on:click={() => {
-						signOut();
-					}}>Sign Out
-				</button>
+		<a href="/">
+			<img src="/omi_logo_banner.webp" alt="Open Model Initiative" class="h-8 w-auto">
+		</a>
+		{#if !page.data.session?.user}
+			<span>Sign In:</span>
+			<button
+				class="btn btn-sm hover:text-blue-600"
+				on:click={() => {
+					signIn('github');
+				}}><GitHubIcon color="currentColor" />
+			</button>
+			<button
+				class="btn btn-sm hover:text-blue-600"
+				on:click={() => {
+					signIn('discord');
+				}}><DiscordIcon color="currentColor" />
+			</button>
+		{:else}
+			{#if page.data.session.user.is_superuser}
+				<!-- TODO: Extend user type -->
+				<a href="/admin"
+					class="btn btn-sm variant-outline-primary"
+					data-sveltekit-reload>Admin
+				</a>
 			{/if}
-		</svelte:fragment>
+			<button
+				class="btn btn-sm hover:bg-blue-600"
+				on:click={() => {
+					signOut();
+				}}>Sign Out
+			</button>
+		{/if}
 	</AppBar>
 	<slot />
 	<footer class="sticky bottom-0 flex flex-row justify-center bg-surface-800">
@@ -67,6 +64,7 @@
 			href="https://discord.gg/swYY5RVHft"
 			target="_blank"
 			rel="noreferrer"
+			aria-label="OMI Discord"
 		>
 			<svg
 				class="w-6 h-6 text-gray-800 dark:text-white group-hover:text-blue-600"
@@ -87,6 +85,7 @@
 			href="https://github.com/Open-Model-Initiative/OMI-Data-Pipeline"
 			target="_blank"
 			rel="noreferrer"
+			aria-label="OMI Github"
 		>
 			<svg
 				class="w-6 h-6 text-gray-800 dark:text-white group-hover:text-blue-600"

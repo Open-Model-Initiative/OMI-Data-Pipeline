@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import * as dotenv from 'dotenv';
-import { env } from '$env/dynamic/private';
+
 dotenv.config();
 
 function getEnvironmentVariable(environmentVariable: string): string {
@@ -26,4 +26,3 @@ export const POSTGRES_PORT = getEnvironmentVariable('POSTGRES_PORT');
 export const POSTGRES_USER = getEnvironmentVariable('POSTGRES_USER');
 export const POSTGRES_PASSWORD = getEnvironmentVariable('POSTGRES_PASSWORD');
 export const POSTGRES_DB = getEnvironmentVariable('POSTGRES_DB');
-

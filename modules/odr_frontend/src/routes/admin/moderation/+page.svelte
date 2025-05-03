@@ -6,7 +6,8 @@
 	import { goto } from '$app/navigation';
 	import { TriangleExclamationSolid } from 'svelte-awesome-icons';
 	import type { PageData } from './$types';
-	import { MakeToastMessage } from '$lib/toastHelper';
+	// import { MakeToastMessage } from '$lib/toastHelper';
+	import { toaster } from '$lib/toaster-svelte'
 
 	// const toastStore = getToastStore();
 
@@ -30,9 +31,15 @@
 		if (response.ok) {
 			// Remove the image from the list
 			images = images.filter(img => img.filename !== filename);
+			toaster.success({
+				title: `Image ${action}ed successfully.`
+			});
 			// toastStore.trigger(MakeToastMessage(`Image ${action}ed successfully.`, 'success'));
 		} else {
 			console.error(`Failed to ${action} image`);
+			toaster.error({
+				title: `Failed to ${action} image`
+			});
 			// toastStore.trigger(MakeToastMessage(`Failed to ${action} image`, 'error'));
 		}
 	}

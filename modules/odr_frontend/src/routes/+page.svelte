@@ -24,13 +24,6 @@
 			<JSONLUpload {user} />
 		<!-- {/if} -->
 
-		<!-- <div class="card variant-filled-surface">
-			<header class="card-header text-lg font-bold text-primary-200">
-				<a href="/queue">Queue</a>
-			</header>
-			<section class="p-4">List content pending approval here...</section>
-		</div> -->
-
 		{#if featureToggles['Show Datasets']}
 			<div class="card preset-filled-surface-500">
 				<header class="card-header text-lg font-bold text-primary-200">Datasets</header>
