@@ -4,7 +4,7 @@
 <script lang="ts">
 	import '../app.postcss';
 
-	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
+	// import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { AppBar, ToastProvider } from '@skeletonlabs/skeleton-svelte'
 	import { page } from '$app/state';
 	import { signIn, signOut } from '@auth/sveltekit/client';
