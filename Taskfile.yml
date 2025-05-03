@@ -6,7 +6,6 @@ includes:
   api-test: ./modules/odr_api/tests/Taskfile.api.test.yml
   core: ./modules/odr_core/Taskfile.core.yml
   frontend: ./modules/odr_frontend/Taskfile.frontend.yml
-  monitoring: ./modules/odr_monitoring/Taskfile.monitoring.yml
 
 dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
 vars:
@@ -77,7 +76,6 @@ tasks:
       - task: core:test
       # - task: api:test-all
       # - task: api-test:test-all
-      - task: monitoring:test
       - task: frontend:test-unit
       - task: frontend:test-integration
       - echo "All testing complete"
