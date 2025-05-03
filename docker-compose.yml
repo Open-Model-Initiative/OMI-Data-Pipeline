@@ -40,9 +40,6 @@ services:
         - action: sync
           path: ./modules/odr_api
           target: /app/modules/odr_api
-        - action: sync
-          path: ./modules/odr_monitoring
-          target: /app/modules/odr_monitoring
 
   odr-frontend:
     build:

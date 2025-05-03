@@ -8,18 +8,16 @@ Note some tests are not working at the moment and have been commented out so tes
 
 To run our various tests individually, you can use the individual tasks:
 
-- ``task: monitoring:test``
 - ``task: frontend:test-unit``
 - ``task: frontend:test-integration``
 
 Calculating Code Coverage
 =========================
 
-Unit test code coverage is currently available for the core and monitoring modules.
+Unit test code coverage is currently available for the core module.
 
 You can run them with the tasks:
 
 - ``task core:coverage``
-- ``task monitoring:coverage``
 
 Note that these are currently throwing errors but you can still get an idea of covered lines.
