@@ -2,12 +2,11 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-    import type { PageData } from './$types';
+    // import type { PageData } from './$types';
 	import FeatureToggle from '$lib/admin/FeatureToggle.svelte';
+	import { page } from '$app/state'
 
-    export let data: PageData;
-
-    $: ({ featureToggles } = data);
+    let featureToggles = $derived(page.data.featureToggles);
 </script>
 
 <h1>Feature Toggles</h1>
@@ -24,7 +23,12 @@
 			{#each featureToggles as feature}
 				<tr>
 					<td>{feature.feature_name}</td>
-					<td><FeatureToggle {feature} bind:checked={feature.is_enabled} /></td>
+					<td>
+						<FeatureToggle
+							{feature}
+							checked={feature.is_enabled}
+						/>
+					</td>
 					<td>{feature.default_state ? 'Enabled' : 'Disabled'}</td>
 				</tr>
 			{/each}
