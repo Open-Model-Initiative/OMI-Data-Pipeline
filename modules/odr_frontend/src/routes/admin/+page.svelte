@@ -2,7 +2,7 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 </script>
 
 <svelte:head>
@@ -10,5 +10,5 @@
 </svelte:head>
 
 <code>
-	{JSON.stringify($page, null, 2)}
+	{JSON.stringify(page, null, 2)}
 </code>

@@ -2,12 +2,12 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import HDRUpload from '$lib/components/HDRUpload.svelte';
   	import JSONLUpload from '$lib/components/JSONLUpload.svelte';
 
-	$: featureToggles = $page.data.featureToggles;
-	$: user = $page.data.session?.user;
+	$: featureToggles = page.data.featureToggles;
+	$: user = page.data.session?.user;
 </script>
 
 <svelte:head>
