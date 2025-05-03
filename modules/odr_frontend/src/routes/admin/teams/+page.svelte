@@ -3,7 +3,7 @@
 -->
 <script lang="ts">
 	import { Autocomplete, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
-	import type { ModalSettings, AutocompleteOption, ToastSettings } from '@skeletonlabs/skeleton';
+	import type { ModalSettings, AutocompleteOption } from '@skeletonlabs/skeleton';
 	import UserRow from '../users/UserRow.svelte';
 	import { MakeToastMessage } from '$lib/toastHelper';
 

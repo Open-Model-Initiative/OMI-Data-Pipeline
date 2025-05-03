@@ -2,9 +2,6 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { toggleSuperUser } from '$lib/admin/utils';
-	import type { IDBUser } from '$lib/server/pg';
 	import UserRow from './UserRow.svelte';
 	export let data;
 	const users = data.users;

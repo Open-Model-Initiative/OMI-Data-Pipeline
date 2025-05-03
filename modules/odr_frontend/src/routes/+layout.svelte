@@ -6,7 +6,7 @@
 
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { AppBar, storePopup, initializeStores, Modal, Toast } from '@skeletonlabs/skeleton';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { signIn, signOut } from '@auth/sveltekit/client';
 	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
 	import DiscordIcon from '$lib/icons/DiscordIcon.svelte';
@@ -29,7 +29,7 @@
 			</a>
 		</svelte:fragment>
 		<svelte:fragment slot="trail">
-			{#if !$page.data.session?.user}
+			{#if !page.data.session?.user}
 				<span>Sign In:</span>
 				<button
 					class="btn btn-sm hover:text-blue-600"
@@ -44,7 +44,7 @@
 					}}><DiscordIcon color="currentColor" />
 				</button>
 			{:else}
-				{#if $page.data.session.user.is_superuser}
+				{#if page.data.session.user.is_superuser}
 					<!-- TODO: Extend user type -->
 					<a href="/admin"
 						class="btn btn-sm variant-outline-primary"
