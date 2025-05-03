@@ -4,10 +4,7 @@
 
 @import "../omi-theme.css";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@tailwind variants;
+@import "tailwindcss";
 
 html,
 body {
