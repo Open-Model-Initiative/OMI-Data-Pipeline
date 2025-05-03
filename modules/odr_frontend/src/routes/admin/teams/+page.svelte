@@ -2,9 +2,10 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	import type { ModalSettings, AutocompleteOption } from '@skeletonlabs/skeleton-svelte';
+	// import type { ModalSettings, AutocompleteOption } from '@skeletonlabs/skeleton-svelte';
 	import UserRow from '../users/UserRow.svelte';
 	// import { MakeToastMessage } from '$lib/toastHelper';
+	import { toaster } from '$lib/toaster-svelte'
 
 	// const toastStore = getToastStore();
 	// const modalStore = getModalStore();
@@ -18,7 +19,7 @@
 	let newTeamName = '';
 	let userSearch = '';
 	let selected_team: null | number = null;
-	let userAddList: AutocompleteOption<string>[] = [];
+	// let userAddList: AutocompleteOption<string>[] = [];
 
 	//Only allow adding users that are not already in the team
 	$: userAddList = [
@@ -27,18 +28,18 @@
 			.map((u) => ({ value: u.id.toString(), label: u.name ?? `${u.email} (No Name)` }))
 	].flat();
 
-	let modal: ModalSettings = {
-		type: 'confirm',
-		title: 'Please Confirm',
-		body: `Are you sure you wish to create a team named ${newTeamName}?`,
-		// TRUE if confirm pressed, FALSE if cancel pressed
-		response: async (r: boolean) => {
-			if (r) {
-				await createTeam();
-			}
-		}
-	};
-	$: modal.body = `Are you sure you wish to create a team named ${newTeamName}?`;
+	// let modal: ModalSettings = {
+	// 	type: 'confirm',
+	// 	title: 'Please Confirm',
+	// 	body: `Are you sure you wish to create a team named ${newTeamName}?`,
+	// 	// TRUE if confirm pressed, FALSE if cancel pressed
+	// 	response: async (r: boolean) => {
+	// 		if (r) {
+	// 			await createTeam();
+	// 		}
+	// 	}
+	// };
+	// $: modal.body = `Are you sure you wish to create a team named ${newTeamName}?`;
 	$: validName = newTeamName.length > 0;
 
 	async function createTeam() {
@@ -60,8 +61,14 @@
 			};
 			teams = [...teams, newTeam];
 			newTeamName = '';
+			toaster.success({
+				title: 'Team Created'
+			});
 			// toastStore.trigger(MakeToastMessage('Team Created', 'success'));
 		} else {
+			toaster.error({
+				title: res.error
+			});
 			// toastStore.trigger(MakeToastMessage(res.error, 'error'));
 			console.error(res.error);
 		}
@@ -78,6 +85,9 @@
 		if (res.success) {
 			teams_users = [...teams_users, res.team_user];
 			userSearch = '';
+			toaster.success({
+				title: `User ${users.find((u) => u.id === userId)?.name} added to team ${teams.find((t) => t.id === teamId)?.name}`
+			});
 			// toastStore.trigger(
 			// 	MakeToastMessage(
 			// 		`User ${users.find((u) => u.id === userId)?.name} added to team ${teams.find((t) => t.id === teamId)?.name}`,
@@ -85,28 +95,31 @@
 			// 	)
 			// );
 		} else {
+			toaster.error({
+				title: res.error
+			});
 			// toastStore.trigger(MakeToastMessage(res.error, 'error'));
 			console.error(res.error);
 		}
 	}
 
-	function onUserSelection(event: CustomEvent<AutocompleteOption<string>>): void {
-		userSearch = event.detail.label;
-		console.log(event.detail);
-		// let add_user_to_team_modal: ModalSettings = {
-		// 	type: 'confirm',
-		// 	title: 'Please Confirm',
-		// 	body: `Are you sure you wish to add <span class="text-primary-400">${event.detail.label}</span> to the <span class="text-secondary-400">${teams.find((t) => t.id === selected_team)?.name}</span> team?`,
-		// 	// TRUE if confirm pressed, FALSE if cancel pressed
-		// 	response: async (r: boolean) => {
-		// 		if (r) {
-		// 			console.log(`Adding user ${event.detail.label} to team ${selected_team}`);
-		// 			await addUserToTeam(parseInt(event.detail.value), selected_team as number);
-		// 		}
-		// 	}
-		// };
-		// modalStore.trigger(add_user_to_team_modal);
-	}
+	// function onUserSelection(event: CustomEvent<AutocompleteOption<string>>): void {
+	// 	userSearch = event.detail.label;
+	// 	console.log(event.detail);
+	// 	// let add_user_to_team_modal: ModalSettings = {
+	// 	// 	type: 'confirm',
+	// 	// 	title: 'Please Confirm',
+	// 	// 	body: `Are you sure you wish to add <span class="text-primary-400">${event.detail.label}</span> to the <span class="text-secondary-400">${teams.find((t) => t.id === selected_team)?.name}</span> team?`,
+	// 	// 	// TRUE if confirm pressed, FALSE if cancel pressed
+	// 	// 	response: async (r: boolean) => {
+	// 	// 		if (r) {
+	// 	// 			console.log(`Adding user ${event.detail.label} to team ${selected_team}`);
+	// 	// 			await addUserToTeam(parseInt(event.detail.value), selected_team as number);
+	// 	// 		}
+	// 	// 	}
+	// 	// };
+	// 	// modalStore.trigger(add_user_to_team_modal);
+	// }
 
 	async function removeUserFromTeam(e: CustomEvent) {
 		const user_id = e.detail;
@@ -121,6 +134,9 @@
 		const res = await req.json();
 		if (res.success) {
 			teams_users = teams_users.filter((tu) => tu.user_id !== user_id);
+			toaster.success({
+				title: `User ${users.find((u) => u.id === user_id)?.name} removed from team ${teams.find((t) => t.id === selected_team)?.name}`
+			});
 			// toastStore.trigger(
 			// 	MakeToastMessage(
 			// 		`User ${users.find((u) => u.id === user_id)?.name} removed from team ${teams.find((t) => t.id === selected_team)?.name}`,
@@ -128,6 +144,9 @@
 			// 	)
 			// );
 		} else {
+			toaster.error({
+				title: res.error
+			});
 			// toastStore.trigger(MakeToastMessage(res.error, 'error'));
 			console.error(res.error);
 		}
@@ -143,10 +162,16 @@
 		});
 		const res = await req.json();
 		if (res.success) {
+			toaster.success({
+				title: `Team ${teams.find((t) => t.id === team_id)?.name} deleted`
+			});
 			// toastStore.trigger(MakeToastMessage(`Team ${teams.find((t) => t.id === team_id)?.name} deleted`, 'success')); //If done after the filter, the team will be undefined
 			teams = teams.filter((t) => t.id !== team_id);
 			teams_users = teams_users.filter((tu) => tu.team_id !== team_id);
 		} else {
+			toaster.error({
+				title: res.error
+			});
 			// toastStore.trigger(MakeToastMessage(res.error, 'error'));
 			console.error(res.error);
 		}
