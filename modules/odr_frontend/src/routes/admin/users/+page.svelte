@@ -9,7 +9,7 @@
 
 <h1>USERS</h1>
 <div class="table-container">
-	<table class="table table-hover">
+	<table class="table">
 		<thead>
 			<tr>
 				<th>id</th>

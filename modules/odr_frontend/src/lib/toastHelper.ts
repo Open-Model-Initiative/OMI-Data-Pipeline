@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-import type { ToastSettings } from "@skeletonlabs/skeleton";
+import type { ToastSettings } from "@skeletonlabs/skeleton-svelte";
 
 export function MakeToastMessage(
     message: string,

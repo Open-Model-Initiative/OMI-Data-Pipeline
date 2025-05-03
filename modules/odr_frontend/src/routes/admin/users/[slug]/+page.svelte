@@ -18,7 +18,7 @@
 
 <h2 class="h2">Teams</h2>
 <div class="table-container">
-	<table class="table table-hover">
+	<table class="table">
 		<thead>
 			<tr>
 				<th>Team name</th>

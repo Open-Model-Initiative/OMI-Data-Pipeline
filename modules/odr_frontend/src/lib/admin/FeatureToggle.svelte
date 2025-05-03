@@ -3,7 +3,7 @@
 -->
 <script lang="ts">
     import type { IFeatureToggle } from '$lib/server/pg';
-    import { SlideToggle } from '@skeletonlabs/skeleton';
+    import { Switch } from '@skeletonlabs/skeleton-svelte';
     import { toggleFeature } from './utils';
 
     export let checked: boolean;
@@ -14,4 +14,4 @@
     }
 </script>
 
-<SlideToggle name="slide" bind:checked on:change={_toggleFeature} />
+<Switch name="slide" bind:checked on:change={_toggleFeature} />

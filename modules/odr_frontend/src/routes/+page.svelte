@@ -32,7 +32,7 @@
 		</div> -->
 
 		{#if featureToggles['Show Datasets']}
-			<div class="card variant-filled-surface">
+			<div class="card preset-filled-surface-500">
 				<header class="card-header text-lg font-bold text-primary-200">Datasets</header>
 				<section class="p-4">List datasets here</section>
 				<footer class="card-footer text-sm text-secondary-300">

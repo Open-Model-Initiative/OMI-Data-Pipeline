@@ -2,13 +2,12 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	import { Autocomplete, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
-	import type { ModalSettings, AutocompleteOption } from '@skeletonlabs/skeleton';
+	import type { ModalSettings, AutocompleteOption } from '@skeletonlabs/skeleton-svelte';
 	import UserRow from '../users/UserRow.svelte';
-	import { MakeToastMessage } from '$lib/toastHelper';
+	// import { MakeToastMessage } from '$lib/toastHelper';
 
-	const toastStore = getToastStore();
-	const modalStore = getModalStore();
+	// const toastStore = getToastStore();
+	// const modalStore = getModalStore();
 
 	export let data;
 
@@ -61,9 +60,9 @@
 			};
 			teams = [...teams, newTeam];
 			newTeamName = '';
-			toastStore.trigger(MakeToastMessage('Team Created', 'success'));
+			// toastStore.trigger(MakeToastMessage('Team Created', 'success'));
 		} else {
-			toastStore.trigger(MakeToastMessage(res.error, 'error'));
+			// toastStore.trigger(MakeToastMessage(res.error, 'error'));
 			console.error(res.error);
 		}
 	}
@@ -79,14 +78,14 @@
 		if (res.success) {
 			teams_users = [...teams_users, res.team_user];
 			userSearch = '';
-			toastStore.trigger(
-				MakeToastMessage(
-					`User ${users.find((u) => u.id === userId)?.name} added to team ${teams.find((t) => t.id === teamId)?.name}`,
-					'success'
-				)
-			);
+			// toastStore.trigger(
+			// 	MakeToastMessage(
+			// 		`User ${users.find((u) => u.id === userId)?.name} added to team ${teams.find((t) => t.id === teamId)?.name}`,
+			// 		'success'
+			// 	)
+			// );
 		} else {
-			toastStore.trigger(MakeToastMessage(res.error, 'error'));
+			// toastStore.trigger(MakeToastMessage(res.error, 'error'));
 			console.error(res.error);
 		}
 	}
@@ -94,19 +93,19 @@
 	function onUserSelection(event: CustomEvent<AutocompleteOption<string>>): void {
 		userSearch = event.detail.label;
 		console.log(event.detail);
-		let add_user_to_team_modal: ModalSettings = {
-			type: 'confirm',
-			title: 'Please Confirm',
-			body: `Are you sure you wish to add <span class="text-primary-400">${event.detail.label}</span> to the <span class="text-secondary-400">${teams.find((t) => t.id === selected_team)?.name}</span> team?`,
-			// TRUE if confirm pressed, FALSE if cancel pressed
-			response: async (r: boolean) => {
-				if (r) {
-					console.log(`Adding user ${event.detail.label} to team ${selected_team}`);
-					await addUserToTeam(parseInt(event.detail.value), selected_team as number);
-				}
-			}
-		};
-		modalStore.trigger(add_user_to_team_modal);
+		// let add_user_to_team_modal: ModalSettings = {
+		// 	type: 'confirm',
+		// 	title: 'Please Confirm',
+		// 	body: `Are you sure you wish to add <span class="text-primary-400">${event.detail.label}</span> to the <span class="text-secondary-400">${teams.find((t) => t.id === selected_team)?.name}</span> team?`,
+		// 	// TRUE if confirm pressed, FALSE if cancel pressed
+		// 	response: async (r: boolean) => {
+		// 		if (r) {
+		// 			console.log(`Adding user ${event.detail.label} to team ${selected_team}`);
+		// 			await addUserToTeam(parseInt(event.detail.value), selected_team as number);
+		// 		}
+		// 	}
+		// };
+		// modalStore.trigger(add_user_to_team_modal);
 	}
 
 	async function removeUserFromTeam(e: CustomEvent) {
@@ -122,14 +121,14 @@
 		const res = await req.json();
 		if (res.success) {
 			teams_users = teams_users.filter((tu) => tu.user_id !== user_id);
-			toastStore.trigger(
-				MakeToastMessage(
-					`User ${users.find((u) => u.id === user_id)?.name} removed from team ${teams.find((t) => t.id === selected_team)?.name}`,
-					'success'
-				)
-			);
+			// toastStore.trigger(
+			// 	MakeToastMessage(
+			// 		`User ${users.find((u) => u.id === user_id)?.name} removed from team ${teams.find((t) => t.id === selected_team)?.name}`,
+			// 		'success'
+			// 	)
+			// );
 		} else {
-			toastStore.trigger(MakeToastMessage(res.error, 'error'));
+			// toastStore.trigger(MakeToastMessage(res.error, 'error'));
 			console.error(res.error);
 		}
 	}
@@ -144,11 +143,11 @@
 		});
 		const res = await req.json();
 		if (res.success) {
-			toastStore.trigger(MakeToastMessage(`Team ${teams.find((t) => t.id === team_id)?.name} deleted`, 'success')); //If done after the filter, the team will be undefined
+			// toastStore.trigger(MakeToastMessage(`Team ${teams.find((t) => t.id === team_id)?.name} deleted`, 'success')); //If done after the filter, the team will be undefined
 			teams = teams.filter((t) => t.id !== team_id);
 			teams_users = teams_users.filter((tu) => tu.team_id !== team_id);
 		} else {
-			toastStore.trigger(MakeToastMessage(res.error, 'error'));
+			// toastStore.trigger(MakeToastMessage(res.error, 'error'));
 			console.error(res.error);
 		}
 	}
@@ -160,18 +159,19 @@
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim">+</div>
 			<input type="search" placeholder="Create a new Team..." bind:value={newTeamName} />
+			<!-- class:preset-tonal border border-surface-500={!validName} -->
+			<!-- class:variant-ghost={!validName} -->
 			<button
-				class="variant-filled-secondary"
-				class:variant-ghost={!validName}
+				class="preset-filled-secondary-500"
 				on:click={() => {
-					modalStore.trigger(modal);
+					// modalStore.trigger(modal);
 				}}
 				disabled={!validName}>Create Team</button
 			>
 		</div>
 
 		<div class="table-container">
-			<table class="table table-hover">
+			<table class="table">
 				<thead>
 					<tr>
 						<th>id</th>
@@ -197,7 +197,7 @@
 							<td>{teams_users.filter((u) => u.team_id === team.id).length}</td>
 							<td>
 								<button
-									class="btn variant-outline-error hover:variant-filled-error"
+									class="btn variant-outline-error hover:preset-filled-error-500"
 									on:click={(e) => {
 										e.stopPropagation();
 										deleteTeam(team.id);
@@ -224,16 +224,16 @@
 		{:else}
 			<div class="input-group input-group-divider">
 				<input class="input" type="search" bind:value={userSearch} placeholder="Search..." />
-				<Autocomplete
+				<!-- <Autocomplete
 					options={userAddList}
 					bind:input={userSearch}
 					on:selection={onUserSelection}
-				/>
-				<button class="variant-filled-secondary">Add User</button>
+				/> -->
+				<button class="preset-filled-secondary-500">Add User</button>
 			</div>
 
 			<div class="table-container">
-				<table class="table table-hover">
+				<table class="table">
 					<thead>
 						<tr>
 							<th>id</th>

@@ -5,19 +5,19 @@
 	import '../app.postcss';
 
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-	import { AppBar, storePopup, initializeStores, Modal, Toast } from '@skeletonlabs/skeleton';
+	import { AppBar, ToastProvider } from '@skeletonlabs/skeleton-svelte'
 	import { page } from '$app/state';
 	import { signIn, signOut } from '@auth/sveltekit/client';
 	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
 	import DiscordIcon from '$lib/icons/DiscordIcon.svelte';
 
-	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+	// storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
-	initializeStores();
+	// initializeStores();
 </script>
 
-<Toast />
-<Modal />
+<ToastProvider />
+<!-- <Modal /> -->
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
 	<!-- Header -->

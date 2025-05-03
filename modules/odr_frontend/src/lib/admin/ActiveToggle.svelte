@@ -3,7 +3,7 @@
 -->
 <script lang="ts">
 	import type { IDBUser } from '$lib/server/pg';
-	import { SlideToggle } from '@skeletonlabs/skeleton';
+	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { toggleActive } from './utils';
 
 	export let checked: boolean = false;
@@ -14,4 +14,4 @@
 	}
 </script>
 
-<SlideToggle name="slide" bind:checked on:change={_toggleActive} />
+<Switch name="slide" bind:checked on:change={_toggleActive} />
