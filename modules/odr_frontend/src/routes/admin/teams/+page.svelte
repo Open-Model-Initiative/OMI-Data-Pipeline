@@ -188,7 +188,7 @@
 			<!-- class:variant-ghost={!validName} -->
 			<button
 				class="preset-filled-secondary-500"
-				on:click={() => {
+				onclick={() => {
 					// modalStore.trigger(modal);
 				}}
 				disabled={!validName}>Create Team</button
@@ -210,7 +210,7 @@
 				<tbody>
 					{#each teams as team, i}
 						<tr
-							on:click={() => {
+							onclick={() => {
 								selected_team = team.id;
 							}}
 							class="cursor-pointer"
@@ -223,7 +223,7 @@
 							<td>
 								<button
 									class="btn variant-outline-error hover:preset-filled-error-500"
-									on:click={(e) => {
+									onclick={(e) => {
 										e.stopPropagation();
 										deleteTeam(team.id);
 									}}

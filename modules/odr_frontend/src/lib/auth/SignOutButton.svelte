@@ -6,7 +6,7 @@
 </script>
 
 <div class="wrapper-form w-full">
-    <button on:click={() => signOut()}
+    <button onclick={() => signOut()}
     >
         Sign Out
     </button>

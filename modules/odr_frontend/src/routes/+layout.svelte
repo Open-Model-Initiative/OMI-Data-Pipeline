@@ -2,7 +2,7 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	import '../app.postcss';
+	// import '../app.postcss';
 
 	// import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { AppBar, Modal, Toaster } from '@skeletonlabs/skeleton-svelte'
@@ -31,13 +31,13 @@
 			<span>Sign In:</span>
 			<button
 				class="btn btn-sm hover:text-blue-600"
-				on:click={() => {
+				onclick={() => {
 					signIn('github');
 				}}><GitHubIcon color="currentColor" />
 			</button>
 			<button
 				class="btn btn-sm hover:text-blue-600"
-				on:click={() => {
+				onclick={() => {
 					signIn('discord');
 				}}><DiscordIcon color="currentColor" />
 			</button>
@@ -51,7 +51,7 @@
 			{/if}
 			<button
 				class="btn btn-sm hover:bg-blue-600"
-				on:click={() => {
+				onclick={() => {
 					signOut();
 				}}>Sign Out
 			</button>
