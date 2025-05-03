@@ -19,38 +19,44 @@
 	<!-- Header -->
 	<!-- App Bar -->
 	<AppBar>
-		<a href="/">
-			<img src="/omi_logo_banner.webp" alt="Open Model Initiative" class="h-8 w-auto">
-		</a>
-		{#if !page.data.session?.user}
-			<span>Sign In:</span>
-			<button
-				class="btn btn-sm hover:text-blue-600"
-				onclick={() => {
-					signIn('github');
-				}}><GitHubIcon color="currentColor" />
-			</button>
-			<button
-				class="btn btn-sm hover:text-blue-600"
-				onclick={() => {
-					signIn('discord');
-				}}><DiscordIcon color="currentColor" />
-			</button>
-		{:else}
-			{#if page.data.session.user.is_superuser}
-				<!-- TODO: Extend user type -->
-				<a href="/admin"
-					class="btn btn-sm variant-outline-primary"
-					data-sveltekit-reload>Admin
-				</a>
+		{#snippet lead()}
+			<a href="/">
+				<img src="/omi_logo_banner.webp" alt="Open Model Initiative" class="h-8 w-auto">
+			</a>
+		{/snippet}
+		{#snippet trail()}
+			{#if !page.data.session?.user}
+				<div class="leading-[3]">
+					Sign In:
+				</div>
+				<button
+					class="btn btn-sm hover:text-blue-600"
+					onclick={() => {
+						signIn('github');
+					}}><GitHubIcon color="currentColor" />
+				</button>
+				<button
+					class="btn btn-sm hover:text-blue-600"
+					onclick={() => {
+						signIn('discord');
+					}}><DiscordIcon color="currentColor" />
+				</button>
+			{:else}
+				{#if page.data.session.user.is_superuser}
+					<!-- TODO: Extend user type -->
+					<a href="/admin"
+						class="btn btn-sm preset-outlined-surface-500 hover:bg-blue-600"
+						data-sveltekit-reload>Admin
+					</a>
+				{/if}
+				<button
+					class="btn btn-sm preset-filled-surface-500 hover:bg-blue-600"
+					onclick={() => {
+						signOut();
+					}}>Sign Out
+				</button>
 			{/if}
-			<button
-				class="btn btn-sm hover:bg-blue-600"
-				onclick={() => {
-					signOut();
-				}}>Sign Out
-			</button>
-		{/if}
+		{/snippet}
 	</AppBar>
 	<slot />
 	<footer class="sticky bottom-0 flex flex-row justify-center bg-surface-800">
