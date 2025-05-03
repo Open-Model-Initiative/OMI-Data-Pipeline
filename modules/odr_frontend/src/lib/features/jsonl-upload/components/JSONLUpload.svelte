@@ -12,7 +12,7 @@
   export let user: User;
 </script>
 
-<div class="card variant-filled-surface">
+<div class="card preset-filled-surface-500">
   <FileDropzone />
   <UploadButton {user} />
   <UploadStatus />

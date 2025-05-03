@@ -24,7 +24,7 @@
 	<td><ActiveToggle {user} bind:checked={user.is_active} /></td>
 	<td>{user.email}</td>
 	{#if withRemove}
-		<td><button class="btn variant-outline-error hover:variant-filled-error" on:click={removeUser}>Remove</button></td>
+		<td><button class="btn variant-outline-error hover:preset-filled-error-500" on:click={removeUser}>Remove</button></td>
 	{/if}
 </tr>
 

@@ -4,7 +4,7 @@
   Handles file selection and displays selected files
 -->
 <script lang="ts">
-  import { FileDropzone } from '@skeletonlabs/skeleton';
+  import { FileUpload } from '@skeletonlabs/skeleton-svelte';
   import UploadIcon from '$lib/icons/UploadIcon.svelte';
   import { ACCEPTED_FILE_TYPES } from '../constants';
   import { uploadStore } from '../stores/uploadStore';
@@ -19,7 +19,7 @@
   $: selectedFiles = $uploadStore.selectedFiles;
 </script>
 
-<FileDropzone
+<FileUpload
   class="container h-3/4 mx-auto"
   name="files"
   bind:files
@@ -41,4 +41,4 @@
   <svelte:fragment slot="meta">
     Currently only accepting .JSONL files from graphcap
   </svelte:fragment>
-</FileDropzone>
+</FileUpload>

@@ -3,7 +3,7 @@
 -->
 <script lang="ts">
     import UploadIcon from '$lib/icons/UploadIcon.svelte';
-    import { FileDropzone } from '@skeletonlabs/skeleton';
+    import { FileUpload } from '@skeletonlabs/skeleton-svelte';
 
     export let user: any;
 
@@ -78,8 +78,8 @@
 	}
 </script>
 
-<div class="card variant-filled-surface">
-    <FileDropzone
+<div class="card preset-filled-surface-500">
+    <FileUpload
         class="container h-3/4 mx-auto"
         name="files"
         bind:files
@@ -95,7 +95,7 @@
             {selectedFiles.length > 0 ? `${selectedFiles.length} file(s) selected` : 'Upload Images'}
         </svelte:fragment>
         <svelte:fragment slot="meta">Currently only accepting RAW images in .DNG</svelte:fragment>
-    </FileDropzone>
+    </FileUpload>
     <div class="grid place-items-center mt-4">
         <button on:click={uploadFiles} class="mt-4 btn btn-sm variant-outline-primary" disabled={selectedFiles.length === 0}>
             Upload {selectedFiles.length} file(s)

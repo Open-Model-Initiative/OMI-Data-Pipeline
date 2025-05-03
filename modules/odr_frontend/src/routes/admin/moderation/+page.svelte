@@ -2,14 +2,13 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	import { getToastStore } from '@skeletonlabs/skeleton';
 	import './moderation.css';
 	import { goto } from '$app/navigation';
 	import { TriangleExclamationSolid } from 'svelte-awesome-icons';
 	import type { PageData } from './$types';
 	import { MakeToastMessage } from '$lib/toastHelper';
 
-	const toastStore = getToastStore();
+	// const toastStore = getToastStore();
 
 	export let data: PageData;
 
@@ -31,10 +30,10 @@
 		if (response.ok) {
 			// Remove the image from the list
 			images = images.filter(img => img.filename !== filename);
-			toastStore.trigger(MakeToastMessage(`Image ${action}ed successfully.`, 'success'));
+			// toastStore.trigger(MakeToastMessage(`Image ${action}ed successfully.`, 'success'));
 		} else {
 			console.error(`Failed to ${action} image`);
-			toastStore.trigger(MakeToastMessage(`Failed to ${action} image`, 'error'));
+			// toastStore.trigger(MakeToastMessage(`Failed to ${action} image`, 'error'));
 		}
 	}
 
@@ -54,7 +53,7 @@
 <div class="moderation-page">
   <h1>HDR Image Moderation</h1>
   <div class="table-container">
-	<table class="table table-hover">
+	<table class="table">
 	  <thead>
 		<tr>
 		  <th>Image</th>
@@ -85,21 +84,21 @@
 			<td>
 				<div class="button-group">
 				  <button
-					class="btn btn-sm variant-filled-success"
+					class="btn btn-sm preset-filled-success-500"
 					on:click={() => handleAction('accept', image.filename)}
 					title="Accept the image"
 				  >
 					Accept
 				  </button>
 				  <button
-					class="btn btn-sm variant-filled-error"
+					class="btn btn-sm preset-filled-error-500"
 					on:click={() => handleAction('reject', image.filename)}
 					title="Reject the image"
 				  >
 					Reject
 				  </button>
 				  <button
-					class="btn btn-sm variant-filled-warning flag-button"
+					class="btn btn-sm preset-filled-warning-500 flag-button"
 					on:click={() => handleAction('flag', image.filename)}
 					title="Flag suspected illegal content"
 				  >
