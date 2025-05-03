@@ -2,7 +2,8 @@
 
 @import "@skeletonlabs/skeleton/optional/presets";
 
-/* Add your theme import for your theme: "omi-custom-theme" here */
+@import "../omi-theme.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
