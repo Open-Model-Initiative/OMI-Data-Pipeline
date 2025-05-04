@@ -228,8 +228,8 @@
 				</tbody>
 				<tfoot>
 					<tr>
-						<th colspan="6"># Teams</th>
-						<td>{teams.length}</td>
+						<th># Teams</th>
+						<td colspan="5">{teams.length}</td>
 					</tr>
 				</tfoot>
 			</table>
@@ -285,8 +285,8 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<th colspan="6"># Users</th>
-							<td>{teams_users.filter((u) => u.team_id === selected_team).length}</td>
+							<th># Users</th>
+							<td colspan="5">{teams_users.filter((u) => u.team_id === selected_team).length}</td>
 						</tr>
 					</tfoot>
 				</table>
