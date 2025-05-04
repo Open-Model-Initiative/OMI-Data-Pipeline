@@ -28,7 +28,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<th colspan="3"># Users</th>
+				<th colspan="4"># Users</th>
 				<td>{users.length}</td>
 			</tr>
 		</tfoot>
