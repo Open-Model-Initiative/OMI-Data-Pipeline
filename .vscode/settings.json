@@ -20,5 +20,6 @@
     "sonarlint.connectedMode.project": {
         "connectionId": "open-model-initiative",
         "projectKey": "Open-Model-Initiative_OMI-Data-Pipeline"
-    }
+    },
+    "editor.tabSize": 2
 }
