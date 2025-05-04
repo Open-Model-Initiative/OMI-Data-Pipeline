@@ -32,8 +32,8 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<th colspan="4"># Users</th>
-				<td>{users.length}</td>
+				<th># Users</th>
+				<td colspan="4">{users.length}</td>
 			</tr>
 		</tfoot>
 	</table>
