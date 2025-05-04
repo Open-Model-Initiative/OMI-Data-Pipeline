@@ -5,15 +5,11 @@
 	import SuperUserToggle from '$lib/admin/SuperUserToggle.svelte';
 	import ActiveToggle from '$lib/admin/ActiveToggle.svelte';
 	import type { IDBUser } from '$lib/server/pg';
-	import { createEventDispatcher } from 'svelte';
 
-	export let user: IDBUser;
-	export let withRemove: boolean = false;
-
-	const dispatch = createEventDispatcher();
+	let { withRemove = false, user, remove }: { withRemove: boolean, user: IDBUser, remove: Function } = $props()
 
 	function removeUser() {
-		dispatch('remove', user.id);
+		remove(user.id)
 	}
 </script>
 

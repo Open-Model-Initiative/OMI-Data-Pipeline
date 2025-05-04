@@ -13,7 +13,7 @@
 </script>
 
 <Toaster {toaster}></Toaster>
-<Modal />
+<!-- <Modal /> -->
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
 	<!-- Header -->
