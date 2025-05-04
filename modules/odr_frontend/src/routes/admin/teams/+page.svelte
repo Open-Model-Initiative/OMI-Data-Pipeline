@@ -241,7 +241,7 @@
 							onclick={() => {
 								selected_team = team.id;
 							}}
-							class="cursor-pointer hover:bg-blue-600"
+							class="cursor-pointer hover:bg-primary-600"
 						>
 							<td>{team.id}</td>
 							<td>{team.name}</td>

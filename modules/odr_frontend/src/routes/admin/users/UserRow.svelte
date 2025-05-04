@@ -17,7 +17,7 @@
 	}
 </script>
 
-<tr class="cursor-pointer hover:bg-blue-600">
+<tr class="cursor-pointer hover:bg-primary-600">
 	<td>
 		<a href="/admin/users/{user.id}">{user.id}</a>
 	</td>

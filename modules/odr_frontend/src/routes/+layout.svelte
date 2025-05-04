@@ -45,12 +45,12 @@
 				{#if page.data.session.user.is_superuser}
 					<!-- TODO: Extend user type -->
 					<a href="/admin"
-						class="btn btn-sm preset-outlined-surface-500 hover:bg-blue-600"
+						class="btn btn-sm preset-outlined-surface-500 hover:bg-primary-600"
 						data-sveltekit-reload>Admin
 					</a>
 				{/if}
 				<button
-					class="btn btn-sm preset-filled-surface-500 hover:bg-blue-600"
+					class="btn btn-sm preset-filled-surface-500 hover:bg-primary-600"
 					onclick={() => {
 						signOut();
 					}}>Sign Out
@@ -68,7 +68,7 @@
 			aria-label="OMI Discord"
 		>
 			<svg
-				class="w-6 h-6 text-gray-800 dark:text-white group-hover:text-blue-600"
+				class="w-6 h-6 text-gray-800 dark:text-white group-hover:text-primary-500"
 				aria-hidden="true"
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
@@ -89,7 +89,7 @@
 			aria-label="OMI Github"
 		>
 			<svg
-				class="w-6 h-6 text-gray-800 dark:text-white group-hover:text-blue-600"
+				class="w-6 h-6 text-gray-800 dark:text-white group-hover:text-primary-500"
 				aria-hidden="true"
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
