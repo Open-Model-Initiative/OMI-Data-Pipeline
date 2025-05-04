@@ -13,7 +13,7 @@
 
 <div class="flex flex-col overflow-y-auto">
 	<main class="container mx-auto p-4">
-		<div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-8 rounded-lg">
+		<div class="bg-primary-100 border-l-4 border-primary-500 text-primary-900 p-4 mb-8 rounded-lg">
 			<p>
 				The following Developer Certificate of Origin agreement covers all contributions to Open
 				Model Initiative Datasets. All OMI datasets will fall under the CDLA 2.0 license. See <a
@@ -76,8 +76,8 @@ By making a contribution to this project, I certify that:
 			</div>
 			<button
 				type="submit"
-				class="bg-blue-500 text-white px-4 py-2 rounded transition-colors duration-200 ease-in-out
-                    disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-600"
+				class="bg-primary-600 text-white px-4 py-2 rounded transition-colors duration-200 ease-in-out
+                    disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-950"
 				disabled={!acceptedDCO}
 			>
 				Accept DCO
