@@ -2,10 +2,25 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
+  // Imports (framework)
+  import { page } from '$app/state';
 	import { Navigation } from '@skeletonlabs/skeleton-svelte';
+  import { type Snippet } from 'svelte';
+
+  // Props
+  let { children }: { children: Snippet } = $props();
 
 	// State
-	let value = $state('users');
+	let value = $state(getCurrentNavFromURL(page.url.pathname));
+
+   // Functions
+	function getCurrentNavFromURL(path: string): string {
+		if (path.includes('users')) return 'users';
+    if (path.includes('teams')) return 'teams';
+		if (path.includes('feature-toggles')) return 'featureToggles';
+		if (path.includes('moderation')) return 'imageModeration';
+		return 'admin';
+	}
 </script>
 
 <div class="card border-surface-100-900 grid w-full grid-cols-[auto_1fr] border-[1px]">
@@ -36,6 +51,6 @@
   </Navigation.Rail>
   <!-- Content -->
   <main class="w-full p-8">
-		<slot />
+		{@render children()}
 	</main>
 </div>

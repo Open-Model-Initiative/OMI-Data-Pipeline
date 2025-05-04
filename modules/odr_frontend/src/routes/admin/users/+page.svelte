@@ -7,6 +7,10 @@
 	import UserRow from './UserRow.svelte';
 
 	const users = $derived(page.data.users ?? []);
+
+	function removeUser(id: string) {
+		console.log(`Would have removed ${id}`)
+	}
 </script>
 
 <h1>USERS</h1>
@@ -23,7 +27,7 @@
 		</thead>
 		<tbody>
 			{#each users as user}
-				<UserRow {user} />
+				<UserRow {user} remove={removeUser} withRemove={false} />
 			{/each}
 		</tbody>
 		<tfoot>

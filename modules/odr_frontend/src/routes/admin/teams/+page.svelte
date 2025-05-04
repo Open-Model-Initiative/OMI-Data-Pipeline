@@ -39,18 +39,6 @@
 
 	let selectedUser: string[] = $state(['']);
 
-	// let modal: ModalSettings = {
-	// 	type: 'confirm',
-	// 	title: 'Please Confirm',
-	// 	body: `Are you sure you wish to create a team named ${newTeamName}?`,
-	// 	// TRUE if confirm pressed, FALSE if cancel pressed
-	// 	response: async (r: boolean) => {
-	// 		if (r) {
-	// 			await createTeam();
-	// 		}
-	// 	}
-	// };
-	// $: modal.body = `Are you sure you wish to create a team named ${newTeamName}?`;
 	let validName = $derived(newTeamName.length > 0);
 
 	async function createTeam() {
@@ -180,47 +168,24 @@
 	}
 </script>
 
-
-<Modal
-  open={openState}
-  onOpenChange={(e) => (openState = e.open)}
-  triggerBase="btn preset-tonal"
-  contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
-  backdropClasses="backdrop-blur-sm"
->
-  {#snippet trigger()}Open Modal{/snippet}
-  {#snippet content()}
-    <header class="flex justify-between">
-      <h2 class="h2">Please Confirm</h2>
-    </header>
-    <article>
-      <p class="opacity-60">
-        Are you sure you wish to create a team named ${newTeamName}?
-      </p>
-    </article>
-    <footer class="flex justify-end gap-4">
-      <button type="button" class="btn preset-tonal" onclick={modalClose}>Cancel</button>
-      <button type="button" class="btn preset-filled" onclick={() => createTeam()}>Confirm</button>
-    </footer>
-  {/snippet}
-</Modal>
-
 <div class="flex flex-row gap-8">
 	<div class="flex flex-col w-1/2">
 		<h2 class="h2">Teams</h2>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-			<div class="input-group-shim">+</div>
-			<input type="search" placeholder="Create a new Team..." bind:value={newTeamName} />
+			<div class="pt-2 shrink-0 text-base text-gray-500 select-none sm:text-sm/6">+</div>
+			<input class="border pl-2 focus-visible:outline-none focus-visible:border-primary-800" type="search" placeholder="Create a new Team..." bind:value={newTeamName} />
 			<!-- class:preset-tonal border border-surface-500={!validName} -->
 			<!-- class:variant-ghost={!validName} -->
 			<button
-				class="preset-filled-secondary-500"
-				onclick={() => {
-					// modalStore.trigger(modal);
-					openState = true
+				class="p-2 rounded-md preset-filled-primary-500"
+				onclick={async () => {
+					// TODO: Fix confirmation modal
+					// openState = true
+					await createTeam()
 				}}
-				disabled={!validName}>Create Team</button
-			>
+				disabled={!validName}>
+				Create Team
+			</button>
 		</div>
 
 		<div class="table-container">
@@ -275,28 +240,27 @@
 		{#if !selected_team}
 			<p>Select a team to view users</p>
 		{:else}
-			<div class="input-group input-group-divider">
-				<input class="input" type="search" bind:value={userSearch} placeholder="Search..." />
+			<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+				<div class="pt-2 shrink-0 text-base text-gray-500 select-none sm:text-sm/6">+</div>
 
 				<Combobox
 					data={userAddList}
 					value={selectedUser}
 					onValueChange={
 						(e) => (
-							selectedUser = e.value
+							selectedUser = e.value,
+							console.log(e.value)
 						)
 					}
 					label="Select User"
-					placeholder="Select..."
+					placeholder="Search..."
 					>
 				</Combobox>
 
-				<!-- <Autocomplete
-					options={userAddList}
-					bind:input={userSearch}
-					on:selection={onUserSelection}
-				/> -->
-				<button class="preset-filled-secondary-500">Add User</button>
+				<button
+					class="p-2 rounded-md preset-filled-primary-500">
+					Add User
+				</button>
 			</div>
 
 			<div class="table-container">
@@ -330,3 +294,49 @@
 		{/if}
 	</div>
 </div>
+
+<!-- Create team modal -->
+<Modal
+  open={openState}
+  onOpenChange={(e) => (openState = e.open)}
+  triggerBase="btn preset-tonal"
+  contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+  backdropClasses="backdrop-blur-sm"
+>
+  {#snippet content()}
+    <header class="flex justify-between">
+      <h2 class="h2">Please Confirm</h2>
+    </header>
+    <article>
+      <p class="opacity-60">
+        Are you sure you wish to create a team named ${newTeamName}?
+      </p>
+    </article>
+    <footer class="flex justify-end gap-4">
+      <button type="button" class="btn preset-tonal" onclick={modalClose}>Cancel</button>
+      <button type="button" class="btn preset-filled" onclick={async () => await createTeam()}>Confirm</button>
+    </footer>
+  {/snippet}
+</Modal>
+
+<!-- Add user to team modal -->
+<Modal
+  open={selectedUser[0].length > 0}
+  triggerBase="btn preset-tonal"
+  contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+  backdropClasses="backdrop-blur-sm"
+>
+  {#snippet content()}
+    <header class="flex justify-between">
+      <h2 class="h2">Please Confirm</h2>
+    </header>
+    <article>
+		Are you sure you wish to add <span class="text-primary-500">{selectedUser}</span> to the <span class="text-primary-500">{selected_team}</span> team?`
+    </article>
+    <footer class="flex justify-end gap-4">
+      <button type="button" class="btn preset-tonal" onclick={() => selectedUser = ['']}>Cancel</button>
+	  <!-- TODO: Need to get real ids for user and team -->
+      <button type="button" class="btn preset-filled" onclick={async () => await addUserToTeam(1, 1)}>Confirm</button>
+    </footer>
+  {/snippet}
+</Modal>
