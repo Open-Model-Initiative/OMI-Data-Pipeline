@@ -30,13 +30,13 @@
 					Sign In:
 				</div>
 				<button
-					class="btn btn-sm hover:text-blue-600"
+					class="btn btn-sm hover:text-primary-600"
 					onclick={() => {
 						signIn('github');
 					}}><GitHubIcon color="currentColor" />
 				</button>
 				<button
-					class="btn btn-sm hover:text-blue-600"
+					class="btn btn-sm hover:text-primary-600"
 					onclick={() => {
 						signIn('discord');
 					}}><DiscordIcon color="currentColor" />
