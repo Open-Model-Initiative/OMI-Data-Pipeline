@@ -12,17 +12,17 @@
   <!-- Component -->
   <Navigation.Rail {value} onValueChange={(newValue) => (value = newValue)} classes="bg-surface-700">
     {#snippet tiles()}
-      <Navigation.Tile id="users" label="Users" href="/admin/users" classes="btn btn-lg hover:bg-blue-600">
-        <span class="flex-auto">👤</span>
+      <Navigation.Tile id="users" label="Users" href="/admin/users" classes="btn btn-lg hover:bg-primary-600">
+        👤
       </Navigation.Tile>
-      <Navigation.Tile id="teams" label="Teams" href="/admin/teams" classes="btn btn-lg hover:bg-blue-600">
-        <span class="flex-auto">👥</span>
+      <Navigation.Tile id="teams" label="Teams" href="/admin/teams" classes="btn btn-lg hover:bg-primary-600">
+        👥
       </Navigation.Tile>
-      <Navigation.Tile id="featureToggles" label="Feature Toggles" href="/admin/feature-toggles" classes="btn btn-lg hover:bg-blue-600">
-				<span class="flex-auto">🔄</span>
+      <Navigation.Tile id="featureToggles" label="Feature Toggles" href="/admin/feature-toggles" classes="btn btn-lg hover:bg-primary-600">
+				🔁
       </Navigation.Tile>
-      <Navigation.Tile id="imageModeration" label="Image Moderation" href="/admin/moderation" classes="btn btn-lg hover:bg-blue-600">
-				<span class="flex-auto">🖼️</span>
+      <Navigation.Tile id="imageModeration" label="Image Moderation" href="/admin/moderation" classes="btn btn-lg hover:bg-primary-600">
+				✅
       </Navigation.Tile>
     {/snippet}
   </Navigation.Rail>
