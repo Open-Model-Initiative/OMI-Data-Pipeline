@@ -2,7 +2,9 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	export let color: string = '#181717'; //Official GitHub Brand Color as per
+	let {
+		color = '#000000' // Official GitHub Logo should only appear in black or white as per https://brand.github.com/foundations/logo
+	}: { color: string } = $props()
 </script>
 
 <svg
