@@ -2,7 +2,9 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	export let color: string = '#5865F2'; //Official Discord Brand Color as per https://discord.com/branding
+	let {
+		color = '#5865F2' //Official Discord Brand Color as per https://discord.com/branding
+	}: { color: string } = $props()
 </script>
 
 <svg

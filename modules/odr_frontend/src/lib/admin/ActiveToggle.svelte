@@ -6,12 +6,18 @@
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { toggleActive } from './utils';
 
-	export let checked: boolean = false;
-	export let user: IDBUser;
+	let {
+      checked = false,
+      user
+    }: {
+      checked: boolean,
+      user: IDBUser
+    } = $props()
 
-	function _toggleActive(e: Event) {
+
+	function _toggleActive() {
 		toggleActive(user);
 	}
 </script>
 
-<Switch name="slide" bind:checked on:change={_toggleActive} />
+<Switch name="slide" checked={checked} onCheckedChange={(e) => { checked = e.checked; _toggleActive(); }} />
