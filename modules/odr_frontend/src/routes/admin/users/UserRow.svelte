@@ -17,12 +17,22 @@
 	}
 </script>
 
-<tr>
-	<td><a href="/admin/users/{user.id}">{user.id}</a></td>
-	<td><a href="/admin/users/{user.id}">{user.name}</a></td>
-	<td><SuperUserToggle {user} bind:checked={user.is_superuser} /></td>
-	<td><ActiveToggle {user} bind:checked={user.is_active} /></td>
-	<td>{user.email}</td>
+<tr class="cursor-pointer hover:bg-blue-600">
+	<td>
+		<a href="/admin/users/{user.id}">{user.id}</a>
+	</td>
+	<td>
+		<a href="/admin/users/{user.id}">{user.name}</a>
+	</td>
+	<td>
+		<SuperUserToggle {user} bind:checked={user.is_superuser} />
+	</td>
+	<td>
+		<ActiveToggle {user} bind:checked={user.is_active} />
+	</td>
+	<td>
+		<a href="/admin/users/{user.id}">{user.email}</a>
+	</td>
 	{#if withRemove}
 		<td><button class="btn variant-outline-error hover:preset-filled-error-500" onclick={removeUser}>Remove</button></td>
 	{/if}
