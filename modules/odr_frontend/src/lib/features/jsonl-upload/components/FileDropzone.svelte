@@ -32,13 +32,7 @@
   classes="container h-3/4 mx-auto"
 >
 
-  <figure class="flex items-center justify-center">
-    <UploadIcon />
-  </figure>
-
-  {selectedFiles.length > 0
-    ? `${selectedFiles.length} file(s) selected`
-    : 'Upload Annotation Files'}
-
-
+  {#snippet iconInterface()}<UploadIcon />{/snippet}
+  {#snippet iconFile()}->{/snippet}
+  {#snippet iconFileRemove()}x{/snippet}
 </FileUpload>

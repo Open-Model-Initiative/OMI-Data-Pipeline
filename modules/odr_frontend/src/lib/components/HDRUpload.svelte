@@ -2,22 +2,29 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-  import UploadIcon from '$lib/icons/UploadIcon.svelte';
+  // Imports (framework)
   import { FileUpload } from '@skeletonlabs/skeleton-svelte';
 
-  const acceptedFileTypes: Array<string> = ['.dng'];
-  let uploadStatus: string = $state('');
-  let uploadProgress: number = $state(0);
+  // Imports (components)
+  import UploadIcon from '$lib/icons/UploadIcon.svelte';
 
+  const acceptedFileTypes: Array<string> = ['.dng'];
+
+  // Props
   let {
     files = $bindable<FileList>(),
     user = <any>(undefined)
   } = $props();
 
+  // State
+  let uploadStatus: string = $state('');
+  let uploadProgress: number = $state(0);
+
   let errorArray: string[] = $state([]);
 
   let selectedFiles: Array<File> = $derived(files ? Array.from(files) : []);
 
+  // Functions
   async function uploadFiles() {
       const totalFiles = selectedFiles.length;
       let completedUploads = 0;
@@ -79,6 +86,18 @@
 
       files = new DataTransfer().files
   }
+
+  function changeFiles(fileDetails) {
+    console.log(fileDetails)
+
+    selectedFiles = fileDetails.acceptedFiles
+  }
+
+  function rejectFiles(fileDetails) {
+    console.log(fileDetails)
+
+    errorArray = fileDetails.rejectedFiles
+  }
 </script>
 
 <div class="card preset-filled-surface-500">
@@ -87,16 +106,14 @@
     accept={acceptedFileTypes.join(',')}
     maxFiles={10}
     subtext="Currently only accepting RAW images in .DNG"
-    onFileChange={console.log}
-    onFileReject={console.error}
+    onFileChange={changeFiles}
+    onFileReject={rejectFiles}
     classes="container h-3/4 mx-auto"
   >
 
-    <figure class="flex items-center justify-center">
-        <UploadIcon />
-    </figure>
-    <!-- {selectedFiles.length > 0 ? `${selectedFiles.length} file(s) selected` : 'Upload Images'}
-    Currently only accepting RAW images in .DNG -->
+    {#snippet iconInterface()}<UploadIcon />{/snippet}
+    {#snippet iconFile()}->{/snippet}
+    {#snippet iconFileRemove()}x{/snippet}
   </FileUpload>
 
   <div class="grid place-items-center mt-4">
