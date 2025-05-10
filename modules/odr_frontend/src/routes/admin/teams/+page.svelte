@@ -2,20 +2,13 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	// import type { ModalSettings, AutocompleteOption } from '@skeletonlabs/skeleton-svelte';
+	import '../moderation/moderation.css';
 	import { Combobox } from '@skeletonlabs/skeleton-svelte';
 
 	import UserRow from '../users/UserRow.svelte';
 	import { page } from '$app/state';
 
 	import { toaster } from '$lib/toaster-svelte'
-	import { Modal } from '@skeletonlabs/skeleton-svelte';
-
-	let openState = $state(false);
-
-	function modalClose() {
-		openState = false;
-	}
 
 	let teams = $derived(page.data.teams);
 	let users = $derived(page.data.users);
@@ -30,7 +23,7 @@
 		value: string;
 	}
 
-	//Only allow adding users that are not already in the team
+	// Only allow adding users that are not already in the team
 	let userAddList: UserAddData[] = $derived([
 		users
 			.filter((u) => !teams_users.find((tu) => tu.team_id === selected_team && tu.user_id === u.id))
@@ -38,10 +31,11 @@
 	].flat());
 
 	let selectedUser: string[] = $state(['']);
-
 	let validName = $derived(newTeamName.length > 0);
 
 	async function createTeam() {
+		showTeamCreationConfirmation = false;
+
 		const req = await fetch('/admin/teams/api', {
 			method: 'POST',
 			headers: {
@@ -74,6 +68,8 @@
 	}
 
 	async function addUserToTeam(userId: number, teamId: number) {
+		showAddUserToTeamConfirmation = false;
+
 		const req = await fetch('/admin/teams/api/addUser', {
 			method: 'POST',
 			headers: {
@@ -81,7 +77,9 @@
 			},
 			body: JSON.stringify({ userId, teamId })
 		});
+
 		const res = await req.json();
+
 		if (res.success) {
 			teams_users = [...teams_users, res.team_user];
 			userSearch = '';
@@ -126,7 +124,9 @@
 			},
 			body: JSON.stringify({ userId: user_id, teamId: selected_team })
 		});
+
 		const res = await req.json();
+
 		if (res.success) {
 			teams_users = teams_users.filter((tu) => tu.user_id !== user_id);
 
@@ -150,6 +150,7 @@
 			},
 			body: JSON.stringify({ teamId: team_id })
 		});
+
 		const res = await req.json();
 		if (res.success) {
 			toaster.success({
@@ -166,7 +167,59 @@
 			console.error(res.error);
 		}
 	}
+
+	let showTeamCreationConfirmation = $state(false);
+	let showAddUserToTeamConfirmation = $state(false);
+
+	function openTeamCreationConfirmation() {
+		showTeamCreationConfirmation = true;
+	}
+
+	function openAddUserToTeamConfirmation() {
+		showAddUserToTeamConfirmation = true;
+	}
 </script>
+
+{#if showTeamCreationConfirmation}
+<div class="modal-overlay">
+  <div class="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm mx-auto">
+    <header class="flex justify-between">
+      <h2 class="h2">Please Confirm</h2>
+      <button class="btn btn-icon variant-ghost-surface" onclick={() => showTeamCreationConfirmation = false}>×</button>
+    </header>
+    <article>
+      <p class="opacity-60">
+        Are you sure you wish to create a team named {newTeamName}?
+      </p>
+    </article>
+    <footer class="flex justify-end gap-4">
+      <button type="button" class="btn preset-tonal" onclick={() => showTeamCreationConfirmation = false}>Cancel</button>
+      <button type="button" class="btn preset-filled" onclick={async () => await createTeam()}>Confirm</button>
+    </footer>
+  </div>
+</div>
+{/if}
+
+{#if showAddUserToTeamConfirmation}
+<div class="modal-overlay">
+  <div class="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm mx-auto">
+    <header class="flex justify-between">
+      <h2 class="h2">Please Confirm</h2>
+      <button class="btn btn-icon variant-ghost-surface" onclick={() => showAddUserToTeamConfirmation = false}>×</button>
+    </header>
+    <article>
+      <p>
+        Are you sure you wish to add <span class="text-primary-500">{users.find((u) => u.id === parseInt(selectedUser[0]))?.name}</span> to the <span class="text-primary-500">{teams.find((t) => t.id === selected_team)?.name}</span> team?
+      </p>
+    </article>
+    <footer class="flex justify-end gap-4">
+      <button type="button" class="btn preset-tonal" onclick={() => showAddUserToTeamConfirmation = false}>Cancel</button>
+      <button type="button" class="btn preset-filled" onclick={async () => await addUserToTeam(parseInt(selectedUser[0]), selected_team ?? -1)}>Confirm</button>
+    </footer>
+  </div>
+</div>
+{/if}
+
 
 <div class="flex flex-row gap-8">
 	<div class="flex flex-col w-1/2">
@@ -178,10 +231,8 @@
 			<!-- class:variant-ghost={!validName} -->
 			<button
 				class="p-2 rounded-md preset-filled-primary-500"
-				onclick={async () => {
-					// TODO: Fix confirmation modal
-					// openState = true
-					await createTeam()
+				onclick={() => {
+					openTeamCreationConfirmation()
 				}}
 				disabled={!validName}>
 				Create Team
@@ -212,7 +263,7 @@
 							<td>{team.name}</td>
 							<td>{team.created_at.toLocaleDateString()}</td>
 							<td>{team.updated_at?.toLocaleDateString()}</td>
-							<td>{teams_users.filter((u) => u.team_id === team.id).length}</td>
+							<td>{teams_users.filter((u: { team_id: typeof team.id }) => u.team_id === team.id).length}</td>
 							<td>
 								<button
 									class="btn variant-outline-error hover:preset-filled-error-500"
@@ -240,6 +291,34 @@
 		{#if !selected_team}
 			<p>Select a team to view users</p>
 		{:else}
+			<div class="table-container">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>id</th>
+							<th>name</th>
+							<th>isSuperUser?</th>
+							<th>isActive?</th>
+							<th>email</th>
+							<th>Remove</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each teams_users.filter((u) => u.team_id === selected_team) as teamuser, i}
+							{@const user = users.find((u) => u.id === teamuser.user_id)}
+							{#if user}
+								<UserRow {user} withRemove={true} remove={removeUserFromTeam} />
+							{/if}
+						{/each}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th># Users</th>
+							<td colspan="5">{teams_users.filter((u) => u.team_id === selected_team).length}</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
 			<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 				<div class="pt-2 shrink-0 text-base text-gray-500 select-none sm:text-sm/6">+</div>
 
@@ -258,85 +337,15 @@
 				</Combobox>
 
 				<button
-					class="p-2 rounded-md preset-filled-primary-500">
+					class="p-2 rounded-md preset-filled-primary-500"
+					onclick={
+						() => {
+							openAddUserToTeamConfirmation()
+						}
+					}>
 					Add User
 				</button>
-			</div>
-
-			<div class="table-container">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>id</th>
-							<th>name</th>
-							<th>isSuperUser?</th>
-							<th>isActive?</th>
-							<th>email</th>
-							<th>Remove</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each teams_users.filter((u) => u.team_id === selected_team) as teamuser, i}
-							{@const user = users.find((u) => u.id === teamuser.user_id)}
-							{#if user}
-								<UserRow {user} withRemove={true} on:remove={removeUserFromTeam} />
-							{/if}
-						{/each}
-					</tbody>
-					<tfoot>
-						<tr>
-							<th># Users</th>
-							<td colspan="5">{teams_users.filter((u) => u.team_id === selected_team).length}</td>
-						</tr>
-					</tfoot>
-				</table>
 			</div>
 		{/if}
 	</div>
 </div>
-
-<!-- Create team modal -->
-<Modal
-  open={openState}
-  onOpenChange={(e) => (openState = e.open)}
-  triggerBase="btn preset-tonal"
-  contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
-  backdropClasses="backdrop-blur-sm"
->
-  {#snippet content()}
-    <header class="flex justify-between">
-      <h2 class="h2">Please Confirm</h2>
-    </header>
-    <article>
-      <p class="opacity-60">
-        Are you sure you wish to create a team named ${newTeamName}?
-      </p>
-    </article>
-    <footer class="flex justify-end gap-4">
-      <button type="button" class="btn preset-tonal" onclick={modalClose}>Cancel</button>
-      <button type="button" class="btn preset-filled" onclick={async () => await createTeam()}>Confirm</button>
-    </footer>
-  {/snippet}
-</Modal>
-
-<!-- Add user to team modal -->
-<Modal
-  open={selectedUser[0].length > 0}
-  triggerBase="btn preset-tonal"
-  contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
-  backdropClasses="backdrop-blur-sm"
->
-  {#snippet content()}
-    <header class="flex justify-between">
-      <h2 class="h2">Please Confirm</h2>
-    </header>
-    <article>
-		Are you sure you wish to add <span class="text-primary-500">{selectedUser}</span> to the <span class="text-primary-500">{selected_team}</span> team?`
-    </article>
-    <footer class="flex justify-end gap-4">
-      <button type="button" class="btn preset-tonal" onclick={() => selectedUser = ['']}>Cancel</button>
-	  <!-- TODO: Need to get real ids for user and team -->
-      <button type="button" class="btn preset-filled" onclick={async () => await addUserToTeam(1, 1)}>Confirm</button>
-    </footer>
-  {/snippet}
-</Modal>

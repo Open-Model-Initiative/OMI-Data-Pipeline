@@ -6,10 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { TriangleExclamationSolid } from 'svelte-awesome-icons';
 	import type { PageData } from './$types';
-	// import { MakeToastMessage } from '$lib/toastHelper';
 	import { toaster } from '$lib/toaster-svelte'
-
-	// const toastStore = getToastStore();
 
 	export let data: PageData;
 
@@ -34,13 +31,11 @@
 			toaster.success({
 				title: `Image ${action}ed successfully.`
 			});
-			// toastStore.trigger(MakeToastMessage(`Image ${action}ed successfully.`, 'success'));
 		} else {
 			console.error(`Failed to ${action} image`);
 			toaster.error({
 				title: `Failed to ${action} image`
 			});
-			// toastStore.trigger(MakeToastMessage(`Failed to ${action} image`, 'error'));
 		}
 	}
 
@@ -91,23 +86,23 @@
 			<td>
 				<div class="button-group">
 				  <button
-					class="btn btn-sm preset-filled-success-500"
-					onclick={() => handleAction('accept', image.filename)}
-					title="Accept the image"
+						class="btn btn-sm preset-filled-success-500"
+						onclick={() => handleAction('accept', image.filename)}
+						title="Accept the image"
 				  >
-					Accept
+						Accept
 				  </button>
 				  <button
-					class="btn btn-sm preset-filled-error-500"
-					onclick={() => handleAction('reject', image.filename)}
-					title="Reject the image"
+						class="btn btn-sm preset-filled-error-500"
+						onclick={() => handleAction('reject', image.filename)}
+						title="Reject the image"
 				  >
-					Reject
+						Reject
 				  </button>
 				  <button
-					class="btn btn-sm preset-filled-warning-500 flag-button"
-					onclick={() => handleAction('flag', image.filename)}
-					title="Flag suspected illegal content"
+						class="btn btn-sm preset-filled-warning-500 flag-button"
+						onclick={() => handleAction('flag', image.filename)}
+						title="Flag suspected illegal content"
 				  >
 					<TriangleExclamationSolid size="23" />
 				  </button>
@@ -123,9 +118,9 @@
 	<div class="modal-overlay">
 		<button class="close-button" onclick={closePreview}>×</button>
 		<div class="modal-content">
-		<img src={previewImageUrl} alt="Large Preview" />
+			<img src={previewImageUrl} alt="Large Preview" />
 		</div>
-  	</div>
+  </div>
 {/if}
 
 
