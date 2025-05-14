@@ -3,7 +3,8 @@
 -->
 <script lang="ts">
     import type { IFeatureToggle } from '$lib/server/pg';
-    import { Switch } from '@skeletonlabs/skeleton-svelte';
+    // import { Switch } from '@skeletonlabs/skeleton-svelte';
+    import CustomToggle from '$lib/components/CustomToggle.svelte';
     import { toggleFeature } from './utils';
 
     let {
@@ -19,4 +20,22 @@
     }
 </script>
 
-<Switch name="slide" checked={checked} onCheckedChange={(e) => { checked = e.checked; _toggleFeature(); }} />
+<!-- <Switch
+  name="slide"
+  checked={checked}
+  onCheckedChange={(e) => {
+    checked = e.checked;
+    feature.is_enabled = checked;
+    _toggleFeature();
+  }}
+/> -->
+
+<CustomToggle
+    name="feature-toggle"
+    {checked}
+    onCheckedChange={(e) => {
+        checked = e.checked;
+        feature.is_enabled = checked;
+        _toggleFeature();
+    }}
+/>
