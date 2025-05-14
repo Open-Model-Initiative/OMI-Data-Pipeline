@@ -30,7 +30,7 @@
 			.map((u) => ({ value: u.id.toString(), label: u.name ?? `${u.email} (No Name)` }))
 	].flat());
 
-	let selectedUser: string[] = $state(['']);
+	let selectedUser: string[] = $state([]);
 	let validName = $derived(newTeamName.length > 0);
 
 	async function createTeam() {
@@ -96,27 +96,7 @@
 		}
 	}
 
-	function onUserSelection(event: CustomEvent<UserAddData>): void {
-		userSearch = event.detail.label;
-		console.log(event.detail);
-		// let add_user_to_team_modal: ModalSettings = {
-		// 	type: 'confirm',
-		// 	title: 'Please Confirm',
-		// 	body: `Are you sure you wish to add <span class="text-primary-400">${event.detail.label}</span> to the <span class="text-secondary-400">${teams.find((t) => t.id === selected_team)?.name}</span> team?`,
-		// 	// TRUE if confirm pressed, FALSE if cancel pressed
-		// 	response: async (r: boolean) => {
-		// 		if (r) {
-		// 			console.log(`Adding user ${event.detail.label} to team ${selected_team}`);
-		// 			await addUserToTeam(parseInt(event.detail.value), selected_team as number);
-		// 		}
-		// 	}
-		// };
-		// modalStore.trigger(add_user_to_team_modal);
-	}
-
-	async function removeUserFromTeam(e: CustomEvent) {
-		const user_id = e.detail;
-
+	async function removeUserFromTeam(user_id: number) {
 		const req = await fetch('/admin/teams/api/removeUser', {
 			method: 'POST',
 			headers: {
@@ -331,18 +311,20 @@
 							console.log(e.value)
 						)
 					}
-					label="Select User"
+					label="Add User to Team"
 					placeholder="Search..."
 					>
 				</Combobox>
 
 				<button
-					class="p-2 rounded-md preset-filled-primary-500"
+					class="btn preset-filled-primary-500"
 					onclick={
 						() => {
 							openAddUserToTeamConfirmation()
 						}
-					}>
+					}
+					disabled={selectedUser.length === 0}
+				>
 					Add User
 				</button>
 			</div>
