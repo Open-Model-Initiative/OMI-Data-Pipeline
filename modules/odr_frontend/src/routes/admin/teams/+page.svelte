@@ -162,7 +162,7 @@
 
 {#if showTeamCreationConfirmation}
 <div class="modal-overlay">
-  <div class="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm mx-auto">
+  <div class="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-(--breakpoint-sm) mx-auto">
     <header class="flex justify-between">
       <h2 class="h2">Please Confirm</h2>
       <button class="btn btn-icon variant-ghost-surface" onclick={() => showTeamCreationConfirmation = false}>×</button>
@@ -182,7 +182,7 @@
 
 {#if showAddUserToTeamConfirmation}
 <div class="modal-overlay">
-  <div class="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm mx-auto">
+  <div class="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-(--breakpoint-sm) mx-auto">
     <header class="flex justify-between">
       <h2 class="h2">Please Confirm</h2>
       <button class="btn btn-icon variant-ghost-surface" onclick={() => showAddUserToTeamConfirmation = false}>×</button>
