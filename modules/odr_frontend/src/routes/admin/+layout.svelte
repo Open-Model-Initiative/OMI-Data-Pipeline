@@ -23,7 +23,7 @@
 	}
 </script>
 
-<div class="card border-surface-100-900 grid w-full grid-cols-[auto_1fr] border-[1px]">
+<div class="card border-surface-100-900 grid w-full grid-cols-[auto_1fr] border">
   <!-- Component -->
   <Navigation.Rail {value} onValueChange={(newValue) => (value = newValue)} classes="bg-surface-700">
     {#snippet tiles()}

@@ -2,7 +2,7 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <a
-  class="btn btn-sm !bg-transparent group"
+  class="btn btn-sm bg-transparent! group"
   href="https://discord.gg/swYY5RVHft"
   target="_blank"
   rel="noreferrer"
