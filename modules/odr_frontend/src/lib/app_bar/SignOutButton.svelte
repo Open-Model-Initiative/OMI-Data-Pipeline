@@ -2,6 +2,7 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
+  // Props
   let {
     signOut
   }: { signOut: Function } = $props();

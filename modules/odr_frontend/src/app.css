@@ -1,15 +1,10 @@
+@import "tailwindcss";
 @import "@skeletonlabs/skeleton";
 
 @import "@skeletonlabs/skeleton/optional/presets";
 
 @import "../omi-theme.css";
 
-@import "tailwindcss";
-
-html,
-body {
-	@apply h-full overflow-hidden;
-}
 
 /* rocket theme */
 @font-face {
