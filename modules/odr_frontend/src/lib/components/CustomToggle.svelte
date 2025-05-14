@@ -2,10 +2,6 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-    // export let name = '';
-    // export let checked = false;
-    // export let onCheckedChange: (event: { checked: boolean }) => void = () => {};
-
     type OnCheckedChangeHandler = (event: { checked: boolean }) => void;
 
     let {
