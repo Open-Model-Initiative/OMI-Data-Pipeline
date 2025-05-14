@@ -300,7 +300,7 @@
 				</table>
 			</div>
 			<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-				<div class="pt-2 shrink-0 text-base text-gray-500 select-none sm:text-sm/6">+</div>
+				<div class="flex items-center shrink-0 text-base text-gray-500 select-none sm:text-sm/6">+</div>
 
 				<Combobox
 					data={userAddList}
