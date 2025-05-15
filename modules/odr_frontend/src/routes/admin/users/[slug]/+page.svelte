@@ -4,7 +4,9 @@
 <script lang="ts">
 	import SuperUserToggle from '$lib/admin/SuperUserToggle.svelte';
 
-	export let data;
+	let {
+		data
+	} = $props()
 	let user = data.user;
 	let teams = data.teams;
 </script>

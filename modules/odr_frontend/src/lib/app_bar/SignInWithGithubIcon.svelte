@@ -3,12 +3,14 @@
 -->
 <script lang="ts">
   // Imports (components)
-	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
+  import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
 
   // Props
   let {
     signIn
-  }: { signIn: Function } = $props();
+  }: {
+    signIn: Function
+  } = $props();
 </script>
 
 <button

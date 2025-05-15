@@ -9,7 +9,11 @@
   import UploadStatus from './UploadStatus.svelte';
   import type { User } from '../types';
 
-  export let user: User;
+  let {
+    user
+  }: {
+    user: User
+  } = $props();
 </script>
 
 <div class="card preset-filled-surface-500">
