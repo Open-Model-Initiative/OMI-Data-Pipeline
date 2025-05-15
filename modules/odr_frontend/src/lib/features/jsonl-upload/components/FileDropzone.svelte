@@ -18,8 +18,14 @@
     uploadStore.setFiles(files);
   })
 
-  // Derived value from the store
-  let selectedFiles = $derived($uploadStore.selectedFiles)
+  function changeFiles(fileDetails) {
+    console.log(fileDetails)
+    files = fileDetails.acceptedFiles
+  }
+
+  function rejectFiles(fileDetails) {
+    console.log(fileDetails)
+  }
 </script>
 
 <FileUpload
@@ -27,8 +33,8 @@
   accept={ACCEPTED_FILE_TYPES.JSONL}
   maxFiles={10}
   subtext="Currently only accepting .JSONL files from graphcap"
-  onFileChange={console.log}
-  onFileReject={console.error}
+  onFileChange={changeFiles}
+  onFileReject={rejectFiles}
   classes="container h-3/4 mx-auto"
 >
 
