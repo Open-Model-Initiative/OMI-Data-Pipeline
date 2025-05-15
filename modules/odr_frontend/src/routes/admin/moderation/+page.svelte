@@ -2,15 +2,33 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
+	// Imports
 	import './moderation.css';
 	import { goto } from '$app/navigation';
 	import { TriangleExclamationSolid } from 'svelte-awesome-icons';
 	import type { PageData } from './$types';
 	import { toaster } from '$lib/toaster-svelte'
 
-	export let data: PageData;
+	// Props
+	let { data }: { data: PageData } = $props();
 
-	$: ({ images, currentPage, totalPages } = data);
+	// State
+	let images = $state(data.images);
+	let currentPage = $derived(data.currentPage);
+	let totalPages = $derived(data.totalPages);
+
+	let showPreview = $state(false);
+	let previewImageUrl = $state('');
+
+	// Functions
+	function openPreview(imageUrl: string) {
+		previewImageUrl = imageUrl;
+		showPreview = true;
+	}
+
+	function closePreview() {
+		showPreview = false;
+	}
 
 	function goToPage(page: number) {
 		goto(`?page=${page}`);
@@ -37,18 +55,6 @@
 				title: `Failed to ${action} image`
 			});
 		}
-	}
-
-	let showPreview = false;
-	let previewImageUrl = '';
-
-	function openPreview(imageUrl: string) {
-		previewImageUrl = imageUrl;
-		showPreview = true;
-	}
-
-	function closePreview() {
-		showPreview = false;
 	}
 </script>
 
@@ -129,7 +135,9 @@
 	  <button class='btn btn-sm variant-outline-primary' onclick={() => goToPage(currentPage - 1)}>Previous</button>
 	{/if}
 
-	<span>Page {currentPage} of {totalPages}</span>
+	{#if totalPages > 1}
+		<span>Page {currentPage} of {totalPages}</span>
+	{/if}
 
 	{#if currentPage < totalPages}
 	  <button class='btn btn-sm variant-outline-primary' onclick={() => goToPage(currentPage + 1)}>Next</button>
