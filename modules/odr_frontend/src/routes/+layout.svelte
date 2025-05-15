@@ -26,7 +26,7 @@
 	let { children }: { children: Snippet } = $props();
 </script>
 
-<Toaster {toaster} />
+<Toaster {toaster} messageClasses="px-4 py-2" />
 
 <div class="grid h-screen grid-rows-[auto_1fr_auto]">
 	<AppBar>
