@@ -33,9 +33,3 @@
 		<td><button class="btn variant-outline-error hover:preset-filled-error-500" onclick={removeUser}>Remove</button></td>
 	{/if}
 </tr>
-
-<style lang="postcss">
-	a {
-		@apply anchor;
-	}
-</style>
