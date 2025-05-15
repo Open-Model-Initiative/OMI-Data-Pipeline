@@ -4,7 +4,9 @@
 <script lang="ts">
 	let {
 		color = '#000000' // Official GitHub Logo should only appear in black or white as per https://brand.github.com/foundations/logo
-	}: { color: string } = $props()
+	}: {
+		color: string
+	} = $props()
 </script>
 
 <svg

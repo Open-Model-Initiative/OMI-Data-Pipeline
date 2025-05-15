@@ -4,7 +4,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 
-	import UserRow from './UserRow.svelte';
+	import UserRow from '$lib/components/UserRow.svelte';
 
 	const users = $derived(page.data.users ?? []);
 

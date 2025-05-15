@@ -3,11 +3,11 @@
 -->
 <script lang="ts">
 	import type { IDBUser } from '$lib/server/pg';
-	// import { Switch } from '@skeletonlabs/skeleton-svelte';
+  // import { Switch } from '@skeletonlabs/skeleton-svelte';
   import CustomToggle from '$lib/components/CustomToggle.svelte';
-	import { toggleActive } from './utils';
+  import { toggleActive } from './utils';
 
-	let {
+  let {
       checked = $bindable(false),
       user
     }: {
@@ -16,9 +16,9 @@
     } = $props()
 
 
-	function _toggleActive() {
-		toggleActive(user);
-	}
+  function _toggleActive() {
+    toggleActive(user);
+  }
 </script>
 
 <!-- <Switch

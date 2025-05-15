@@ -8,7 +8,9 @@
   // Props
   let {
     signIn
-  }: { signIn: Function } = $props();
+  }: {
+    signIn: Function
+  } = $props();
 </script>
 
 <button

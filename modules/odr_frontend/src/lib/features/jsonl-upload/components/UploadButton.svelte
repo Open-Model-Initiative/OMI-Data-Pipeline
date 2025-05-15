@@ -7,11 +7,15 @@
   import { uploadStore } from '../stores/uploadStore';
   import type { User } from '../types';
 
-  export let user: User;
+  let {
+    user
+  }: {
+    user: User
+  } = $props();
 
   // Derived value from the store
-  $: selectedFiles = $uploadStore.selectedFiles;
-  $: isUploading = $uploadStore.status === 'uploading';
+  let selectedFiles = $derived($uploadStore.selectedFiles)
+  let isUploading = $derived($uploadStore.status === 'uploading');
 
   function handleUpload() {
     uploadStore.uploadFiles(user);

@@ -5,7 +5,9 @@
   // Props
   let {
     signOut
-  }: { signOut: Function } = $props();
+  }: {
+    signOut: Function
+  } = $props();
 </script>
 
 <button

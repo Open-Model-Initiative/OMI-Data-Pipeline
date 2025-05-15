@@ -6,7 +6,13 @@
 <script lang="ts">
   import { JSONLUpload } from '$lib/features/jsonl-upload';
 
-  export let user: any;
+  import type { User } from '../features/jsonl-upload/types'
+
+  let {
+    user
+  }: {
+    user: User
+  } = $props();
 </script>
 
 <JSONLUpload {user} />

@@ -4,7 +4,9 @@
 <script lang="ts">
 	let {
 		color = '#5865F2' //Official Discord Brand Color as per https://discord.com/branding
-	}: { color: string } = $props()
+	}: {
+		color: string
+	} = $props()
 </script>
 
 <svg
