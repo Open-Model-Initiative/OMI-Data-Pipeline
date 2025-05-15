@@ -6,12 +6,10 @@
 <script lang="ts">
   import { JSONLUpload } from '$lib/features/jsonl-upload';
 
-  import type { User } from '../features/jsonl-upload/types'
-
   let {
     user
   }: {
-    user: User
+    user: any
   } = $props();
 </script>
 
