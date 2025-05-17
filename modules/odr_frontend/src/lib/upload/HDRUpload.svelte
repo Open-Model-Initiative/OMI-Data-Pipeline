@@ -10,6 +10,24 @@
 
   const acceptedFileTypes: Array<string> = ['.dng'];
 
+  // Supporting Types
+  type AnyString = string & {};
+  type FileError = "TOO_MANY_FILES" | "FILE_INVALID_TYPE" | "FILE_TOO_LARGE" | "FILE_TOO_SMALL" | "FILE_INVALID" | "FILE_EXISTS" | AnyString;
+
+  interface FileRejection {
+    file: File;
+    errors: FileError[];
+  }
+
+  interface FileChangeDetails {
+    acceptedFiles: File[];
+    rejectedFiles: FileRejection[];
+  }
+
+  interface FileRejectDetails {
+    files: FileRejection[];
+  }
+
   // Props
   let {
     files = $bindable<FileList>(),
@@ -20,7 +38,7 @@
   let uploadStatus: string = $state('');
   let uploadProgress: number = $state(0);
 
-  let errorArray: string[] = $state([]);
+  let errorArray: FileRejection[] = $state([]);
 
   let selectedFiles: Array<File> = $derived(files ? Array.from(files) : []);
 
@@ -53,20 +71,40 @@
                           if (isSuccess) {
                               uploadStatus = `${file.name} uploaded successfully`;
                           } else {
-                              errorArray.push(`Failed to upload ${file.name}: ${message}`);
+                            const newError: FileRejection = {
+                              file: file,
+                              errors: [`Failed to upload ${file.name}: ${message}`]
+                            };
+                            errorArray.push(newError);
                           }
                       } else {
-                          errorArray.push(`Failed to upload ${file.name}: Unexpected response type`);
+                          const newError: FileRejection = {
+                            file: file,
+                            errors: [`Failed to upload ${file.name}: Unexpected response type`]
+                          };
+                          errorArray.push(newError);
                       }
                   } else {
-                      errorArray.push(`Failed to upload ${file.name}: ${response.statusText || 'Unknown error'}`);
+                      const newError: FileRejection = {
+                        file: file,
+                        errors: [`Failed to upload ${file.name}: ${response.statusText || 'Unknown error'}`]
+                      };
+                      errorArray.push(newError);
                   }
               } catch (error: unknown) {
                   console.error('Error uploading file:', error);
                   if (error instanceof Error) {
-                      errorArray.push(`Error uploading ${file.name}: ${error.message}`);
+                    const newError: FileRejection = {
+                      file: file,
+                      errors: [`Error uploading ${file.name}: ${error.message}`]
+                    };
+                    errorArray.push(newError);
                   } else {
-                      errorArray.push(`Error uploading ${file.name}: Unknown error`);
+                    const newError: FileRejection = {
+                      file: file,
+                      errors: [`Error uploading ${file.name}: Unknown error`]
+                    };
+                    errorArray.push(newError);
                   }
               }
 
@@ -74,7 +112,11 @@
               uploadProgress = Math.round((completedUploads / totalFiles) * 100);
 
           } else {
-              errorArray.push(`Invalid file type: ${file.name}`);
+            const newError: FileRejection = {
+              file: file,
+              errors: [`Invalid file type: ${file.name}`]
+            };
+            errorArray.push(newError);
           }
       }
 
@@ -87,16 +129,16 @@
       files = new DataTransfer().files
   }
 
-  function changeFiles(fileDetails) {
+  function changeFiles(fileDetails: FileChangeDetails) {
     console.log(fileDetails)
 
     selectedFiles = fileDetails.acceptedFiles
   }
 
-  function rejectFiles(fileDetails) {
+  function rejectFiles(fileDetails: FileRejectDetails) {
     console.log(fileDetails)
 
-    errorArray = fileDetails.rejectedFiles
+    errorArray = fileDetails.files
   }
 </script>
 

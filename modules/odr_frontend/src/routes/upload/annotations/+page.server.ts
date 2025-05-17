@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-import { redirect, type RequestEvent } from '@sveltejs/kit';
+import { error, redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { PG_API } from '$lib/server/pg';
 import { writeFile, mkdir } from 'fs/promises';
@@ -265,7 +265,10 @@ export const actions = {
                     fileAnnotationsMap.get(filename)?.push(jsonData);
                 } catch (parseError) {
                     console.error('Error parsing JSONL line:', parseError);
-                    // Continue processing other lines
+
+                    error(400, {
+                        message: 'Error parsing JSONL line:' + parseError
+                    });
                 }
             }
 
@@ -453,10 +456,7 @@ export const actions = {
 			};
 		} catch (error) {
 			console.error('Error uploading JSONL file:', error);
-			return {
-				type: 'error',
-				data: JSON.stringify([true, false, `Failed to upload JSONL file: ${error instanceof Error ? error.message : String(error)}`])
-			};
+            throw new Error('Error uploading JSONL file:' + error)
 		}
 	}
 };

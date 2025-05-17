@@ -6,7 +6,7 @@
 	import { page } from '$app/state';
 
 	// Imports (components)
-	import JSONLUpload from '$lib/components/JSONLUpload.svelte';
+	import JSONLUpload from '$lib/upload/JSONLUpload.svelte';
 
 	// State
 	let featureToggles = $derived(page.data.featureToggles);

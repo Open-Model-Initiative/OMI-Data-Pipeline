@@ -6,7 +6,7 @@
 	import { page } from '$app/state';
 
 	// Imports (components)
-	import HDRUpload from '$lib/components/HDRUpload.svelte';
+	import HDRUpload from '$lib/upload/HDRUpload.svelte';
 
 	// State
 	let featureToggles = $derived(page.data.featureToggles);

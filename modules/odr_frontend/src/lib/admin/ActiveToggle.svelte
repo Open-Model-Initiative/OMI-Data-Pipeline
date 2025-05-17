@@ -4,7 +4,7 @@
 <script lang="ts">
 	import type { IDBUser } from '$lib/server/pg';
   // import { Switch } from '@skeletonlabs/skeleton-svelte';
-  import CustomToggle from '$lib/components/CustomToggle.svelte';
+  import CustomToggle from '$lib/admin/CustomToggle.svelte';
   import { toggleActive } from './utils';
 
   let {

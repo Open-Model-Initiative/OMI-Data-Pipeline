@@ -5,7 +5,7 @@
 	import '../moderation/moderation.css';
 	import { Combobox } from '@skeletonlabs/skeleton-svelte';
 
-	import UserRow from '$lib/components/UserRow.svelte';
+	import UserRow from '$lib/admin/UserRow.svelte';
 	import { page } from '$app/state';
 
 	import { toaster } from '$lib/toaster-svelte'
