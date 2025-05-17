@@ -7,8 +7,8 @@ import { join } from 'path';
 import fs from 'fs';
 
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { db } from '../db';
-import { contents } from '../db/schemas/contents';
+import { db } from '../../../db';
+import { contents } from '../../../db/schemas/contents';
 
 export const load: PageServerLoad = async (event) => {
 	const session = await event.locals.auth();
