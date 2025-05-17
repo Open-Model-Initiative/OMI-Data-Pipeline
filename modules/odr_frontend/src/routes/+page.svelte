@@ -2,9 +2,6 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	// Imports (framework)
-	import { goto } from '$app/navigation';
-
 	// Imports (components)
 	import TabButtons from '$lib/landing_page/TabButtons.svelte';
 	import CommunityReviewTab from '$lib/landing_page/CommunityReviewTab.svelte';
