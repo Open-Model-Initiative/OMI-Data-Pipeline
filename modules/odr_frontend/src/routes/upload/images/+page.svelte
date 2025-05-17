@@ -8,14 +8,30 @@
 	// Imports (components)
 	import HDRUpload from '$lib/upload/HDRUpload.svelte';
 	import { Wrench, FileText, Settings, ChevronLeft } from '@lucide/svelte';
+	import FileFormatModal from '$lib/upload/FileFormatModal.svelte';
 
 	// State
 	let user = $derived(page.data.session?.user);
+
+	// Functions
+	let showFileFormatModal = $state(false);
+
+	function openFileFormatModal() {
+		showFileFormatModal = true
+	}
+
+	function closeFileFormatModal() {
+		showFileFormatModal = false
+	}
 </script>
 
 <svelte:head>
 	<title>OMI Data Pipeline</title>
 </svelte:head>
+
+{#if showFileFormatModal}
+<FileFormatModal closeCallback={closeFileFormatModal} />
+{/if}
 
 <main class="space-y-8 py-10">
 	<div class="container mx-auto flex justify-center gap-4">
@@ -25,19 +41,19 @@
 			<div class="bg-surface-100-900 p-4 rounded-lg shadow-lg mb-4">
 				<ul class="space-y-3">
 					<li>
-						<a href="#guidelines" class="flex items-center gap-2 hover:text-primary-500">
+						<a href="/upload/guidelines" class="flex items-center gap-2 hover:text-primary-500">
 							<Wrench size={18} />
 							<span>Upload Guidelines</span>
 						</a>
 					</li>
 					<li>
-						<a href="#formats" class="flex items-center gap-2 hover:text-primary-500">
+						<button onclick={openFileFormatModal} class="flex items-center gap-2 hover:text-primary-500 w-full text-left">
 							<FileText size={18} />
 							<span>File Formats</span>
-						</a>
+						</button>
 					</li>
 					<li>
-						<a href="#dco" class="flex items-center gap-2 hover:text-primary-500">
+						<a href="/dcoReference" class="flex items-center gap-2 hover:text-primary-500">
 							<Settings size={18} />
 							<span>DCO & Privacy Policy</span>
 						</a>

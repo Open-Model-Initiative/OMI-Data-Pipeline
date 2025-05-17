@@ -22,7 +22,7 @@
   <div class="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-(--breakpoint-sm) mx-auto">
     <header class="flex justify-between">
       <h2 class="h2">{title}</h2>
-      <button class="btn btn-icon variant-ghost-surface" onclick={() => cancelCallback()}>×</button>
+      <button class="btn-icon btn-icon-sm variant-ghost-surface text-2xl font-bold flex items-center justify-center h-10 w-10 -mt-5 -mr-6 top-0 right-0" onclick={() => cancelCallback()}>×</button>
     </header>
     <article>
       <p class="opacity-60">
