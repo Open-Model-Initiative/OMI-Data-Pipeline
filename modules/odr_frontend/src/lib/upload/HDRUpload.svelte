@@ -8,25 +8,14 @@
   // Imports (components)
   import UploadIcon from '$lib/icons/UploadIcon.svelte';
 
+  // Types
+  import type {
+    FileChangeDetails,
+    FileRejectDetails,
+    FileRejection
+  } from '$lib/upload/upload'
+
   const acceptedFileTypes: Array<string> = ['.dng'];
-
-  // Supporting Types
-  type AnyString = string & {};
-  type FileError = "TOO_MANY_FILES" | "FILE_INVALID_TYPE" | "FILE_TOO_LARGE" | "FILE_TOO_SMALL" | "FILE_INVALID" | "FILE_EXISTS" | AnyString;
-
-  interface FileRejection {
-    file: File;
-    errors: FileError[];
-  }
-
-  interface FileChangeDetails {
-    acceptedFiles: File[];
-    rejectedFiles: FileRejection[];
-  }
-
-  interface FileRejectDetails {
-    files: FileRejection[];
-  }
 
   // Props
   let {

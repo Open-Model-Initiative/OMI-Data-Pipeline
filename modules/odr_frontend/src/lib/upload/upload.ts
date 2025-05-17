@@ -33,3 +33,21 @@ export interface UploadState {
   errors: UploadError[];
   selectedFiles: File[];
 }
+
+// Supporting Types
+type AnyString = string & {};
+type FileError = "TOO_MANY_FILES" | "FILE_INVALID_TYPE" | "FILE_TOO_LARGE" | "FILE_TOO_SMALL" | "FILE_INVALID" | "FILE_EXISTS" | AnyString;
+
+export interface FileRejection {
+  file: File;
+  errors: FileError[];
+}
+
+export interface FileChangeDetails {
+  acceptedFiles: File[];
+  rejectedFiles: FileRejection[];
+}
+
+export interface FileRejectDetails {
+  files: FileRejection[];
+}

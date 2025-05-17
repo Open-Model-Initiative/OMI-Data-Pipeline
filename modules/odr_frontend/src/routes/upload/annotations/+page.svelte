@@ -6,11 +6,13 @@
 	import { page } from '$app/state';
 
 	// Imports (components)
-	import JSONLUpload from '$lib/upload/JSONLUpload.svelte';
+	import JSONLUpload from '$lib/upload/jsonl-upload/components/JSONLUpload.svelte';
+
+	// Types
+	import type { User } from '$lib/upload/jsonl-upload/types';
 
 	// State
-	let featureToggles = $derived(page.data.featureToggles);
-	let user = $derived(page.data.session?.user);
+	let user = $derived(page.data.session?.user) as User;
 </script>
 
 <svelte:head>
@@ -19,8 +21,6 @@
 
 <main class="space-y-4">
 	<div class="container h-full mx-auto grid grid-cols-2 gap-4">
-		<!-- {#if featureToggles['JSONL Upload']} -->
-			<JSONLUpload {user} />
-		<!-- {/if} -->
+		<JSONLUpload {user} />
 	</div>
 </main>
