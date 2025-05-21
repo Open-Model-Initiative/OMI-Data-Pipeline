@@ -16,8 +16,10 @@
   } = $props();
 </script>
 
-<div class="card preset-filled-surface-500">
+<div class="card w-full h-full">
   <FileDropzone />
-  <UploadButton {user} />
-  <UploadStatus />
+  <div class="grid place-items-center p-16 preset-filled-surface-500">
+    <UploadButton {user} />
+    <UploadStatus />
+  </div>
 </div>

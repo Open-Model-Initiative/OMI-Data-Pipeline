@@ -4,11 +4,11 @@
 <script lang="ts">
 	// Imports (framework)
 	import { page } from '$app/state';
+	import { Wrench, FileText, Settings, ChevronLeft } from '@lucide/svelte';
 
 	// Imports (components)
 	import HDRUpload from '$lib/upload/HDRUpload.svelte';
-	import { Wrench, FileText, Settings, ChevronLeft } from '@lucide/svelte';
-	import FileFormatModal from '$lib/upload/FileFormatModal.svelte';
+	import ImageFileFormatModal from '$lib/upload/ImageFileFormatModal.svelte';
 
 	// State
 	let user = $derived(page.data.session?.user);
@@ -26,11 +26,11 @@
 </script>
 
 <svelte:head>
-	<title>OMI Data Pipeline</title>
+	<title>Image Upload - OMI Data Pipeline</title>
 </svelte:head>
 
 {#if showFileFormatModal}
-<FileFormatModal closeCallback={closeFileFormatModal} />
+<ImageFileFormatModal closeCallback={closeFileFormatModal} />
 {/if}
 
 <main class="space-y-8 py-10">

@@ -5,8 +5,10 @@
   // Imports (framework)
   import { FileUpload } from '@skeletonlabs/skeleton-svelte';
 
-  // Imports (components)
-  import UploadIcon from '$lib/icons/UploadIcon.svelte';
+  // Icons
+  import IconDropzone from '@lucide/svelte/icons/image-plus';
+  import IconFile from '@lucide/svelte/icons/paperclip';
+  import IconRemove from '@lucide/svelte/icons/circle-x';
 
   // Types
   import type {
@@ -131,7 +133,7 @@
   }
 </script>
 
-<div class="card preset-filled-surface-500">
+<div class="card w-full h-full">
   <FileUpload
     name="files"
     accept={acceptedFileTypes.join(',')}
@@ -139,25 +141,22 @@
     subtext="Currently only accepting RAW images in .DNG"
     onFileChange={changeFiles}
     onFileReject={rejectFiles}
-    classes="container h-3/4 mx-auto"
+    classes="container w-full h-full min-h-100 content-center outline-2 outline-surface-200 outline-dashed"
   >
-
-    {#snippet iconInterface()}<UploadIcon />{/snippet}
-    {#snippet iconFile()}->{/snippet}
-    {#snippet iconFileRemove()}x{/snippet}
+    {#snippet iconInterface()}<IconDropzone class="size-8" />{/snippet}
+    {#snippet iconFile()}<IconFile class="size-4" />{/snippet}
+    {#snippet iconFileRemove()}<IconRemove class="size-4" />{/snippet}
   </FileUpload>
 
-  <div class="grid place-items-center mt-4">
-    <button onclick={uploadFiles} class="mt-4 btn btn-sm variant-outline-primary" disabled={selectedFiles.length === 0}>
-      Upload {selectedFiles.length} file(s)
+  <div class="grid place-items-center p-16 preset-filled-surface-500">
+    <button onclick={uploadFiles} class="btn w-2/3 btn-md bg-surface-300" disabled={selectedFiles.length === 0}>
+      Upload
     </button>
-  </div>
 
-  {#if uploadStatus}
-  <div class="grid place-items-center mt-4">
-    <div class="w-full max-w-md shadow-md rounded-lg overflow-hidden">
+    {#if uploadStatus}
+    <div class="w-full mt-1 max-w-md rounded-lg overflow-hidden">
       <div class="p-4">
-        <div class="grid place-items-center">
+        <div class="grid place-items-center preset-filled-surface-500">
           <p class="text-lg font-semibold mb-2">{uploadStatus}</p>
         </div>
 
@@ -176,10 +175,8 @@
             </ul>
           </div>
         {/if}
-
       </div>
     </div>
+    {/if}
   </div>
-  {/if}
-
 </div>
