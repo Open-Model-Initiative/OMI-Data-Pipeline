@@ -13,6 +13,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Users | OMI Data Pipeline</title>
+</svelte:head>
+
 <h1>USERS</h1>
 <div class="table-container">
 	<table class="table">

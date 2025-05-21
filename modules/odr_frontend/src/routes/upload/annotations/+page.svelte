@@ -29,7 +29,7 @@
 </script>
 
 <svelte:head>
-	<title>Annotation Upload - OMI Data Pipeline</title>
+	<title>Annotation Upload | OMI Data Pipeline</title>
 </svelte:head>
 
 {#if showFileFormatModal}

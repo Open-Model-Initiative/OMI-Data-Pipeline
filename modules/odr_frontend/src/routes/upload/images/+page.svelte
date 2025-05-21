@@ -26,7 +26,7 @@
 </script>
 
 <svelte:head>
-	<title>Image Upload - OMI Data Pipeline</title>
+	<title>Image Upload | OMI Data Pipeline</title>
 </svelte:head>
 
 {#if showFileFormatModal}

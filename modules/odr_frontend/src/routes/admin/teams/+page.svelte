@@ -169,6 +169,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Teams | OMI Data Pipeline</title>
+</svelte:head>
+
 {#if showTeamCreationConfirmation}
 <CustomModal
 	title='Please Confirm'
