@@ -3,14 +3,19 @@ import { error, redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { PG_API } from '$lib/server/pg';
 import { mkdir } from 'fs/promises';
-import { join } from 'path';
-import fs from 'fs';
 
 import { S3Client } from "@aws-sdk/client-s3";
 import { db } from '../../../db';
 import { contents } from '../../../db/schemas/contents';
 
-import { handleFileUpload, saveFileLocally, uploadToS3 } from '$lib/upload/shared';
+import {
+    handleFileUpload,
+    JSONL_DIR,
+    saveFileLocally,
+    setupLocalDirectories,
+    setupS3Client,
+    uploadToS3
+} from '$lib/upload/shared';
 
 export const load: PageServerLoad = async (event) => {
 	const session = await event.locals.auth();
@@ -27,17 +32,10 @@ export const load: PageServerLoad = async (event) => {
 	};
 };
 
-const UPLOAD_DIR = join(process.cwd(), 'uploads');
-const JSONL_DIR = join(UPLOAD_DIR, 'jsonl');
 const API_BASE_URL = process.env.API_SERVICE_URL ?? 'http://odr-api:31100/api/v1';
 
-let s3Client: S3Client | null = null;
-
-if (process.env.AWS_S3_ENABLED === 'true') {
-  s3Client = new S3Client();
-} else {
-  console.warn('AWS S3 is not enabled');
-}
+const s3Client: S3Client | null = setupS3Client();
+setupLocalDirectories()
 
 async function makeJsonApiCall(endpoint: string, data: any) {
     console.log(`Sending data to ${endpoint}:`, JSON.stringify(data, null, 2));
@@ -60,14 +58,6 @@ async function makeJsonApiCall(endpoint: string, data: any) {
         console.error(`Error calling ${endpoint}:`, error);
         throw new Error(`API error (${endpoint}): ${error instanceof Error ? error.message : String(error)}`);
     }
-}
-
-// Ensure directories exist
-if (!fs.existsSync(UPLOAD_DIR)) {
-    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-}
-if (!fs.existsSync(JSONL_DIR)) {
-    fs.mkdirSync(JSONL_DIR, { recursive: true });
 }
 
 export const actions = {

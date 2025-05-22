@@ -1,7 +1,43 @@
 // SPDX-License-Identifier: Apache-2.0
+import fs from 'fs';
 import { join } from 'path';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { writeFile, mkdir } from 'fs/promises';
+
+const UPLOAD_DIR = join(process.cwd(), 'uploads');
+export const PENDING_DIR = join(UPLOAD_DIR, 'pending');
+const REJECTED_DIR = join(UPLOAD_DIR, 'rejected');
+const FLAGGED_DIR = join(UPLOAD_DIR, 'flagged');
+export const JSONL_DIR = join(UPLOAD_DIR, 'jsonl');
+
+export function setupS3Client() {
+  if (process.env.AWS_S3_ENABLED === 'true') {
+    return new S3Client();
+  } else {
+    console.warn('AWS S3 is not enabled');
+    return null
+  }
+}
+
+export function setupLocalDirectories() {
+  if (process.env.NODE_ENV !== 'production' || !process.env.AWS_S3_BUCKET) {
+    if (!fs.existsSync(UPLOAD_DIR)) {
+        fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(PENDING_DIR)) {
+        fs.mkdirSync(PENDING_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(REJECTED_DIR)) {
+        fs.mkdirSync(REJECTED_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(FLAGGED_DIR)) {
+        fs.mkdirSync(FLAGGED_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(JSONL_DIR)) {
+        fs.mkdirSync(JSONL_DIR, { recursive: true });
+    }
+  }
+}
 
 export function handleFileUpload(file: File, timestamp: string, userId: string): { uniqueFileName: string, fileExtension: string } {
   if (!(file instanceof File)) {
