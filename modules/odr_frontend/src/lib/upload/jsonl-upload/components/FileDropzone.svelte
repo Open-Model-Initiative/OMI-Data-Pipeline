@@ -15,7 +15,7 @@
   import type {
     FileChangeDetails,
     FileRejectDetails
-  } from '$lib/upload/upload'
+  } from '$lib/upload/types/upload.types'
 
   // Bind to the files in the store
   let {
