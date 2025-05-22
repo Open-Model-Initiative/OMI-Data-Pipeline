@@ -4,7 +4,6 @@
 <script lang="ts">
 	// Imports (framework)
 	import { page } from '$app/state';
-	import { Wrench, FileText, Settings, ChevronLeft } from '@lucide/svelte';
 
 	// Imports (components)
 	import AnnotationFileFormatModal from '$lib/upload/AnnotationFileFormatModal.svelte';
