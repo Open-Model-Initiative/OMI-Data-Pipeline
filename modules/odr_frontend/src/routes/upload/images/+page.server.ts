@@ -2,13 +2,15 @@
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { PG_API } from '$lib/server/pg';
-import { writeFile, mkdir } from 'fs/promises';
+import { mkdir } from 'fs/promises';
 import { join } from 'path';
 import fs from 'fs';
 
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client } from "@aws-sdk/client-s3";
 import { db } from '../../../db';
 import { contents } from '../../../db/schemas/contents';
+
+import { handleFileUpload, saveFileLocally, uploadToS3 } from '$lib/upload/shared';
 
 export const load: PageServerLoad = async (event) => {
 	const session = await event.locals.auth();
@@ -58,48 +60,6 @@ async function makeImageApiCall(endpoint: string, file: Blob, filename: string) 
         console.error(`Error calling ${endpoint}:`, error);
         throw new Error(`API error (${endpoint}): ${error instanceof Error ? error.message : String(error)}`);
     }
-}
-
-function handleFileUpload(file: File, timestamp: string, userId: string): { uniqueFileName: string, fileExtension: string } {
-    if (!(file instanceof File)) {
-		throw new Error('No file uploaded')
-    }
-
-    if (!userId || typeof userId !== 'string') {
-		throw new Error('No user ID provided')
-    }
-
-    const originalFilename = file.name;
-    const fileExtension = originalFilename.split('.').pop() ?? '';
-    const uniqueFileName = `${userId}_${timestamp}.${fileExtension}`;
-
-    return { uniqueFileName, fileExtension };
-}
-
-async function uploadToS3(key: string, body: Buffer | string) {
-    if (!s3Client) {
-        throw new Error('S3 client is not initialized');
-    }
-
-    await s3Client.send(new PutObjectCommand({
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: key,
-        Body: body,
-    }));
-
-    console.log(`File uploaded to S3: ${key}`);
-}
-
-async function saveFileLocally(directory: string, fileName: string, content: Buffer | ArrayBuffer | string) {
-    await mkdir(directory, { recursive: true });
-    const filePath = join(directory, fileName);
-	if (Buffer.isBuffer(content) || content instanceof ArrayBuffer) {
-		await writeFile(filePath, new Uint8Array(content));
-	} else {
-		await writeFile(filePath, content);
-	}
-
-    console.log(`File saved locally: ${filePath}`);
 }
 
 // Ensure directories exist
@@ -161,9 +121,9 @@ export const actions = {
 			if (process.env.NODE_ENV === 'production' && process.env.AWS_S3_BUCKET) {
 			  	// S3 upload for production
 
-				await uploadToS3(uniqueFileName, cleanedBuffer);
-				await uploadToS3(jpgFileName, jpgBuffer);
-            	await uploadToS3(metadataFileName, metadataContent);
+				await uploadToS3(s3Client, uniqueFileName, cleanedBuffer);
+				await uploadToS3(s3Client, jpgFileName, jpgBuffer);
+            	await uploadToS3(s3Client, metadataFileName, metadataContent);
 			} else {
 				// Local file system for development
 				await mkdir(REJECTED_DIR, { recursive: true });
