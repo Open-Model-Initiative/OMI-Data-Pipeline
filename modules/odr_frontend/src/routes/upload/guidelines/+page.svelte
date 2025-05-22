@@ -15,10 +15,20 @@
 	<main class="container mx-auto p-4">
 		<Guidelines />
 
-		<a href="/upload/images" class="flex items-center text-primary-500 hover:underline">
+		<button
+			on:click={() => {
+				if (window.history.length > 1) {
+					history.back();
+				} else {
+					// Fallback to a default location if there's no history
+					window.location.href = "/";
+				}
+			}}
+			class="flex items-center text-primary-500 hover:underline cursor-pointer"
+		>
 			<ChevronLeft size={16} />
 			<span>Back</span>
-		</a>
+		</button>
 	</main>
 </div>
 
