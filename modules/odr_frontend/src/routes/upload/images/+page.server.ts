@@ -13,7 +13,8 @@ import {
     saveFileLocally,
     setupLocalDirectories,
     setupS3Client,
-    uploadToS3
+    uploadToS3,
+		getFormData
 } from '$lib/upload/shared';
 
 export const load: PageServerLoad = async (event) => {
@@ -48,9 +49,7 @@ async function makeImageApiCall(endpoint: string, file: Blob, filename: string) 
 
 export const actions = {
 	uploadHDR: async ({ request }: RequestEvent) => {
-		const formData = await request.formData();
-		const file = formData.get('file') as File;
-		const userId = formData.get('userId') as string;
+		const { file, userId } = await getFormData(request)
 		const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
 
 		const { uniqueFileName, fileExtension } = handleFileUpload(file, timestamp, userId);

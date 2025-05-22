@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { error, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { mkdir } from 'fs/promises';
 
 import { S3Client } from "@aws-sdk/client-s3";
 import { db } from '../../../db';
@@ -14,7 +13,8 @@ import {
     saveFileLocally,
     setupLocalDirectories,
     setupS3Client,
-    uploadToS3
+    uploadToS3,
+    getFormData
 } from '$lib/upload/shared';
 
 export const load: PageServerLoad = async (event) => {
@@ -51,9 +51,7 @@ async function makeJsonApiCall(endpoint: string, data: any) {
 
 export const actions = {
 	uploadJSONL: async ({ request }: RequestEvent) => {
-		const formData = await request.formData();
-		const file = formData.get('file') as File;
-		const userId = formData.get('userId') as string;
+        const { file, userId } = await getFormData(request)
 		const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
 
 		const { uniqueFileName, fileExtension } = handleFileUpload(file, timestamp, userId);
@@ -264,7 +262,6 @@ export const actions = {
 				await uploadToS3(s3Client, uniqueFileName, Buffer.from(fileBuffer));
 			} else {
 				// Local file system for development
-				await mkdir(JSONL_DIR, { recursive: true });
 				const fileBuffer = await file.arrayBuffer();
 				await saveFileLocally(JSONL_DIR, uniqueFileName, fileBuffer);
 			}

@@ -98,3 +98,11 @@ export async function saveFileLocally(directory: string, fileName: string, conte
 
   console.log(`File saved locally: ${filePath}`);
 }
+
+export async function getFormData(request: Request) {
+  const formData = await request.formData();
+  const file = formData.get('file') as File;
+  const userId = formData.get('userId') as string;
+
+  return { file, userId }
+}
