@@ -15,7 +15,7 @@
     FileChangeDetails,
     FileRejectDetails,
     FileRejection
-  } from '$lib/upload/upload'
+  } from '$lib/upload/types/upload.types'
 
   const acceptedFileTypes: Array<string> = ['.dng'];
 

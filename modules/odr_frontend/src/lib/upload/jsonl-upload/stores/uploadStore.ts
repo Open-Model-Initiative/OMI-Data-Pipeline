@@ -3,8 +3,8 @@
  * Store for managing JSONL file upload state
  */
 import { writable } from 'svelte/store';
-import type { UploadState, UploadError, User, ParsedUploadResult } from '../types';
-import { ACCEPTED_FILE_TYPES, UPLOAD_MESSAGES, UPLOAD_STATUSES } from '../constants';
+import type { UploadState, UploadError, User, ParsedUploadResult } from '$lib/upload/types/upload.types';
+import { ACCEPTED_FILE_TYPES, UPLOAD_MESSAGES } from '../constants';
 
 // Initial state
 const initialState: UploadState = {

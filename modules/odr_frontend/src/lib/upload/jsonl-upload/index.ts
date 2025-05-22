@@ -10,7 +10,7 @@
 export { default as JSONLUpload } from './components/JSONLUpload.svelte';
 
 // Export types for external use
-export type { User, UploadState, UploadError } from './types';
+export type { User, UploadState, UploadError } from '../types/upload.types';
 
 // Export the store for advanced usage
 export { uploadStore } from './stores/uploadStore';
