@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
+import { redirect } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
+import { PG_API } from '$lib/server/pg';
+
 import fs from 'fs';
 import { join } from 'path';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
@@ -9,6 +13,20 @@ export const PENDING_DIR = join(UPLOAD_DIR, 'pending');
 const REJECTED_DIR = join(UPLOAD_DIR, 'rejected');
 const FLAGGED_DIR = join(UPLOAD_DIR, 'flagged');
 export const JSONL_DIR = join(UPLOAD_DIR, 'jsonl');
+
+export async function handlePageLoad(event: RequestEvent) {
+  const session = await event.locals.auth();
+  if (!session?.user) throw redirect(303, '/auth');
+
+  const featureToggles = await PG_API.featureToggles.getAll();
+  const featureToggleMap = Object.fromEntries(
+    featureToggles.map(toggle => [toggle.feature_name, toggle.is_enabled])
+  );
+
+  return {
+    featureToggles: featureToggleMap
+  };
+}
 
 export function setupS3Client() {
   if (process.env.AWS_S3_ENABLED === 'true') {

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
-import { error, redirect, type RequestEvent } from '@sveltejs/kit';
+import { error, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { PG_API } from '$lib/server/pg';
 import { mkdir } from 'fs/promises';
 
 import { S3Client } from "@aws-sdk/client-s3";
@@ -9,6 +8,7 @@ import { db } from '../../../db';
 import { contents } from '../../../db/schemas/contents';
 
 import {
+    handlePageLoad,
     handleFileUpload,
     JSONL_DIR,
     saveFileLocally,
@@ -18,18 +18,7 @@ import {
 } from '$lib/upload/shared';
 
 export const load: PageServerLoad = async (event) => {
-	const session = await event.locals.auth();
-	if (!session?.user) throw redirect(303, '/auth');
-
-	const featureToggles = await PG_API.featureToggles.getAll();
-
-	const featureToggleMap = Object.fromEntries(
-		featureToggles.map(toggle => [toggle.feature_name, toggle.is_enabled])
-	);
-
-	return {
-		featureToggles: featureToggleMap
-	};
+    await handlePageLoad(event);
 };
 
 const API_BASE_URL = process.env.API_SERVICE_URL ?? 'http://odr-api:31100/api/v1';
