@@ -49,53 +49,57 @@ async function makeJsonApiCall(endpoint: string, data: any) {
     }
 }
 
+async function parseJsonlContent(fileContent: string): Promise<Map<string, any[]>> {
+    const jsonlLines = fileContent.trim().split('\n');
+    const fileAnnotationsMap = new Map<string, any[]>();
+
+    for (const line of jsonlLines) {
+        try {
+            const jsonData = JSON.parse(line);
+            const filename = jsonData.filename;
+
+            if (!filename) {
+                console.error('Missing filename in JSONL line:', line);
+                continue;
+            }
+
+            // Get or create array for this filename
+            if (!fileAnnotationsMap.has(filename)) {
+                fileAnnotationsMap.set(filename, []);
+            }
+
+            // Add this annotation to the filename's array
+            fileAnnotationsMap.get(filename)?.push(jsonData);
+        } catch (parseError) {
+            console.error('Error parsing JSONL line:', parseError);
+
+            error(400, {
+                message: 'Error parsing JSONL line:' + parseError
+            });
+        }
+    }
+
+    console.log(`Found ${fileAnnotationsMap.size} unique filenames in JSONL file`);
+    let totalAnnotations = 0;
+    fileAnnotationsMap.forEach((annotations, filename) => {
+        console.log(`File ${filename} has ${annotations.length} annotation(s)`);
+        totalAnnotations += annotations.length;
+    });
+    console.log(`Total annotations to process: ${totalAnnotations}`);
+
+    return fileAnnotationsMap;
+}
+
 export const actions = {
 	uploadJSONL: async ({ request }: RequestEvent) => {
         const { file, userId } = await getFormData(request)
 		const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
 
-		const { uniqueFileName, fileExtension } = handleFileUpload(file, timestamp, userId);
+		const { uniqueFileName } = handleFileUpload(file, timestamp, userId);
 
 		try {
 			const fileContent = await file.text();
-            const jsonlLines = fileContent.trim().split('\n');
-
-            // Parse all lines to extract unique filenames and their annotations
-            const fileAnnotationsMap = new Map<string, any[]>();
-
-            for (const line of jsonlLines) {
-                try {
-                    const jsonData = JSON.parse(line);
-                    const filename = jsonData.filename;
-
-                    if (!filename) {
-                        console.error('Missing filename in JSONL line:', line);
-                        continue;
-                    }
-
-                    // Get or create array for this filename
-                    if (!fileAnnotationsMap.has(filename)) {
-                        fileAnnotationsMap.set(filename, []);
-                    }
-
-                    // Add this annotation to the filename's array
-                    fileAnnotationsMap.get(filename)?.push(jsonData);
-                } catch (parseError) {
-                    console.error('Error parsing JSONL line:', parseError);
-
-                    error(400, {
-                        message: 'Error parsing JSONL line:' + parseError
-                    });
-                }
-            }
-
-            console.log(`Found ${fileAnnotationsMap.size} unique filenames in JSONL file`);
-            let totalAnnotations = 0;
-            fileAnnotationsMap.forEach((annotations, filename) => {
-                console.log(`File ${filename} has ${annotations.length} annotation(s)`);
-                totalAnnotations += annotations.length;
-            });
-            console.log(`Total annotations to process: ${totalAnnotations}`);
+            const fileAnnotationsMap = await parseJsonlContent(fileContent);
 
             // Create content records for each unique filename
             const contentRecords = [];
