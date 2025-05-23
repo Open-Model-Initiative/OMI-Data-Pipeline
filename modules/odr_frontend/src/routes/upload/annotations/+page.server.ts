@@ -123,6 +123,62 @@ function getContentData(baseFilename: string, userId: string) {
     }
 }
 
+function getAnnotationData(annotation: any, contentId: number, userId: string) {
+    const parsed = annotation.parsed;
+
+    if (!parsed) {
+        return null;
+    }
+
+    // Extract tags if available
+    const tags = parsed.tags_list ?
+        parsed.tags_list.map((tagObj: any) => tagObj.tag) :
+        [];
+
+    // Create annotation record with all available data
+    const annotationData = {
+        annotation: {
+            // Include all parsed data
+            ...parsed,
+            // Ensure these specific fields are included
+            'short_caption': parsed.short_caption || '',
+            'dense_caption': parsed.dense_caption || '',
+            'tags': tags,
+            'tags_list': parsed.tags_list || [],
+            'verification': parsed.verification || '',
+            // Include model information
+            'model': annotation.model || '',
+            'provider': annotation.provider || '',
+            'config_name': annotation.config_name || '',
+            'version': annotation.version || ''
+        },
+        manually_adjusted: false,
+        overall_rating: 5,
+        content_id: contentId,
+        from_user_id: Number(userId) || 0,
+        annotation_source_ids: []
+    };
+
+    return annotationData
+}
+
+async function processAnnotationsForContent(annotations: any[], contentId: number, userId: string, filename: string) {
+    for (const annotation of annotations) {
+        const annotationData = getAnnotationData(annotation, contentId, userId);
+
+        if (annotationData) {
+            try {
+                const response = await makeJsonApiCall('/annotations', annotationData);
+                console.log(`Added annotation for content ID ${contentId}, annotation ID: ${response.id}`);
+            } catch (annotationError) {
+                console.error('Error adding annotation:', annotationError);
+            }
+        } else {
+            console.warn(`No parsed data found for annotation in file ${filename}`);
+        }
+    }
+}
+
 export const actions = {
 	uploadJSONL: async ({ request }: RequestEvent) => {
         const { file, userId } = await getFormData(request)
@@ -134,130 +190,32 @@ export const actions = {
 			const fileContent = await file.text();
             const fileAnnotationsMap = await parseJsonlContent(fileContent);
 
-            // Create content records for each unique filename
             const contentRecords = [];
 
-            try {
-                // Process each unique filename
-                for (const [filename, annotations] of fileAnnotationsMap.entries()) {
-                    // Extract just the filename without path
-                    const baseFilename = filename.split('/').pop() || filename;
+            for (const [filename, annotations] of fileAnnotationsMap.entries()) {
+                const baseFilename = filename.split('/').pop() || filename;
 
-                    // Create a content record for this filename
+                const contentData = getContentData(baseFilename, userId)
+                let contentID = -1
+
+                try {
                     const newContent = await db.insert(contents).values(
                         getContentData(baseFilename, userId)
                     ).returning();
-
                     const contentRecord = newContent[0];
                     contentRecords.push(contentRecord);
-                    console.log(`Created content record for ${baseFilename}:`, contentRecord.id);
-
-                    // Process all annotations for this filename
-                    for (const annotation of annotations) {
-                        const parsed = annotation.parsed;
-
-                        if (parsed) {
-                            // Extract tags if available
-                            const tags = parsed.tags_list ?
-                                parsed.tags_list.map((tagObj: any) => tagObj.tag) :
-                                [];
-
-                            // Create annotation record with all available data
-                            const annotationData = {
-                                annotation: {
-                                    // Include all parsed data
-                                    ...parsed,
-                                    // Ensure these specific fields are included
-                                    'short_caption': parsed.short_caption || '',
-                                    'dense_caption': parsed.dense_caption || '',
-                                    'tags': tags,
-                                    'tags_list': parsed.tags_list || [],
-                                    'verification': parsed.verification || '',
-                                    // Include model information
-                                    'model': annotation.model || '',
-                                    'provider': annotation.provider || '',
-                                    'config_name': annotation.config_name || '',
-                                    'version': annotation.version || ''
-                                },
-                                manually_adjusted: false,
-                                overall_rating: 5,
-                                content_id: contentRecord.id,
-                                from_user_id: Number(userId) || 1,
-                                annotation_source_ids: []
-                            };
-
-                            // Create annotation using API call
-                            try {
-                                const response = await makeJsonApiCall('/annotations', annotationData);
-                                console.log(`Added annotation for content ID ${contentRecord.id}, annotation ID: ${response.id}`);
-                            } catch (annotationError) {
-                                console.error('Error adding annotation:', annotationError);
-                            }
-                        } else {
-                            console.warn(`No parsed data found for annotation in file ${filename}`);
-                        }
-                    }
-                }
-            } catch (dbError) {
-                console.error('Database connection error:', dbError);
-                console.log('Falling back to API for content creation');
-
-                // Fallback to API if database connection fails
-                for (const [filename, annotations] of fileAnnotationsMap.entries()) {
-                    // Extract just the filename without path
-                    const baseFilename = filename.split('/').pop() || filename;
-
-                    const contentData = getContentData(baseFilename, userId)
-
+                    contentID = contentRecord.id
+                } catch (dbError) {
+                    console.error('Database connection error:', dbError);
+                    console.log('Falling back to API for content creation');
                     const from_user_id = Number(userId) || 0;
                     const contentResponse = await makeJsonApiCall(`/content/?from_user_id=${from_user_id}`, contentData);
                     contentRecords.push(contentResponse);
-
-                    // Process all annotations for this filename
-                    for (const annotation of annotations) {
-                        const parsed = annotation.parsed;
-
-                        if (parsed) {
-                            // Extract tags if available
-                            const tags = parsed.tags_list ?
-                                parsed.tags_list.map((tagObj: any) => tagObj.tag) :
-                                [];
-
-                            // Create annotation record with all available data
-                            const annotationData = {
-                                annotation: {
-                                    // Include all parsed data
-                                    ...parsed,
-                                    // Ensure these specific fields are included
-                                    'short_caption': parsed.short_caption || '',
-                                    'dense_caption': parsed.dense_caption || '',
-                                    'tags': tags,
-                                    'tags_list': parsed.tags_list || [],
-                                    'verification': parsed.verification || '',
-                                    // Include model information
-                                    'model': annotation.model || '',
-                                    'provider': annotation.provider || '',
-                                    'config_name': annotation.config_name || '',
-                                    'version': annotation.version || ''
-                                },
-                                manually_adjusted: false,
-                                overall_rating: 5,
-                                content_id: contentResponse.id,
-                                from_user_id: Number(userId) || 0,
-                                annotation_source_ids: []
-                            };
-
-                            try {
-                                const response = await makeJsonApiCall('/annotations', annotationData);
-                                console.log(`Added annotation for content ID ${contentResponse.id}, annotation ID: ${response.id}`);
-                            } catch (annotationError) {
-                                console.error('Error adding annotation:', annotationError);
-                            }
-                        } else {
-                            console.warn(`No parsed data found for annotation in file ${filename}`);
-                        }
-                    }
+                    contentID = contentResponse.id
                 }
+
+                console.log(`Created content record for ${baseFilename}: ${contentID}`);
+                processAnnotationsForContent(annotations, contentID, userId, filename)
             }
 
             await saveFile(file, uniqueFileName)
