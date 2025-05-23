@@ -90,6 +90,39 @@ async function parseJsonlContent(fileContent: string): Promise<Map<string, any[]
     return fileAnnotationsMap;
 }
 
+async function saveFile(file: File, uniqueFileName: string): Promise<void> {
+    if (process.env.NODE_ENV === 'production' && process.env.AWS_S3_BUCKET) {
+        // S3 upload for production
+        const fileBuffer = await file.arrayBuffer();
+        await uploadToS3(s3Client, uniqueFileName, Buffer.from(fileBuffer));
+    } else {
+        // Local file system for development
+        const fileBuffer = await file.arrayBuffer();
+        await saveFileLocally(JSONL_DIR, uniqueFileName, fileBuffer);
+    }
+}
+
+function getContentData(baseFilename: string, userId: string) {
+    return {
+        name: baseFilename,
+        type: 'IMAGE' as const,
+        hash: "", // Needs calculated elsewhere
+        phash: "", // Needs calculated elsewhere
+        width: 0, // Need image to calculate
+        height: 0, // Need image to calculate
+        url: [],
+        format: baseFilename.split('.').pop() || 'jpg',
+        size: 0, // We don't have the actual file size
+        status: 'PENDING' as const,
+        license: "CDLA-Permissive-2.0",
+        licenseUrl: "https://cdla.dev/permissive-2-0/",
+        flags: 0,
+        meta: {},
+        fromUserId: Number(userId) || 1,
+        updatedAt: new Date().toISOString()
+    }
+}
+
 export const actions = {
 	uploadJSONL: async ({ request }: RequestEvent) => {
         const { file, userId } = await getFormData(request)
@@ -111,24 +144,9 @@ export const actions = {
                     const baseFilename = filename.split('/').pop() || filename;
 
                     // Create a content record for this filename
-                    const newContent = await db.insert(contents).values({
-                        name: baseFilename,
-                        type: 'IMAGE',
-                        hash: "", // Needs calculated elsewhere
-                        phash: "", // Needs calculated elsewhere
-                        width: 0, // Need image to calculate
-                        height: 0, // Need image to calculate
-                        url: [],
-                        format: baseFilename.split('.').pop() || 'jpg',
-                        size: 0, // We don't have the actual file size
-                        status: 'PENDING',
-                        license: "CDLA-Permissive-2.0",
-                        licenseUrl: "https://cdla.dev/permissive-2-0/",
-                        flags: 0,
-                        meta: {},
-                        fromUserId: Number(userId) || 1,
-                        updatedAt: new Date().toISOString()
-                    }).returning();
+                    const newContent = await db.insert(contents).values(
+                        getContentData(baseFilename, userId)
+                    ).returning();
 
                     const contentRecord = newContent[0];
                     contentRecords.push(contentRecord);
@@ -259,16 +277,7 @@ export const actions = {
                 }
             }
 
-			// Save the file to disk or S3
-			if (process.env.NODE_ENV === 'production' && process.env.AWS_S3_BUCKET) {
-				// S3 upload for production
-				const fileBuffer = await file.arrayBuffer();
-				await uploadToS3(s3Client, uniqueFileName, Buffer.from(fileBuffer));
-			} else {
-				// Local file system for development
-				const fileBuffer = await file.arrayBuffer();
-				await saveFileLocally(JSONL_DIR, uniqueFileName, fileBuffer);
-			}
+            await saveFile(file, uniqueFileName)
 
 			return {
 				type: 'success',

@@ -88,11 +88,10 @@ export const actions = {
 			const metadataFileName = `${userId}_${timestamp}.json`
 
 			if (process.env.NODE_ENV === 'production' && process.env.AWS_S3_BUCKET) {
-			  	// S3 upload for production
-
+			  // S3 upload for production
 				await uploadToS3(s3Client, uniqueFileName, cleanedBuffer);
 				await uploadToS3(s3Client, jpgFileName, jpgBuffer);
-            	await uploadToS3(s3Client, metadataFileName, metadataContent);
+        await uploadToS3(s3Client, metadataFileName, metadataContent);
 			} else {
 				// Local file system for development
 				await saveFileLocally(PENDING_DIR, uniqueFileName, cleanedBuffer);
@@ -100,28 +99,28 @@ export const actions = {
 				await saveFileLocally(PENDING_DIR, metadataFileName, metadataContent);
 			}
 
-            // Create a content record for this image
-            const newContent = await db.insert(contents).values({
-                name: uniqueFileName,
-                type: 'IMAGE',
-                hash: "", // Needs calculated elsewhere
-                phash: "", // Needs calculated elsewhere
-                width: metadataData.width || 0,
-                height: metadataData.height || 0,
-                url: [],
-                format: fileExtension,
-                size: file.size,
-                status: 'PENDING',
-                license: "CDLA-Permissive-2.0",
-                licenseUrl: "https://cdla.dev/permissive-2-0/",
-                flags: 0,
-                meta: metadataData,
-                fromUserId: Number(userId) || 1,
-                updatedAt: new Date().toISOString()
-            }).returning();
+			// Create a content record for this image
+			const newContent = await db.insert(contents).values({
+				name: uniqueFileName,
+				type: 'IMAGE',
+				hash: "", // Needs calculated elsewhere
+				phash: "", // Needs calculated elsewhere
+				width: metadataData.width || 0,
+				height: metadataData.height || 0,
+				url: [],
+				format: fileExtension,
+				size: file.size,
+				status: 'PENDING',
+				license: "CDLA-Permissive-2.0",
+				licenseUrl: "https://cdla.dev/permissive-2-0/",
+				flags: 0,
+				meta: metadataData,
+				fromUserId: Number(userId) || 1,
+				updatedAt: new Date().toISOString()
+			}).returning();
 
-            const contentRecord = newContent[0];
-            console.log(`Created content record for ${uniqueFileName}:`, contentRecord.id);
+			const contentRecord = newContent[0];
+			console.log(`Created content record for ${uniqueFileName}:`, contentRecord.id);
 
 			return { success: true, uniqueFileName };
 		} catch (error) {
