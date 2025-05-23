@@ -106,8 +106,8 @@ function getContentData(baseFilename: string, userId: string) {
     return {
         name: baseFilename,
         type: 'IMAGE' as const,
-        hash: "", // Needs calculated elsewhere
-        phash: "", // Needs calculated elsewhere
+        hash: "",
+        phash: "",
         width: 0, // Need image to calculate
         height: 0, // Need image to calculate
         url: [],
@@ -207,24 +207,7 @@ export const actions = {
                     // Extract just the filename without path
                     const baseFilename = filename.split('/').pop() || filename;
 
-                    const contentData = {
-                        name: baseFilename,
-                        type: "image",
-                        hash: "",
-                        phash: "",
-                        width: 0,
-                        height: 0,
-                        url: [],
-                        format: baseFilename.split('.').pop() || 'jpg',
-                        size: 0,
-                        status: "pending",
-                        license: "CDLA-Permissive-2.0",
-                        license_url: "https://cdla.dev/permissive-2-0/",
-                        flags: 0,
-                        meta: {},
-                        content_authors: [],
-                        sources: []
-                    };
+                    const contentData = getContentData(baseFilename, userId)
 
                     const from_user_id = Number(userId) || 0;
                     const contentResponse = await makeJsonApiCall(`/content/?from_user_id=${from_user_id}`, contentData);
