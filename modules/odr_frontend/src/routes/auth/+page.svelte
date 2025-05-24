@@ -16,6 +16,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Auth | OMI Data Pipeline</title>
+</svelte:head>
+
 <div class="flex flex-col items-center justify-center -mt-16 passthrough-div">
 	<h1 class="text-4xl font-bold mb-8 text-center">Data Pipeline Application</h1>
 

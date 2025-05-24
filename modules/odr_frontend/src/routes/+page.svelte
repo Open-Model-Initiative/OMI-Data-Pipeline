@@ -2,30 +2,32 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	// Imports (framework)
-	import { page } from '$app/state';
-
 	// Imports (components)
-	import HDRUpload from '$lib/components/HDRUpload.svelte';
-  	import JSONLUpload from '$lib/components/JSONLUpload.svelte';
+	import TabButtons from '$lib/landing_page/TabButtons.svelte';
+	import CommunityReviewTab from '$lib/landing_page/CommunityReviewTab.svelte';
+	import MyContributionsTab from '$lib/landing_page/MyContributionsTab.svelte';
+	import UploadTab from '$lib/landing_page/UploadTab.svelte';
 
-	// State
-	let featureToggles = $derived(page.data.featureToggles);
-	let user = $derived(page.data.session?.user);
+	// State variables
+	let activeTab = $state('upload'); // 'upload', 'myContributions', 'communityReview'
 </script>
 
 <svelte:head>
 	<title>OMI Data Pipeline</title>
 </svelte:head>
 
-<main class="space-y-4">
-	<div class="container h-full mx-auto grid grid-cols-2 gap-4">
-		{#if featureToggles['HDR Image Upload']}
-			<HDRUpload {user} />
-		{/if}
+<main class="space-y-8 py-10">
+	<div class="container mx-auto max-w-8xl">
+		<TabButtons bind:activeTab />
 
-		<!-- {#if featureToggles['JSONL Upload']} -->
-			<JSONLUpload {user} />
-		<!-- {/if} -->
+		<div class="bg-surface-100-900 p-8 rounded-lg shadow-lg min-h-[75vh] flex items-center justify-center">
+			{#if activeTab === 'upload'}
+				<UploadTab />
+			{:else if activeTab === 'myContributions'}
+				<MyContributionsTab />
+			{:else if activeTab === 'communityReview'}
+				<CommunityReviewTab />
+			{/if}
+		</div>
 	</div>
 </main>

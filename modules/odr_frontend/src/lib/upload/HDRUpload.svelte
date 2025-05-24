@@ -5,8 +5,17 @@
   // Imports (framework)
   import { FileUpload } from '@skeletonlabs/skeleton-svelte';
 
-  // Imports (components)
-  import UploadIcon from '$lib/icons/UploadIcon.svelte';
+  // Icons
+  import IconDropzone from '@lucide/svelte/icons/image-plus';
+  import IconFile from '@lucide/svelte/icons/paperclip';
+  import IconRemove from '@lucide/svelte/icons/circle-x';
+
+  // Types
+  import type {
+    FileChangeDetails,
+    FileRejectDetails,
+    FileRejection
+  } from '$lib/upload/types/upload.types'
 
   const acceptedFileTypes: Array<string> = ['.dng'];
 
@@ -20,7 +29,7 @@
   let uploadStatus: string = $state('');
   let uploadProgress: number = $state(0);
 
-  let errorArray: string[] = $state([]);
+  let errorArray: FileRejection[] = $state([]);
 
   let selectedFiles: Array<File> = $derived(files ? Array.from(files) : []);
 
@@ -53,20 +62,40 @@
                           if (isSuccess) {
                               uploadStatus = `${file.name} uploaded successfully`;
                           } else {
-                              errorArray.push(`Failed to upload ${file.name}: ${message}`);
+                            const newError: FileRejection = {
+                              file: file,
+                              errors: [`Failed to upload ${file.name}: ${message}`]
+                            };
+                            errorArray.push(newError);
                           }
                       } else {
-                          errorArray.push(`Failed to upload ${file.name}: Unexpected response type`);
+                          const newError: FileRejection = {
+                            file: file,
+                            errors: [`Failed to upload ${file.name}: Unexpected response type`]
+                          };
+                          errorArray.push(newError);
                       }
                   } else {
-                      errorArray.push(`Failed to upload ${file.name}: ${response.statusText || 'Unknown error'}`);
+                      const newError: FileRejection = {
+                        file: file,
+                        errors: [`Failed to upload ${file.name}: ${response.statusText || 'Unknown error'}`]
+                      };
+                      errorArray.push(newError);
                   }
               } catch (error: unknown) {
                   console.error('Error uploading file:', error);
                   if (error instanceof Error) {
-                      errorArray.push(`Error uploading ${file.name}: ${error.message}`);
+                    const newError: FileRejection = {
+                      file: file,
+                      errors: [`Error uploading ${file.name}: ${error.message}`]
+                    };
+                    errorArray.push(newError);
                   } else {
-                      errorArray.push(`Error uploading ${file.name}: Unknown error`);
+                    const newError: FileRejection = {
+                      file: file,
+                      errors: [`Error uploading ${file.name}: Unknown error`]
+                    };
+                    errorArray.push(newError);
                   }
               }
 
@@ -74,7 +103,11 @@
               uploadProgress = Math.round((completedUploads / totalFiles) * 100);
 
           } else {
-              errorArray.push(`Invalid file type: ${file.name}`);
+            const newError: FileRejection = {
+              file: file,
+              errors: [`Invalid file type: ${file.name}`]
+            };
+            errorArray.push(newError);
           }
       }
 
@@ -87,20 +120,20 @@
       files = new DataTransfer().files
   }
 
-  function changeFiles(fileDetails) {
+  function changeFiles(fileDetails: FileChangeDetails) {
     console.log(fileDetails)
 
     selectedFiles = fileDetails.acceptedFiles
   }
 
-  function rejectFiles(fileDetails) {
+  function rejectFiles(fileDetails: FileRejectDetails) {
     console.log(fileDetails)
 
-    errorArray = fileDetails.rejectedFiles
+    errorArray = fileDetails.files
   }
 </script>
 
-<div class="card preset-filled-surface-500">
+<div class="card w-full h-full">
   <FileUpload
     name="files"
     accept={acceptedFileTypes.join(',')}
@@ -108,25 +141,22 @@
     subtext="Currently only accepting RAW images in .DNG"
     onFileChange={changeFiles}
     onFileReject={rejectFiles}
-    classes="container h-3/4 mx-auto"
+    classes="container w-full h-full min-h-100 content-center outline-2 outline-surface-200 outline-dashed"
   >
-
-    {#snippet iconInterface()}<UploadIcon />{/snippet}
-    {#snippet iconFile()}->{/snippet}
-    {#snippet iconFileRemove()}x{/snippet}
+    {#snippet iconInterface()}<IconDropzone class="size-8" />{/snippet}
+    {#snippet iconFile()}<IconFile class="size-4" />{/snippet}
+    {#snippet iconFileRemove()}<IconRemove class="size-4" />{/snippet}
   </FileUpload>
 
-  <div class="grid place-items-center mt-4">
-    <button onclick={uploadFiles} class="mt-4 btn btn-sm variant-outline-primary" disabled={selectedFiles.length === 0}>
-      Upload {selectedFiles.length} file(s)
+  <div class="grid place-items-center p-16 preset-filled-surface-500">
+    <button onclick={uploadFiles} class="btn w-2/3 btn-md bg-surface-300" disabled={selectedFiles.length === 0}>
+      Upload
     </button>
-  </div>
 
-  {#if uploadStatus}
-  <div class="grid place-items-center mt-4">
-    <div class="w-full max-w-md shadow-md rounded-lg overflow-hidden">
+    {#if uploadStatus}
+    <div class="w-full mt-1 max-w-md rounded-lg overflow-hidden">
       <div class="p-4">
-        <div class="grid place-items-center">
+        <div class="grid place-items-center preset-filled-surface-500">
           <p class="text-lg font-semibold mb-2">{uploadStatus}</p>
         </div>
 
@@ -145,10 +175,8 @@
             </ul>
           </div>
         {/if}
-
       </div>
     </div>
+    {/if}
   </div>
-  {/if}
-
 </div>

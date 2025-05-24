@@ -1,117 +1,108 @@
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
-  .modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.modal-content {
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .modal-content img {
-    max-width: 90vw;
-    max-height: 90vh;
-    object-fit: contain;
-  }
+.modal-content img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+}
 
-  .close-button {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 30px;
-      height: 30px;
-      background-color: rgba(255, 255, 255, 0.7);
-      border: none;
-      border-radius: 50%;
-      font-size: 20px;
-      line-height: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      padding: 0;
-      color: #333;
-  }
-
-  .close-button:hover,
-  .close-button:focus {
-      background-color: rgba(255, 255, 255, 0.9);
-      outline: none;
-  }
-
-  .image-preview-button {
-    background: none;
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.7);
     border: none;
-    padding: 0;
-    cursor: pointer;
-  }
-
-  .image-preview-button:focus {
-    outline: 2px solid blue;
-  }
-
-  .preview-image {
-    max-width: 100px;
-    max-height: 100px;
-    object-fit: cover;
-  }
-
-  .moderation-page {
-    height: calc(100vh - 128px);
-    overflow: auto;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
     display: flex;
-    flex-direction: column;
-  }
-
-  .table-container {
-    flex: 1;
-    overflow: auto;
-    margin-bottom: 1rem;
-  }
-
-  .pagination {
-    margin-top: auto;
-    padding: 1rem 0;
-  }
-
-  h1 {
-    padding: 0 0 1rem 0;
-  }
-
-  .variant-filled-warning {
-    background-color: #ffc107;
-    color: #000;
-  }
-
-  .variant-filled-warning:hover {
-    background-color: #e0a800;
-  }
-
-  .button-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .flag-button {
-    display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 0.25rem;
-    height: 100%;
-  }
+    align-items: center;
+    cursor: pointer;
+    padding: 0;
+    color: #333;
+}
 
-  .flag-button :global(svg) {
-    display: block;
-  }
+.close-button:hover,
+.close-button:focus {
+    background-color: rgba(255, 255, 255, 0.9);
+    outline: none;
+}
+
+.image-preview-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.image-preview-button:focus {
+  outline: 2px solid blue;
+}
+
+.preview-image {
+  max-width: 100px;
+  max-height: 100px;
+  object-fit: cover;
+}
+
+.moderation-page {
+  height: calc(100vh - 128px);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-container {
+  flex: 1;
+  overflow: auto;
+  margin-bottom: 1rem;
+}
+
+.pagination {
+  margin-top: auto;
+  padding: 1rem 0;
+}
+
+h1 {
+  padding: 0 0 1rem 0;
+}
+
+.button-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.flag-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  height: 100%;
+}
+
+.flag-button :global(svg) {
+  display: block;
+}

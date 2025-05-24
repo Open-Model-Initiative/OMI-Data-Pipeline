@@ -22,16 +22,13 @@
   }
 </script>
 
-<div class="grid place-items-center mt-4">
-  <button
-    onclick={handleUpload}
-    class="mt-4 btn btn-sm variant-outline-primary"
-    disabled={selectedFiles.length === 0 || isUploading}
-  >
-    {#if isUploading}
-      Uploading...
-    {:else}
-      Upload {selectedFiles.length} file(s)
-    {/if}
-  </button>
-</div>
+<button onclick={handleUpload}
+  class="btn w-2/3 btn-md bg-surface-300"
+  disabled={selectedFiles.length === 0 || isUploading}
+>
+  {#if isUploading}
+    Uploading...
+  {:else}
+    Upload
+  {/if}
+</button>

@@ -9,6 +9,10 @@
     let featureToggles = $derived(page.data.featureToggles);
 </script>
 
+<svelte:head>
+	<title>Feature Toggles | OMI Data Pipeline</title>
+</svelte:head>
+
 <h1>Feature Toggles</h1>
 <div class="table-container">
 	<table class="table">

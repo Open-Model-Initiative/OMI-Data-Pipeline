@@ -58,6 +58,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Moderation | OMI Data Pipeline</title>
+</svelte:head>
+
 <div class="moderation-page">
   <h1>HDR Image Moderation</h1>
   <div class="table-container">

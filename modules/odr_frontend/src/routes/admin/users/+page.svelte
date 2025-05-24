@@ -4,7 +4,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 
-	import UserRow from '$lib/components/UserRow.svelte';
+	import UserRow from '$lib/admin/UserRow.svelte';
 
 	const users = $derived(page.data.users ?? []);
 
@@ -12,6 +12,10 @@
 		console.log(`Would have removed ${id}`)
 	}
 </script>
+
+<svelte:head>
+	<title>Users | OMI Data Pipeline</title>
+</svelte:head>
 
 <h1>USERS</h1>
 <div class="table-container">

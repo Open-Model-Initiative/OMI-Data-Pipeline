@@ -2,13 +2,14 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	import '../moderation/moderation.css';
+	import { page } from '$app/state';
 	import { Combobox } from '@skeletonlabs/skeleton-svelte';
 
-	import UserRow from '$lib/components/UserRow.svelte';
-	import { page } from '$app/state';
-
 	import { toaster } from '$lib/toaster-svelte'
+
+	import UserRow from '$lib/admin/UserRow.svelte';
+	import CustomModal from '$lib/modal/CustomModal.svelte';
+
 
 	let teams = $derived(page.data.teams);
 	let users = $derived(page.data.users);
@@ -155,51 +156,41 @@
 		showTeamCreationConfirmation = true;
 	}
 
+	function closeTeamCreationConfirmation() {
+		showTeamCreationConfirmation = false;
+	}
+
 	function openAddUserToTeamConfirmation() {
 		showAddUserToTeamConfirmation = true;
 	}
+
+	function closeAddUserToTeamConfirmation() {
+		showAddUserToTeamConfirmation = false;
+	}
 </script>
 
+<svelte:head>
+	<title>Teams | OMI Data Pipeline</title>
+</svelte:head>
+
 {#if showTeamCreationConfirmation}
-<div class="modal-overlay">
-  <div class="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-(--breakpoint-sm) mx-auto">
-    <header class="flex justify-between">
-      <h2 class="h2">Please Confirm</h2>
-      <button class="btn btn-icon variant-ghost-surface" onclick={() => showTeamCreationConfirmation = false}>×</button>
-    </header>
-    <article>
-      <p class="opacity-60">
-        Are you sure you wish to create a team named {newTeamName}?
-      </p>
-    </article>
-    <footer class="flex justify-end gap-4">
-      <button type="button" class="btn preset-tonal" onclick={() => showTeamCreationConfirmation = false}>Cancel</button>
-      <button type="button" class="btn preset-filled" onclick={async () => await createTeam()}>Confirm</button>
-    </footer>
-  </div>
-</div>
+<CustomModal
+	title='Please Confirm'
+	message='Are you sure you wish to create a team named <span class="text-primary-500">{newTeamName}</span>?'
+	confirmCallback = {createTeam}
+	cancelCallback = {closeTeamCreationConfirmation}
+/>
 {/if}
 
 {#if showAddUserToTeamConfirmation}
-<div class="modal-overlay">
-  <div class="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-(--breakpoint-sm) mx-auto">
-    <header class="flex justify-between">
-      <h2 class="h2">Please Confirm</h2>
-      <button class="btn btn-icon variant-ghost-surface" onclick={() => showAddUserToTeamConfirmation = false}>×</button>
-    </header>
-    <article>
-      <p>
-        Are you sure you wish to add <span class="text-primary-500">{users.find((u) => u.id === parseInt(selectedUser[0]))?.name}</span> to the <span class="text-primary-500">{teams.find((t) => t.id === selected_team)?.name}</span> team?
-      </p>
-    </article>
-    <footer class="flex justify-end gap-4">
-      <button type="button" class="btn preset-tonal" onclick={() => showAddUserToTeamConfirmation = false}>Cancel</button>
-      <button type="button" class="btn preset-filled" onclick={async () => await addUserToTeam(parseInt(selectedUser[0]), selected_team ?? -1)}>Confirm</button>
-    </footer>
-  </div>
-</div>
+<CustomModal
+	title='Please Confirm'
+	message="Are you sure you wish to add <span class='text-primary-500'>{users.find((u) => u.id === parseInt(selectedUser[0]))?.name}</span>
+	 to the <span class='text-primary-500'>{teams.find((t) => t.id === selected_team)?.name}</span> team?"
+	confirmCallback = {async () => await addUserToTeam(parseInt(selectedUser[0]), selected_team ?? -1)}
+	cancelCallback = {closeAddUserToTeamConfirmation}
+/>
 {/if}
-
 
 <div class="flex flex-row gap-8">
 	<div class="flex flex-col w-1/2">
@@ -207,8 +198,6 @@
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="pt-2 shrink-0 text-base text-gray-500 select-none sm:text-sm/6">+</div>
 			<input class="border pl-2 focus-visible:outline-none focus-visible:border-primary-800" type="search" placeholder="Create a new Team..." bind:value={newTeamName} />
-			<!-- class:preset-tonal border border-surface-500={!validName} -->
-			<!-- class:variant-ghost={!validName} -->
 			<button
 				class="p-2 rounded-md preset-filled-primary-500"
 				onclick={() => {
