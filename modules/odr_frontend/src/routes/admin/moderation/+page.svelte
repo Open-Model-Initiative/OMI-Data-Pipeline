@@ -2,18 +2,33 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	import { getToastStore } from '@skeletonlabs/skeleton';
+	// Imports
 	import './moderation.css';
 	import { goto } from '$app/navigation';
 	import { TriangleExclamationSolid } from 'svelte-awesome-icons';
 	import type { PageData } from './$types';
-	import { MakeToastMessage } from '$lib/toastHelper';
+	import { toaster } from '$lib/toaster-svelte'
 
-	const toastStore = getToastStore();
+	// Props
+	let { data }: { data: PageData } = $props();
 
-	export let data: PageData;
+	// State
+	let images = $state(data.images);
+	let currentPage = $derived(data.currentPage);
+	let totalPages = $derived(data.totalPages);
 
-	$: ({ images, currentPage, totalPages } = data);
+	let showPreview = $state(false);
+	let previewImageUrl = $state('');
+
+	// Functions
+	function openPreview(imageUrl: string) {
+		previewImageUrl = imageUrl;
+		showPreview = true;
+	}
+
+	function closePreview() {
+		showPreview = false;
+	}
 
 	function goToPage(page: number) {
 		goto(`?page=${page}`);
@@ -31,30 +46,26 @@
 		if (response.ok) {
 			// Remove the image from the list
 			images = images.filter(img => img.filename !== filename);
-			toastStore.trigger(MakeToastMessage(`Image ${action}ed successfully.`, 'success'));
+			toaster.success({
+				title: `Image ${action}ed successfully.`
+			});
 		} else {
 			console.error(`Failed to ${action} image`);
-			toastStore.trigger(MakeToastMessage(`Failed to ${action} image`, 'error'));
+			toaster.error({
+				title: `Failed to ${action} image`
+			});
 		}
 	}
-
-	let showPreview = false;
-	let previewImageUrl = '';
-
-	function openPreview(imageUrl: string) {
-		previewImageUrl = imageUrl;
-		showPreview = true;
-	}
-
-	function closePreview() {
-		showPreview = false;
-	}
 </script>
+
+<svelte:head>
+	<title>Moderation | OMI Data Pipeline</title>
+</svelte:head>
 
 <div class="moderation-page">
   <h1>HDR Image Moderation</h1>
   <div class="table-container">
-	<table class="table table-hover">
+	<table class="table">
 	  <thead>
 		<tr>
 		  <th>Image</th>
@@ -69,7 +80,7 @@
 			<td>
 				<button
 					class="image-preview-button"
-					on:click={() => openPreview(image.previewUrl)}
+					onclick={() => openPreview(image.previewUrl)}
 				>
 					<img
 						src={image.previewUrl}
@@ -85,23 +96,23 @@
 			<td>
 				<div class="button-group">
 				  <button
-					class="btn btn-sm variant-filled-success"
-					on:click={() => handleAction('accept', image.filename)}
-					title="Accept the image"
+						class="btn btn-sm preset-filled-success-500"
+						onclick={() => handleAction('accept', image.filename)}
+						title="Accept the image"
 				  >
-					Accept
+						Accept
 				  </button>
 				  <button
-					class="btn btn-sm variant-filled-error"
-					on:click={() => handleAction('reject', image.filename)}
-					title="Reject the image"
+						class="btn btn-sm preset-filled-error-500"
+						onclick={() => handleAction('reject', image.filename)}
+						title="Reject the image"
 				  >
-					Reject
+						Reject
 				  </button>
 				  <button
-					class="btn btn-sm variant-filled-warning flag-button"
-					on:click={() => handleAction('flag', image.filename)}
-					title="Flag suspected illegal content"
+						class="btn btn-sm preset-filled-warning-500 flag-button"
+						onclick={() => handleAction('flag', image.filename)}
+						title="Flag suspected illegal content"
 				  >
 					<TriangleExclamationSolid size="23" />
 				  </button>
@@ -115,23 +126,25 @@
 
 {#if showPreview}
 	<div class="modal-overlay">
-		<button class="close-button" on:click={closePreview}>×</button>
+		<button class="close-button" onclick={closePreview}>×</button>
 		<div class="modal-content">
-		<img src={previewImageUrl} alt="Large Preview" />
+			<img src={previewImageUrl} alt="Large Preview" />
 		</div>
-  	</div>
+  </div>
 {/if}
 
 
   <div class="pagination">
 	{#if currentPage > 1}
-	  <button class='btn btn-sm variant-outline-primary' on:click={() => goToPage(currentPage - 1)}>Previous</button>
+	  <button class='btn btn-sm variant-outline-primary' onclick={() => goToPage(currentPage - 1)}>Previous</button>
 	{/if}
 
-	<span>Page {currentPage} of {totalPages}</span>
+	{#if totalPages > 1}
+		<span>Page {currentPage} of {totalPages}</span>
+	{/if}
 
 	{#if currentPage < totalPages}
-	  <button class='btn btn-sm variant-outline-primary' on:click={() => goToPage(currentPage + 1)}>Next</button>
+	  <button class='btn btn-sm variant-outline-primary' onclick={() => goToPage(currentPage + 1)}>Next</button>
 	{/if}
   </div>
 </div>

@@ -27,9 +27,6 @@ RUN pip install --no-cache-dir -r requirements.txt --extra-index-url https://dow
 COPY modules/odr_core /app/modules/odr_core
 RUN pip install --no-cache-dir -e /app/modules/odr_core
 
-COPY modules/odr_monitoring /app/modules/odr_monitoring
-RUN pip install --no-cache-dir -e /app/modules/odr_monitoring
-
 COPY modules/odr_api /app
 RUN pip install --no-cache-dir .
 

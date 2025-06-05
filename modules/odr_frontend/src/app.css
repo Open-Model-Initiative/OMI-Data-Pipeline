@@ -1,0 +1,22 @@
+@import "tailwindcss";
+@import "@skeletonlabs/skeleton";
+
+@import "@skeletonlabs/skeleton/optional/presets";
+
+@import "../omi-theme.css";
+
+
+/* rocket theme */
+@font-face {
+	font-family: 'Space Grotesk';
+	src: url('/fonts/SpaceGrotesk.ttf');
+	font-display: swap;
+}
+
+.passthrough-div {
+  pointer-events: none;
+}
+
+.passthrough-div * {
+  pointer-events: auto;
+}

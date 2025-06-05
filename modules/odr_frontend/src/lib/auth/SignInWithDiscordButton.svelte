@@ -8,7 +8,7 @@
 
 <button
     class="discord-signin-button"
-    on:click={() => signIn('discord')}
+    onclick={() => signIn('discord')}
 >
     <DiscordIcon color="white" />
     <span>Sign in with Discord</span>

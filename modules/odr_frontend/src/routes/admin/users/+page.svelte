@@ -2,17 +2,24 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { toggleSuperUser } from '$lib/admin/utils';
-	import type { IDBUser } from '$lib/server/pg';
-	import UserRow from './UserRow.svelte';
-	export let data;
-	const users = data.users;
+	import { page } from '$app/state';
+
+	import UserRow from '$lib/admin/UserRow.svelte';
+
+	const users = $derived(page.data.users ?? []);
+
+	function removeUser(id: string) {
+		console.log(`Would have removed ${id}`)
+	}
 </script>
+
+<svelte:head>
+	<title>Users | OMI Data Pipeline</title>
+</svelte:head>
 
 <h1>USERS</h1>
 <div class="table-container">
-	<table class="table table-hover">
+	<table class="table">
 		<thead>
 			<tr>
 				<th>id</th>
@@ -24,13 +31,13 @@
 		</thead>
 		<tbody>
 			{#each users as user}
-				<UserRow {user} />
+				<UserRow {user} remove={removeUser} withRemove={false} />
 			{/each}
 		</tbody>
 		<tfoot>
 			<tr>
-				<th colspan="3"># Users</th>
-				<td>{users.length}</td>
+				<th># Users</th>
+				<td colspan="4">{users.length}</td>
 			</tr>
 		</tfoot>
 	</table>

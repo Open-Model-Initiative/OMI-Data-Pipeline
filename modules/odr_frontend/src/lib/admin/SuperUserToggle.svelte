@@ -3,15 +3,40 @@
 -->
 <script lang="ts">
 	import type { IDBUser } from '$lib/server/pg';
-	import { SlideToggle } from '@skeletonlabs/skeleton';
+	// import { Switch } from '@skeletonlabs/skeleton-svelte';
+	import CustomToggle from '$lib/admin/CustomToggle.svelte';
 	import { toggleSuperUser } from './utils';
 
-	export let checked: boolean;
-	export let user: IDBUser;
+	let {
+      checked = $bindable(false),
+      user
+    }: {
+      checked: boolean,
+      user: IDBUser
+    } = $props()
 
-	function _toggleSuperUser(e: Event) {
+
+	function _toggleSuperUser() {
 		toggleSuperUser(user);
 	}
 </script>
 
-<SlideToggle name="slide" bind:checked on:change={_toggleSuperUser} />
+<!-- <Switch
+	name="slide"
+	checked={checked}
+	onCheckedChange={(e) => {
+		checked = e.checked;
+		user.is_superuser = checked;
+		_toggleSuperUser();
+	}}
+/> -->
+
+<CustomToggle
+  name="super-user-toggle"
+  {checked}
+  onCheckedChange={(e) => {
+      checked = e.checked;
+      user.is_superuser = checked;
+      _toggleSuperUser();
+  }}
+/>

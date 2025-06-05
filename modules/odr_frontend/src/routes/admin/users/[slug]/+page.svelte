@@ -4,7 +4,9 @@
 <script lang="ts">
 	import SuperUserToggle from '$lib/admin/SuperUserToggle.svelte';
 
-	export let data;
+	let {
+		data
+	} = $props()
 	let user = data.user;
 	let teams = data.teams;
 </script>
@@ -18,7 +20,7 @@
 
 <h2 class="h2">Teams</h2>
 <div class="table-container">
-	<table class="table table-hover">
+	<table class="table">
 		<thead>
 			<tr>
 				<th>Team name</th>

@@ -2,16 +2,40 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
-    import type { IFeatureToggle } from '$lib/server/pg';
-    import { SlideToggle } from '@skeletonlabs/skeleton';
-    import { toggleFeature } from './utils';
+  import type { IFeatureToggle } from '$lib/server/pg';
+  // import { Switch } from '@skeletonlabs/skeleton-svelte';
+  import CustomToggle from '$lib/admin/CustomToggle.svelte';
+  import { toggleFeature } from './utils';
 
-    export let checked: boolean;
-    export let feature: IFeatureToggle;
+  let {
+    checked,
+    feature
+  }: {
+    checked: boolean,
+    feature: IFeatureToggle
+  } = $props()
 
-    function _toggleFeature() {
-        toggleFeature(feature);
-    }
+  function _toggleFeature() {
+      toggleFeature(feature);
+  }
 </script>
 
-<SlideToggle name="slide" bind:checked on:change={_toggleFeature} />
+<!-- <Switch
+  name="slide"
+  checked={checked}
+  onCheckedChange={(e) => {
+    checked = e.checked;
+    feature.is_enabled = checked;
+    _toggleFeature();
+  }}
+/> -->
+
+<CustomToggle
+    name="feature-toggle"
+    {checked}
+    onCheckedChange={(e) => {
+        checked = e.checked;
+        feature.is_enabled = checked;
+        _toggleFeature();
+    }}
+/>

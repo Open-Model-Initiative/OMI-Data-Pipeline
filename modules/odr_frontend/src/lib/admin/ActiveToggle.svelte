@@ -3,15 +3,40 @@
 -->
 <script lang="ts">
 	import type { IDBUser } from '$lib/server/pg';
-	import { SlideToggle } from '@skeletonlabs/skeleton';
-	import { toggleActive } from './utils';
+  // import { Switch } from '@skeletonlabs/skeleton-svelte';
+  import CustomToggle from '$lib/admin/CustomToggle.svelte';
+  import { toggleActive } from './utils';
 
-	export let checked: boolean = false;
-	export let user: IDBUser;
+  let {
+      checked = $bindable(false),
+      user
+    }: {
+      checked: boolean,
+      user: IDBUser
+    } = $props()
 
-	function _toggleActive(e: Event) {
-		toggleActive(user);
-	}
+
+  function _toggleActive() {
+    toggleActive(user);
+  }
 </script>
 
-<SlideToggle name="slide" bind:checked on:change={_toggleActive} />
+<!-- <Switch
+  name="slide"
+  checked={checked}
+  onCheckedChange={(e) => {
+    checked = e.checked;
+    user.is_active = checked;
+    _toggleActive();
+  }}
+/> -->
+
+<CustomToggle
+  name="active-toggle"
+  {checked}
+  onCheckedChange={(e) => {
+      checked = e.checked;
+      user.is_active = checked;
+      _toggleActive();
+  }}
+/>

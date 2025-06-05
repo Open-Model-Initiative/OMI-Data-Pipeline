@@ -45,7 +45,7 @@ Along with installing the necessary components, this will copy the ``.env.templa
 You can update this file if you'd like to change any of the default values for your development environment. You will at minimum need to provide a valid ID and SECRET for at least one authentication method.
 See the following 'Setup an OAuth2 Test Application' section for information on how to set these up.
 
-You will also need to make matching updates in the frontends .env in ``./modules/frontend/.env``
+You will also need to make matching updates in the frontends .env in ``./modules/odr_frontend/.env``
 
 Setup an OAuth2 Test Application
 --------------------------------

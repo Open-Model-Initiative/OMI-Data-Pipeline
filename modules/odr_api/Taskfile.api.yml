@@ -1,56 +1,18 @@
 # SPDX-License-Identifier: Apache-2.0
-version: 3
+version: '3'
 
 tasks:
-  start:
-    desc: Start the api server
+  default:
+    desc: List all the tasks
     cmds:
-      - cmd: powershell.exe -ExecutionPolicy ByPass ./modules/odr_api/scripts/run_server.ps1 -debug
-        platforms: [windows]
-      - cmd: ./modules/odr_api/scripts/start_server.sh --debug
-        platforms: [linux, darwin]
-      - echo 'Start server stub'
+      - task --list
 
-  debug:
-    desc: Start the api server in debug mode
+  test-all:
+    desc: Run all API tests
     cmds:
-      - cmd: python -m debugpy --listen 0.0.0.0:5678 --wait-for-client ./modules/odr_api/odr_api/main.py
-        platforms: [windows, linux, darwin]
-  build:
-    dir: '{{.ROOT_DIR}}'
-    cmds:
-      - docker build -t odr-api -f modules/odr_api/docker/Dockerfile.api .
+      - docker compose exec odr-api python -m pytest modules/odr_api/tests
 
-  run:
-    desc: Run the odr-api Docker container
-    dir: '{{.ROOT_DIR}}'
+  health-check:
+    desc: Run API health check
     cmds:
-      - >
-        docker run -d
-        --name odr-api
-        -p 31100:31100
-        --env-file .env
-        -e POSTGRES_URL={{.POSTGRES_URL | default "postgres"}}
-        odr-api
-    vars:
-      POSTGRES_URL:
-        sh: echo $POSTGRES_URL
-
-  stop:
-    cmds:
-      - docker stop odr-api
-      - docker rm odr-api
-
-  logs:
-    cmds:
-      - docker logs odr-api -f
-
-  shell:
-    cmds:
-      - docker exec -it odr-api /bin/sh
-
-  redeploy:
-    cmds:
-      - task: stop
-      - task: build
-      - task: run
+      - docker compose exec odr-api python modules/odr_api/tests/integration/models/test_health.py --host=odr-api --port=31100
