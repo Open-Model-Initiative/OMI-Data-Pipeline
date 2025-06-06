@@ -38,6 +38,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Set build info
+      run: |
+        echo "VITE_GIT_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+        echo "VITE_GIT_COMMIT=${GITHUB_SHA}" >> $GITHUB_ENV
+        echo "VITE_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_ENV
+        echo "VITE_APP_VERSION=$(node -p "require('./modules/odr_frontend/package.json').version")" >> $GITHUB_ENV
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -54,7 +61,14 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest -f modules/odr_frontend/docker/Dockerfile.frontend.dev .
+        docker build \
+          --build-arg VITE_GIT_BRANCH="${{ env.VITE_GIT_BRANCH }}" \
+          --build-arg VITE_GIT_COMMIT="${{ env.VITE_GIT_COMMIT }}" \
+          --build-arg VITE_BUILD_TIME="${{ env.VITE_BUILD_TIME }}" \
+          --build-arg VITE_APP_VERSION="${{ env.VITE_APP_VERSION }}" \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest \
+          -f modules/odr_frontend/docker/Dockerfile.frontend.dev .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG" >> $GITHUB_OUTPUT

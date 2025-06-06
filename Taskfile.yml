@@ -67,7 +67,12 @@ tasks:
   dev:migrate:
     desc: Start development environment with database migrations enabled
     cmds:
-      - RUN_MIGRATIONS=true docker compose up --watch --build
+      - |
+        export VITE_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "local-dev")
+        export VITE_GIT_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo "unknown")
+        export VITE_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        export VITE_APP_VERSION=$(node -p "require('./modules/odr_frontend/package.json').version" 2>/dev/null || echo "dev")
+        RUN_MIGRATIONS=true docker compose up --watch --build
 
   test-all:
     desc: Run all tests against the running docker container setup

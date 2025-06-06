@@ -57,6 +57,10 @@ services:
       API_SERVICE_URL: http://odr-api:31100/api/v1
       UPLOAD_DIR: /app/uploads
       RUN_MIGRATIONS: ${RUN_MIGRATIONS:-false}
+      VITE_GIT_BRANCH: ${VITE_GIT_BRANCH}
+      VITE_GIT_COMMIT: ${VITE_GIT_COMMIT}
+      VITE_BUILD_TIME: ${VITE_BUILD_TIME}
+      VITE_APP_VERSION: ${VITE_APP_VERSION}
     env_file:
       - ./modules/odr_frontend/.env
     networks:
