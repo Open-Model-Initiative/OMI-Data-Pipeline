@@ -92,11 +92,11 @@ class EcsStack(Stack):
             "AWS_S3_ENABLED": "true",
         }
 
-        omi_sercret_arn = (
+        omi_secret_arn = (
             "arn:aws:secretsmanager:us-east-1:474668405283:secret:omi-oauth2-i1xzfK"
         )
 
-        hf_sercret_arn = (
+        hf_secret_arn = (
             "arn:aws:secretsmanager:us-east-1:474668405283:secret:huggingface-0L3S0w"
         )
 
@@ -115,7 +115,7 @@ class EcsStack(Stack):
                 secret=secretsmanager.Secret.from_secret_complete_arn(
                     self,
                     "hf-token",
-                    secret_complete_arn=hf_sercret_arn,
+                    secret_complete_arn=hf_secret_arn,
                 ),
                 field="token",
             ),
@@ -123,7 +123,7 @@ class EcsStack(Stack):
                 secret=secretsmanager.Secret.from_secret_complete_arn(
                     self,
                     "hf-hdr-dataset-name",
-                    secret_complete_arn=hf_sercret_arn,
+                    secret_complete_arn=hf_secret_arn,
                 ),
                 field="hdr_dataset_name",
             ),
@@ -137,7 +137,7 @@ class EcsStack(Stack):
                 secret=secretsmanager.Secret.from_secret_complete_arn(
                     self,
                     "google-oauth2-id",
-                    secret_complete_arn=omi_sercret_arn,
+                    secret_complete_arn=omi_secret_arn,
                 ),
                 field="google_client_id",
             ),
@@ -145,7 +145,7 @@ class EcsStack(Stack):
                 secret=secretsmanager.Secret.from_secret_complete_arn(
                     self,
                     "google-oauth2-secret",
-                    secret_complete_arn=omi_sercret_arn,
+                    secret_complete_arn=omi_secret_arn,
                 ),
                 field="google_client_secret",
             ),
@@ -153,7 +153,7 @@ class EcsStack(Stack):
                 secret=secretsmanager.Secret.from_secret_complete_arn(
                     self,
                     "github-oauth2-id",
-                    secret_complete_arn=omi_sercret_arn,
+                    secret_complete_arn=omi_secret_arn,
                 ),
                 field="github_client_id",
             ),
@@ -161,7 +161,7 @@ class EcsStack(Stack):
                 secret=secretsmanager.Secret.from_secret_complete_arn(
                     self,
                     "github-oauth2-secret",
-                    secret_complete_arn=omi_sercret_arn,
+                    secret_complete_arn=omi_secret_arn,
                 ),
                 field="github_client_secret",
             ),
@@ -169,7 +169,7 @@ class EcsStack(Stack):
                 secret=secretsmanager.Secret.from_secret_complete_arn(
                     self,
                     "discord-oauth2-id",
-                    secret_complete_arn=omi_sercret_arn,
+                    secret_complete_arn=omi_secret_arn,
                 ),
                 field="discord_client_id",
             ),
@@ -177,7 +177,7 @@ class EcsStack(Stack):
                 secret=secretsmanager.Secret.from_secret_complete_arn(
                     self,
                     "discord-oauth2-secret",
-                    secret_complete_arn=omi_sercret_arn,
+                    secret_complete_arn=omi_secret_arn,
                 ),
                 field="discord_client_secret",
             ),
