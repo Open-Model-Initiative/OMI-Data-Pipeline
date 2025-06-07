@@ -6,6 +6,12 @@ import { sequence } from '@sveltejs/kit/hooks';
 const authorizationHandle:Handle = async ({ event, resolve }) => {
 	const session = await event.locals.auth();
 
+	console.log('AUTH_SECRET exists:', !!process.env.AUTH_SECRET);
+	console.log('GITHUB_ID exists:', !!process.env.GITHUB_ID);
+	console.log('GITHUB_SECRET exists:', !!process.env.GITHUB_SECRET);
+	console.log('DISCORD_ID exists:', !!process.env.DISCORD_ID);
+	console.log('DISCORD_SECRET exists:', !!process.env.DISCORD_SECRET);
+
 	if (event.url.pathname.startsWith('/auth')) {
 		return resolve(event);
 	} else if (!session) {

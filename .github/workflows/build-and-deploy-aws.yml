@@ -68,7 +68,7 @@ jobs:
           --build-arg VITE_APP_VERSION="${{ env.VITE_APP_VERSION }}" \
           -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG \
           -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest \
-          -f modules/odr_frontend/docker/Dockerfile.frontend.dev .
+          -f modules/odr_frontend/docker/Dockerfile.frontend.prod .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG" >> $GITHUB_OUTPUT

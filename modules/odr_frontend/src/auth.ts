@@ -3,6 +3,7 @@ import { SvelteKitAuth, type Session, type User } from '@auth/sveltekit';
 import GitHub from '@auth/sveltekit/providers/github';
 import discord from '@auth/sveltekit/providers/discord';
 import {
+	AUTH_SECRET,
 	DISCORD_CLIENT_ID,
 	DISCORD_CLIENT_SECRET,
 	GITHUB_CLIENT_ID,
@@ -33,9 +34,21 @@ export const { handle, signIn, signOut } = SvelteKitAuth(async (event) => {
 				clientSecret: DISCORD_CLIENT_SECRET
 			})
 		],
-		//@ts-expect-error
-		secret: event?.platform?.env.AUTH_SECRET,
+		cookies: {
+			sessionToken: {
+				name: 'authjs.session-token',
+				options: {
+					httpOnly: true,
+					sameSite: 'lax',
+					path: '/',
+					secure: process.env.NODE_ENV === 'production',
+					domain: undefined // Let browser set automatically
+				}
+			}
+		},
+		secret: AUTH_SECRET,
 		trustHost: true,
+		useSecureCookies: process.env.NODE_ENV === 'production',
 		adapter: PostgresAdapter(pool),
 		callbacks: {
 			session({ session, user }: { session: Session; user: User }) {

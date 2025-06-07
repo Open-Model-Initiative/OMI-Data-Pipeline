@@ -1,6 +1,4 @@
-# Build stage
-### STUB : Not verified ####
-FROM node:22-alpine AS builder
+FROM node:22-alpine
 WORKDIR /app
 
 # Accept build arguments
@@ -14,39 +12,28 @@ ENV VITE_GIT_BRANCH=$VITE_GIT_BRANCH
 ENV VITE_GIT_COMMIT=$VITE_GIT_COMMIT
 ENV VITE_BUILD_TIME=$VITE_BUILD_TIME
 ENV VITE_APP_VERSION=$VITE_APP_VERSION
-
-# Install pnpm
-RUN npm install -g pnpm
-
-# Copy package.json and pnpm-lock.yaml (if you have one)
-COPY package.json pnpm-lock.yaml* ./
+ENV NODE_ENV=production
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN npm install -g pnpm && \
+    apk add --no-cache aws-cli efs-utils postgresql-client && \
+    mkdir -p /mnt/upload /mnt/models
 
-# Copy the rest of the application code
-COPY . .
+# Copy package.json and pnpm-lock.yaml (if you have one)
+COPY modules/odr_frontend/package.json modules/odr_frontend/pnpm-lock.yaml* ./
 
-# Build the application
-RUN pnpm run build
+# Install dependencies at build time
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
-# Production stage
-FROM node:22-alpine
+# Copy the entrypoint script
+COPY modules/odr_frontend/docker/entrypoint.sh /entrypoint.sh
 
-WORKDIR /app
+# Ensure the entrypoint script has the correct line endings and is executable
+RUN sed -i 's/\r$//' /entrypoint.sh && \
+    chmod +x /entrypoint.sh
 
-# Install pnpm
-RUN npm install -g pnpm
+COPY modules/odr_frontend/ /app/
 
-# Copy built assets from the builder stage
-COPY --from=builder /app/build ./build
-COPY --from=builder /app/package.json .
-
-# Install only production dependencies
-RUN pnpm install --prod
-
-# Expose the application port
-EXPOSE 3000
-
-# Start the application
-CMD ["node", "build"]
+EXPOSE 5173
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["pnpm", "run", "dev", "--", "--host", "0.0.0.0"]

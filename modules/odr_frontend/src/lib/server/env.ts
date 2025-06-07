@@ -17,6 +17,7 @@ export const ENV = {
 };
 
 export const API_URL = ENV.API_SERVICE_URL || ENV.PUBLIC_API_BASE_URL;
+export const AUTH_SECRET = getEnvironmentVariable('AUTH_SECRET');
 export const GITHUB_CLIENT_ID = getEnvironmentVariable('GITHUB_CLIENT_ID');
 export const GITHUB_CLIENT_SECRET = getEnvironmentVariable('GITHUB_CLIENT_SECRET');
 export const DISCORD_CLIENT_ID = getEnvironmentVariable('DISCORD_CLIENT_ID');
