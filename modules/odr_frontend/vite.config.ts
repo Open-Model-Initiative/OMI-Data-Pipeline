@@ -16,9 +16,7 @@ export default defineConfig({
 		allowedHosts: (() => {
 			const hosts = [
 				'localhost',
-				'app.openmodel.foundation',
-				'discord.gg',
-				'github.com'
+				'app.openmodel.foundation'
 			];
 
 			if (process.env.AWS_HOSTNAME) {

@@ -6,6 +6,10 @@ import { sequence } from '@sveltejs/kit/hooks';
 const authorizationHandle:Handle = async ({ event, resolve }) => {
 	const session = await event.locals.auth();
 
+	console.log('Request URL:', event.url.href);
+	console.log('Request Origin:', event.request.headers.get('origin'));
+	console.log('ORIGIN env:', process.env.ORIGIN);
+
 	if (event.url.pathname.startsWith('/auth')) {
 		return resolve(event);
 	} else if (!session) {
