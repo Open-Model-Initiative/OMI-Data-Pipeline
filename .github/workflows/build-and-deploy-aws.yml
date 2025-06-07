@@ -66,6 +66,7 @@ jobs:
           --build-arg VITE_GIT_COMMIT="${{ env.VITE_GIT_COMMIT }}" \
           --build-arg VITE_BUILD_TIME="${{ env.VITE_BUILD_TIME }}" \
           --build-arg VITE_APP_VERSION="${{ env.VITE_APP_VERSION }}" \
+          --build-arg ORIGIN=https://app.openmodel.foundation \
           -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG \
           -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest \
           -f modules/odr_frontend/docker/Dockerfile.frontend.prod .
