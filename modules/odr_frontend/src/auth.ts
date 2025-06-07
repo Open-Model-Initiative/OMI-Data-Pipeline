@@ -23,6 +23,10 @@ const pool = new pg.Pool({
 });
 
 export const { handle, signIn, signOut } = SvelteKitAuth(async (event) => {
+	console.log('X-Forwarded-Proto:', event.request.headers.get('x-forwarded-proto'));
+  console.log('X-Forwarded-Host:', event.request.headers.get('x-forwarded-host'));
+  console.log('Host:', event.request.headers.get('host'));
+
 	const authOptions = {
 		providers: [
 			GitHub({
