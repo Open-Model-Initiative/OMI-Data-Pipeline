@@ -284,6 +284,12 @@ class EcsStack(Stack):
             protocol=elbv2.ApplicationProtocol.HTTPS,
         )
 
+        # Configure load balancer to preserve host header
+        self.frontend_service.load_balancer.set_attribute(
+            key="routing.http.preserve_host_header.enabled",
+            value="true"
+        )
+
         frontend_task_definition.default_container.add_environment(
             "AWS_HOSTNAME", self.frontend_service.load_balancer.load_balancer_dns_name
         )
