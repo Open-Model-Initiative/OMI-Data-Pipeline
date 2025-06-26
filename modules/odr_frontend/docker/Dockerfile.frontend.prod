@@ -1,41 +1,49 @@
-# Build stage
-### STUB : Not verified ####
-FROM node:22-alpine AS builder
-
+FROM node:22-alpine
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
+# Accept build arguments
+ARG VITE_GIT_BRANCH
+ARG VITE_GIT_COMMIT
+ARG VITE_BUILD_TIME
+ARG VITE_APP_VERSION
 
-# Copy package.json and pnpm-lock.yaml (if you have one)
-COPY package.json pnpm-lock.yaml* ./
+# Set as environment variables
+ENV VITE_GIT_BRANCH=$VITE_GIT_BRANCH
+ENV VITE_GIT_COMMIT=$VITE_GIT_COMMIT
+ENV VITE_BUILD_TIME=$VITE_BUILD_TIME
+ENV VITE_APP_VERSION=$VITE_APP_VERSION
+ENV NODE_ENV=production
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN npm install -g pnpm && \
+    apk add --no-cache aws-cli efs-utils postgresql-client && \
+    mkdir -p /mnt/upload /mnt/models
 
-# Copy the rest of the application code
-COPY . .
+# Copy package.json and pnpm-lock.yaml (if you have one)
+COPY modules/odr_frontend/package.json modules/odr_frontend/pnpm-lock.yaml* ./
 
-# Build the application
+# Install dependencies at build time
+RUN pnpm install --frozen-lockfile --ignore-scripts
+
+# Copy the source code
+COPY modules/odr_frontend/ /app/
+
+# Build the application for production
+# Set NODE_ENV to 'build' to skip database connections
+ENV NODE_ENV=build
+ENV AUTH_SECRET="dummy-secret-for-build"
 RUN pnpm run build
 
-# Production stage
-FROM node:22-alpine
+# Reset NODE_ENV to production after build
+ENV NODE_ENV=production
 
-WORKDIR /app
+# Copy the entrypoint script
+COPY modules/odr_frontend/docker/entrypoint.sh /entrypoint.sh
 
-# Install pnpm
-RUN npm install -g pnpm
+# Ensure the entrypoint script has the correct line endings and is executable
+RUN sed -i 's/\r$//' /entrypoint.sh && \
+    chmod +x /entrypoint.sh
 
-# Copy built assets from the builder stage
-COPY --from=builder /app/build ./build
-COPY --from=builder /app/package.json .
-
-# Install only production dependencies
-RUN pnpm install --prod
-
-# Expose the application port
 EXPOSE 3000
-
-# Start the application
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["node", "build"]

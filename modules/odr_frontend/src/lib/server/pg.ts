@@ -45,38 +45,51 @@ export const pg_client_config = {
 
 export const pgClient = new pg.Client(pg_client_config);
 
-// Connect the client once when the module is loaded
-pgClient.connect();
+// Lazy connection - only connect when actually needed
+let isConnected = false;
+async function ensureConnected() {
+	if (!isConnected) {
+		await pgClient.connect();
+		isConnected = true;
+	}
+}
 
 export const PG_API = {
 	users: {
 		get: async (id: number | string): Promise<IDBUser> => {
+			await ensureConnected();
 			const { rows } = await pgClient.query('SELECT * FROM users WHERE id=$1', [id]);
 			return rows[0];
 		},
 		getAll: async (): Promise<IDBUser[]> => {
+			await ensureConnected();
 			const { rows } = await pgClient.query('SELECT * FROM users');
 			return rows;
 		}
 	},
 	teams: {
 		get: async (id: number): Promise<IDBTeam> => {
+			await ensureConnected();
 			const { rows } = await pgClient.query('SELECT * FROM teams WHERE id=$1', [id]);
 			return rows[0];
 		},
 		getAll: async (): Promise<IDBTeam[]> => {
+			await ensureConnected();
 			const { rows } = await pgClient.query('SELECT * FROM teams');
 			return rows;
 		},
 		getUsers: async (team_id: number): Promise<IDBUserTeam[]> => {
+			await ensureConnected();
 			const { rows } = await pgClient.query('SELECT * FROM user_teams WHERE team_id=$1', [team_id]);
 			return rows;
 		},
 		getAllUsers: async (): Promise<IDBUserTeam[]> => {
+			await ensureConnected();
 			const { rows } = await pgClient.query('SELECT * FROM user_teams');
 			return rows;
 		},
 		getUser: async (user_id: number): Promise<IDBUserTeam[]> => {
+			await ensureConnected();
 			const { rows } = await pgClient.query(
 				'SELECT * FROM user_teams t JOIN teams t2 on t2.id=t.team_id WHERE user_id=$1',
 				[user_id]
@@ -86,6 +99,7 @@ export const PG_API = {
 	},
 	featureToggles: {
         getAll: async (): Promise<IFeatureToggle[]> => {
+			await ensureConnected();
             const { rows } = await pgClient.query('SELECT * FROM feature_toggles');
             return rows;
         }
@@ -93,5 +107,7 @@ export const PG_API = {
 };
 
 process.on('exit', () => {
-	pgClient.end();
+	if (isConnected) {
+		pgClient.end();
+	}
 });
