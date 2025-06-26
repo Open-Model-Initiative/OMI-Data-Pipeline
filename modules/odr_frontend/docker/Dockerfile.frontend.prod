@@ -25,6 +25,12 @@ COPY modules/odr_frontend/package.json modules/odr_frontend/pnpm-lock.yaml* ./
 # Install dependencies at build time
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
+# Copy the source code
+COPY modules/odr_frontend/ /app/
+
+# Build the application for production
+RUN pnpm run build
+
 # Copy the entrypoint script
 COPY modules/odr_frontend/docker/entrypoint.sh /entrypoint.sh
 
@@ -32,8 +38,6 @@ COPY modules/odr_frontend/docker/entrypoint.sh /entrypoint.sh
 RUN sed -i 's/\r$//' /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
-COPY modules/odr_frontend/ /app/
-
-EXPOSE 5173
+EXPOSE 3000
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["pnpm", "run", "dev", "--", "--host", "0.0.0.0"]
+CMD ["node", "build"]
