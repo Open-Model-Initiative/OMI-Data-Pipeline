@@ -29,7 +29,13 @@ RUN pnpm install --frozen-lockfile --ignore-scripts
 COPY modules/odr_frontend/ /app/
 
 # Build the application for production
+# Set NODE_ENV to 'build' to skip database connections
+ENV NODE_ENV=build
+ENV AUTH_SECRET="dummy-secret-for-build"
 RUN pnpm run build
+
+# Reset NODE_ENV to production after build
+ENV NODE_ENV=production
 
 # Copy the entrypoint script
 COPY modules/odr_frontend/docker/entrypoint.sh /entrypoint.sh
@@ -38,6 +44,6 @@ COPY modules/odr_frontend/docker/entrypoint.sh /entrypoint.sh
 RUN sed -i 's/\r$//' /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
-EXPOSE 5173
+EXPOSE 3000
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["node", "build"]
