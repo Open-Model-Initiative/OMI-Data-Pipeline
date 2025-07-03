@@ -83,7 +83,7 @@ class EcsStack(Stack):
             "S3_BUCKET": s3_stack.bucket.bucket_name,
             "UPLOAD_DIR": "/mnt/upload",
             "POSTGRES_HOST": database_stack.db_cluster.cluster_endpoint.hostname,
-            "POSTGRES_PORT": database_stack.db_cluster.cluster_endpoint.port,
+            "POSTGRES_PORT": str(database_stack.db_cluster.cluster_endpoint.port),
             "POSTGRES_DB": database_stack.db_name,
             "DEFAULT_SUPERUSER_EMAIL": "opendatarepository@opendatarepository.com",
             "DEFAULT_SUPERUSER_PASSWORD": "",
