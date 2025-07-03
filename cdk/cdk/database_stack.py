@@ -71,6 +71,7 @@ class DatabaseStack(Stack):
             deletion_protection=False,  # set it to true after testing
             cluster_identifier="omi-database-cluster",
             parameter_group=self.db_parameter_group,
+            writer=rds.ClusterInstance.provisioned('writer'),
             serverless_v2_min_capacity=0.5,  # Minimum ACUs (Aurora Capacity Units)
             serverless_v2_max_capacity=2,   # Maximum ACUs
         )
