@@ -37,30 +37,27 @@ class DatabaseStack(Stack):
 
         self.db_name = "omidb"
 
-        # Create a custom parameter group for PostgreSQL
+        # Create a custom parameter group for PostgreSQL Serverless
         # TODO: Setup certificate for connection to the DB
         self.db_parameter_group = rds.ParameterGroup(
             self,
             "OmiDbParameterGroup",
-            engine=rds.DatabaseInstanceEngine.postgres(
-                version=rds.PostgresEngineVersion.VER_17_2
+            engine=rds.DatabaseClusterEngine.aurora_postgres(
+                version=rds.AuroraPostgresEngineVersion.VER_17_2
             ),
-            description="Parameter group for OMI PostgreSQL database",
+            description="Parameter group for OMI PostgreSQL Aurora Serverless cluster",
             parameters={
                 # Disable SSL requirement
                 "rds.force_ssl": "0"
             }
         )
 
-        # Create RDS instance
-        self.db_instance = rds.DatabaseInstance(
+        # Create Aurora Serverless v2 cluster
+        self.db_cluster = rds.DatabaseCluster(
             self,
-            "Database",
-            engine=rds.DatabaseInstanceEngine.postgres(
-                version=rds.PostgresEngineVersion.VER_17_2
-            ),
-            instance_type=ec2.InstanceType.of(
-                ec2.InstanceClass.BURSTABLE3, ec2.InstanceSize.MICRO
+            "DatabaseCluster",
+            engine=rds.DatabaseClusterEngine.aurora_postgres(
+                version=rds.AuroraPostgresEngineVersion.VER_17_2
             ),
             vpc=vpc_stack.vpc,
             vpc_subnets=ec2.SubnetSelection(
@@ -68,20 +65,21 @@ class DatabaseStack(Stack):
             ),
             security_groups=[self.db_security_group],
             credentials=rds.Credentials.from_secret(self.database_secret),
-            database_name=self.db_name,
+            default_database_name=self.db_name,
             port=5432,
             removal_policy=RemovalPolicy.DESTROY,
             deletion_protection=False,  # set it to true after testing
             backup_retention=Duration.days(7),
-            instance_identifier="omi-database",
-            multi_az=False,
-            parameter_group=self.db_parameter_group,  # Use the custom parameter group
+            cluster_identifier="omi-database-cluster",
+            parameter_group=self.db_parameter_group,
+            serverless_v2_min_capacity=0.5,  # Minimum ACUs (Aurora Capacity Units)
+            serverless_v2_max_capacity=2,   # Maximum ACUs
         )
 
         # Output the database endpoint
         CfnOutput(
             self,
             "DatabaseEndpoint",
-            value=self.db_instance.db_instance_endpoint_address,
-            description="Database endpoint address"
+            value=self.db_cluster.cluster_endpoint.hostname,
+            description="Database cluster endpoint address"
         )
