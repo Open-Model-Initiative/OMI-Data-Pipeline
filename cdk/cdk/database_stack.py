@@ -69,7 +69,6 @@ class DatabaseStack(Stack):
             port=5432,
             removal_policy=RemovalPolicy.DESTROY,
             deletion_protection=False,  # set it to true after testing
-            backup_retention=Duration.days(7),
             cluster_identifier="omi-database-cluster",
             parameter_group=self.db_parameter_group,
             serverless_v2_min_capacity=0.5,  # Minimum ACUs (Aurora Capacity Units)
