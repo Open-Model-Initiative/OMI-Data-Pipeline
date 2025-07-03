@@ -16,6 +16,7 @@ on:
         options:
           - all           # Deploy all stacks
           - app-only      # Deploy only ECS stack
+          - database-only # Deploy only database stack
           - none         # Only build and push images
 
 env:
@@ -122,3 +123,9 @@ jobs:
       working-directory: cdk
       run: |
         cdk deploy EcsStack --require-approval never --context backendImageTag=${{ github.sha }} --context frontendImageTag=${{ github.sha }}
+
+    - name: Deploy database stack only
+      if: github.event.inputs.deployment_type == 'database-only'
+      working-directory: cdk
+      run: |
+        cdk deploy DatabaseStack --require-approval never
