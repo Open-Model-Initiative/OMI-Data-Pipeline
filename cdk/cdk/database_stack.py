@@ -1,5 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
-from aws_cdk import Duration, Stack, aws_ec2 as ec2, aws_rds as rds, RemovalPolicy, CfnOutput
+from aws_cdk import (
+    Duration,
+    Stack,
+    aws_ec2 as ec2,
+    aws_rds as rds,
+    RemovalPolicy,
+    CfnOutput,
+)
 from constructs import Construct
 from .vpc_stack import VpcStack
 
@@ -43,13 +50,13 @@ class DatabaseStack(Stack):
             self,
             "OmiDatabaseParameterGroup",
             engine=rds.DatabaseClusterEngine.aurora_postgres(
-                version=rds.AuroraPostgresEngineVersion.VER_17_2
+                version=rds.AuroraPostgresEngineVersion.Ver
             ),
             description="Parameter group for OMI PostgreSQL Aurora Serverless cluster",
             parameters={
                 # Disable SSL requirement
                 "rds.force_ssl": "0"
-            }
+            },
         )
 
         # Create Aurora Serverless v2 cluster
@@ -57,7 +64,10 @@ class DatabaseStack(Stack):
             self,
             "DatabaseCluster",
             engine=rds.DatabaseClusterEngine.aurora_postgres(
-                version=rds.AuroraPostgresEngineVersion.VER_17_2
+                version=rds.AuroraPostgresEngineVersion.of(
+                    major_version="17",
+                    minor_version="5"
+                )
             ),
             vpc=vpc_stack.vpc,
             vpc_subnets=ec2.SubnetSelection(
@@ -71,9 +81,9 @@ class DatabaseStack(Stack):
             deletion_protection=False,  # set it to true after testing
             cluster_identifier="omi-database-cluster",
             parameter_group=self.db_parameter_group,
-            writer=rds.ClusterInstance.provisioned('writer'),
+            writer=rds.ClusterInstance.provisioned("writer"),
             serverless_v2_min_capacity=0.5,  # Minimum ACUs (Aurora Capacity Units)
-            serverless_v2_max_capacity=2,   # Maximum ACUs
+            serverless_v2_max_capacity=2,  # Maximum ACUs
         )
 
         # Output the database endpoint
@@ -81,5 +91,5 @@ class DatabaseStack(Stack):
             self,
             "DatabaseEndpoint",
             value=self.db_cluster.cluster_endpoint.hostname,
-            description="Database cluster endpoint address"
+            description="Database cluster endpoint address",
         )
