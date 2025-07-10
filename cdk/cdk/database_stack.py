@@ -44,8 +44,7 @@ class DatabaseStack(Stack):
             "OmiDatabaseParameterGroup",
             engine=rds.DatabaseClusterEngine.aurora_postgres(
                 version=rds.AuroraPostgresEngineVersion.of(
-                    aurora_postgres_major_version="17.5",
-                    minor_version="5"
+                    aurora_postgres_major_version="17.5"
                 )
             ),
             description="Parameter group for OMI PostgreSQL Aurora Serverless cluster",
