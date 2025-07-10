@@ -41,7 +41,7 @@ class DatabaseStack(Stack):
         # TODO: Setup certificate for connection to the DB
         self.db_parameter_group = rds.ParameterGroup(
             self,
-            "OmiDbParameterGroup",
+            "OmiDatabaseParameterGroup",
             engine=rds.DatabaseClusterEngine.aurora_postgres(
                 version=rds.AuroraPostgresEngineVersion.VER_17_2
             ),
