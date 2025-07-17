@@ -44,14 +44,15 @@ class DatabaseStack(Stack):
 
         self.db_name = "omidb"
 
-        db_version = rds.AuroraPostgresEngineVersion.of("17.5", "17.5")
+        db_version = rds.AuroraPostgresEngineVersion.VER_17_5
+        db_engine = rds.DatabaseClusterEngine.aurora_postgres(version=db_version)
 
         # Create a custom parameter group for PostgreSQL Serverless
         # TODO: Setup certificate for connection to the DB
         self.db_parameter_group = rds.ParameterGroup(
             self,
             "OmiDatabaseParameterGroup",
-            engine=rds.DatabaseClusterEngine.aurora_postgres(version=db_version),
+            engine=db_engine,
             description="Parameter group for OMI PostgreSQL Aurora Serverless cluster",
             parameters={
                 # Disable SSL requirement
@@ -63,7 +64,7 @@ class DatabaseStack(Stack):
         self.db_cluster = rds.DatabaseCluster(
             self,
             "DatabaseCluster",
-            engine=rds.DatabaseClusterEngine.aurora_postgres(version=db_version),
+            engine=db_engine,
             vpc=vpc_stack.vpc,
             vpc_subnets=ec2.SubnetSelection(
                 subnet_type=ec2.SubnetType.PRIVATE_ISOLATED
@@ -77,6 +78,7 @@ class DatabaseStack(Stack):
             cluster_identifier="omi-database-cluster",
             parameter_group=self.db_parameter_group,
             writer=rds.ClusterInstance.provisioned("writer"),
+            auto_minor_version_upgrade=True,
             serverless_v2_min_capacity=0.5,  # Minimum ACUs (Aurora Capacity Units)
             serverless_v2_max_capacity=2,  # Maximum ACUs
         )
