@@ -1,5 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
-from aws_cdk import Duration, Stack, aws_ec2 as ec2, aws_rds as rds, RemovalPolicy, CfnOutput
+from aws_cdk import (
+    Duration,
+    Stack,
+    aws_ec2 as ec2,
+    aws_rds as rds,
+    RemovalPolicy,
+    CfnOutput,
+)
 from constructs import Construct
 from .vpc_stack import VpcStack
 
@@ -37,32 +44,26 @@ class DatabaseStack(Stack):
 
         self.db_name = "omidb"
 
+        db_version = rds.AuroraPostgresEngineVersion.of("17.5", "17.5")
+
         # Create a custom parameter group for PostgreSQL Serverless
         # TODO: Setup certificate for connection to the DB
         self.db_parameter_group = rds.ParameterGroup(
             self,
             "OmiDatabaseParameterGroup",
-            engine=rds.DatabaseClusterEngine.aurora_postgres(
-                version=rds.AuroraPostgresEngineVersion.of(
-                    aurora_postgres_major_version="17.5"
-                )
-            ),
+            engine=rds.DatabaseClusterEngine.aurora_postgres(version=db_version),
             description="Parameter group for OMI PostgreSQL Aurora Serverless cluster",
             parameters={
                 # Disable SSL requirement
                 "rds.force_ssl": "0"
-            }
+            },
         )
 
         # Create Aurora Serverless v2 cluster
         self.db_cluster = rds.DatabaseCluster(
             self,
             "DatabaseCluster",
-            engine=rds.DatabaseClusterEngine.aurora_postgres(
-                version=rds.AuroraPostgresEngineVersion.of(
-                    aurora_postgres_major_version="17.5",
-                )
-            ),
+            engine=rds.DatabaseClusterEngine.aurora_postgres(version=db_version),
             vpc=vpc_stack.vpc,
             vpc_subnets=ec2.SubnetSelection(
                 subnet_type=ec2.SubnetType.PRIVATE_ISOLATED
@@ -75,9 +76,9 @@ class DatabaseStack(Stack):
             deletion_protection=False,  # set it to true after testing
             cluster_identifier="omi-database-cluster",
             parameter_group=self.db_parameter_group,
-            writer=rds.ClusterInstance.provisioned('writer'),
+            writer=rds.ClusterInstance.provisioned("writer"),
             serverless_v2_min_capacity=0.5,  # Minimum ACUs (Aurora Capacity Units)
-            serverless_v2_max_capacity=2,   # Maximum ACUs
+            serverless_v2_max_capacity=2,  # Maximum ACUs
         )
 
         # Output the database endpoint
@@ -85,5 +86,5 @@ class DatabaseStack(Stack):
             self,
             "DatabaseEndpoint",
             value=self.db_cluster.cluster_endpoint.hostname,
-            description="Database cluster endpoint address"
+            description="Database cluster endpoint address",
         )
