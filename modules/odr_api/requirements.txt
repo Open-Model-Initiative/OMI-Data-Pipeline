@@ -3,7 +3,7 @@ fastapi==0.115.4
 pydantic[email]==2.10.4
 sqlalchemy==2.0.31
 pytest==8.3.2
-starlette==0.40.0
+starlette==0.47.2
 psycopg2-binary==2.9.9
 python-multipart==0.0.18
 httpx==0.27.0
