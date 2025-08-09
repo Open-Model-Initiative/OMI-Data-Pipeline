@@ -11,6 +11,7 @@ Open Model Initiative - Data Pipeline
 
    contributing/index
    datamodel/index
+   datasets/index
    deployment
 
 .. |OpenSSF Best Practices| image:: https://www.bestpractices.dev/projects/9549/badge

@@ -25,7 +25,7 @@ By uploading datasets on Hugging Face, you are agreeing to follow all aspects of
 
 ## Suggested Contribution Guidelines
 
-For photography, please see our separate Photography Dataset Guidelines for guidance on creating valuable photography datasets. Similarly, for synthetic/generated images, please see our Synthetic Images Guidelines. (TBD by Temporarium)
+For photography, please see our separate [Photography Dataset Guidelines](photography-dataset-guidelines.md) for guidance on creating valuable photography datasets. Similarly, for synthetic/generated images, please see our [Synthetic Images Guidelines](synthetic-dataset-guidelines.md).
 
 ## How to Contribute
 

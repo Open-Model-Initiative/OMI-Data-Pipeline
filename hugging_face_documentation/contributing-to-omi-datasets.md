@@ -17,7 +17,7 @@ We're looking for images! Depending on the number of images we receive, we're lo
 3. **HDR/RAW photography or HDR digital art** - High dynamic range or raw format images
 4. **Synthetic or generated art** - AI-generated images
 
-For photography, please see our separate Photography Dataset Guidelines for guidance on creating valuable photography datasets. Similarly, for synthetic/generated images, please see our Synthetic Images Guidelines. (TBD by Temporarium)
+For photography, please see our separate [Photography Dataset Guidelines](photography-dataset-guidelines.md) for guidance on creating valuable photography datasets. Similarly, for synthetic/generated images, please see our [Synthetic Images Guidelines](synthetic-dataset-guidelines.md).
 
 If you have more than one type of data, please separate your data into these 4 categories.
 
