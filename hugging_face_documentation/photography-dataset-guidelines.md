@@ -2,7 +2,7 @@
 
 # Quality Standards
 
-- **Focus**: The main subject should be in focus. Various depths of field are acceptable, but the primary subject must be sharp.
+- **Focus**: The main subject should be in focus. Various depths of field are acceptable, but the primary subject must be in focus.
 - **Photography basics**: If you're new to photography, consider reading a quick guide to taking good photographs first.
 - **Variety is key**: The more diverse our dataset, the better. Focus on these areas:
 
@@ -33,4 +33,4 @@ These specific types of content would be especially valuable:
 - **Global perspectives**: Cultural aesthetics, architecture, landscapes, and plant/animal life from your region
 - **Historic architecture**: Older buildings are especially valuable for expanding the model's range
 - **Museum exhibits**: Historic objects, artifacts, sculptures (check photography policies first)
-- **People and body parts**: Hands in various poses/angles, facial details, etc. (following Hugging Face Content Policy guidelines)
+- **People and body parts**: Hands in various poses/angles, facial details, etc. (following Hugging Face Content Policy guidelines and ensuring subjects have consented to participating in the dataset)

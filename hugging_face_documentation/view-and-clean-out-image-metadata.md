@@ -11,6 +11,21 @@ Digital images contain metadata (also called EXIF data) that can include sensiti
 
 Before contributing images to datasets, it's important to review and potentially remove this metadata to protect your privacy and security.
 
+## Prevention Tip: Disable Location Services
+
+**Before taking photos for dataset contributions, consider disabling location services on your camera/phone to prevent GPS data from being embedded in the first place.**
+
+**On iPhone:**
+- Go to Settings → Privacy & Security → Location Services → Camera → Select "Never"
+
+**On Android:**
+- This will be different per device, but in your camera app, look for settingsand look for an item like "Save location" or location tags, and turn them off. You may need to look in a "More settings" or similar section.
+
+**On Digital Cameras:**
+- Look for "GPS" or "Location" settings in your camera menu and disable them
+
+This prevents sensitive location data from being saved in your images from the start, though you should still verify and clean existing images that may already contain metadata.
+
 ## Step 1: Viewing Image Metadata
 
 ### Using ExifMeta.com (Recommended for Quick Checks)
